@@ -2,7 +2,8 @@
  * Custom data types needed for sim01
  */
 #ifndef TYPES_H
-#DEFINE TYPE_H
+#define TYPES_H
+
 
 typedef struct ConfigDataType 
     {
