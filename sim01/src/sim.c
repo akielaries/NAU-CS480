@@ -1,3 +1,4 @@
+#include "sim.h"
 /**
  * Driver code for running the simulator
  */

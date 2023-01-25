@@ -1,0 +1,18 @@
+
+==================================================
+Simulator Log File Header
+
+File Name                       : Test_3.mdf
+CPU Scheduling                  : FCFS-N
+Quantum Cycles                  : 55
+Memory Available (KB)           : 12000
+Processor Cycle Rate (ms/cycle) : 10
+I/O Cycle Rate (ms/cycle)       : 20
+
+================
+Begin Simulation
+
+
+End Simulation - Complete
+=========================
+
