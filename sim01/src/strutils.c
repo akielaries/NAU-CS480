@@ -31,7 +31,7 @@ int str_cmp(char *str_a, char *str_b)
 int str_substr(char *test_str,char *search_substr)
 {
   int iVar1;
-  int testStrLen;
+  //int testStrLen;
   int internalIndex;
   int searchIndex;
   int masterIndex;
