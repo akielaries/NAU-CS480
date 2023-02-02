@@ -1,70 +1,75 @@
 /**
- * String related utilities implementations many of which are from 
+ * Re-implementation of
  */
 #include "strutils.h"
 
-
-// re-implementation of strcmp()
-int compareString(char *str_a, char *str_b)
+int compareString(const char *leftStr, const char *rightStr)
 {
-    int diff, index;
+    int diff, index = 0;
 
-    for (index = 0; 
-            ((str_a[index] != NULL_CHAR && 
-              (str_b[index] != NULL_CHAR)) && 
-             (index < MAX_STR_LEN )); index++) 
+    while (leftStr[index] != NULL_CHAR && rightStr[index] != NULL_CHAR &&
+           index < MAX_STR_LEN)
     {
-        diff = (int)str_a[index] - (int)str_b[index];
-        
-        if (diff != 0) 
+        diff = leftStr[index] - rightStr[index];
+
+        if (diff != 0)
         {
             return diff;
         }
+
+        index++;
     }
-    return (getStringLength(str_a) - getStringLength(str_a));
+    return (getStringLength(leftStr) - getStringLength(rightStr));
 }
 
-// re-implementation of strcat()
-void concatenateString(char *dest_str, char *src_str) 
+void concatenateString(char *destStr, const char *sourceStr)
 {
+    int destIndex = getStringLength(destStr);
+    int sourceStrLen = getStringLength(sourceStr);
+    char *tempStr;
     int sourceIndex = 0;
-    int destIndex = getStringLength(dest_str);
-
-    while ((src_str[sourceIndex] != NULL_CHAR && 
-                (destIndex < MAX_STR_LEN))) 
+    tempStr = (char *)malloc(sizeof(sourceStrLen + 1));
+    copyString(tempStr, sourceStr);
+    while (tempStr[sourceIndex] != NULL_CHAR && destIndex < MAX_STR_LEN)
     {
-        dest_str[destIndex] = src_str[sourceIndex];
-        destIndex++; 
-        sourceIndex++; 
-        dest_str[destIndex] = '\0';
+        destStr[destIndex] = tempStr[sourceIndex];
+        destIndex++;
+        sourceIndex++;
+        destStr[destIndex] = NULL_CHAR;
+    }
+    free(tempStr);
+}
+
+void copyString(char *destStr, const char *sourceStr)
+{
+    int index = 0;
+    if (destStr != sourceStr)
+    {
+        while (sourceStr[index] != NULL_CHAR && index < MAX_STR_LEN)
+        {
+            destStr[index] = sourceStr[index];
+            index++;
+            destStr[index] = NULL_CHAR;
+        }
     }
 }
 
-/**
- * re-implementatoin of strstr, finds a string within string 
- * returning the index
- */
-int findSubString(char *str_a,char *search_substr)
+int findSubString(const char *testStr, const char *searchSubStr)
 {
-    int str_a_len = getStringLength(str_a);
+    int testStrLen = getStringLength(testStr);
     int masterIndex = 0;
-    int internalIndex;
-    int searchIndex;
-        
-
-    while (masterIndex < str_a_len)
-    {    
+    int searchIndex, internalIndex;
+    while (masterIndex < testStrLen)
+    {
         internalIndex = masterIndex;
         searchIndex = 0;
-
-        while ((internalIndex <= str_a_len && 
-                (str_a[internalIndex] == search_substr[searchIndex])))
+        while (internalIndex <= testStrLen &&
+               testStr[internalIndex] == searchSubStr[searchIndex])
         {
             internalIndex++;
             searchIndex++;
-
-            if (search_substr[searchIndex] == NULL_CHAR) 
-            { 
+            if (searchSubStr[searchIndex] == NULL_CHAR)
+            {
                 return masterIndex;
             }
         }
@@ -73,169 +78,105 @@ int findSubString(char *str_a,char *search_substr)
     return SUBSTRING_NOT_FOUND;
 }
 
-// function for reading from input file stream give contraints
-_Bool getStringConstrained(FILE *inStream,
-                    _Bool clearLeadingNonPrintable,
-                    _Bool clearLeadingSpace,
-                    _Bool stopAtNonPrintable,
-                    char delimiter,
-                    char *capturedString)
+bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
+                          bool clearLeadingSpace, bool stopAtNonPrintable,
+                          char delimiter, char *capturedString)
 {
-    _Bool ret;
-    int index;
-    int intChar;
+    int intChar = EOF, index = 0;
+    capturedString[index] = NULL_CHAR;
+    intChar = fgetc(inStream);
+    while ((intChar != EOF) &&
+           ((clearLeadingNonPrintable && intChar < (int)SPACE) ||
+            (clearLeadingSpace && intChar == (int)SPACE)))
+    {
+        intChar = fgetc(inStream);
+    }
+    if (intChar == EOF)
+    {
+        return false;
+    }
 
-    index = 0;
-
-    *capturedString = NULL_CHAR;
-    intChar = fgetc((FILE *)inStream);
-  
-    while ((intChar != EOF &&
-                (((clearLeadingNonPrintable != false && 
-                    (intChar < MIN_STR_LEN)) ||
-                ((clearLeadingSpace != false && 
-                    (intChar == MIN_STR_LEN))))))) 
+    while ((intChar != EOF && index < MAX_STR_LEN - 1) &&
+           ((stopAtNonPrintable && intChar >= (int)SPACE) ||
+            (!stopAtNonPrintable)) &&
+           (intChar != (char)delimiter))
     {
-        intChar = fgetc((FILE *)inStream);
+        capturedString[index] = (char)intChar;
+        index++;
+        capturedString[index] = NULL_CHAR;
+        intChar = fgetc(inStream);
     }
-  
-    if (intChar == EOF) 
-    {
-        ret = false;
-    }
-    else 
-    {
-        while ((((intChar != EOF && (index < MAX_STR_LEN - 1)) &&
-                    (((stopAtNonPrintable != false && 
-                        (MIN_STR_LEN < intChar)) || 
-                    (stopAtNonPrintable != true))))
-                        && (delimiter != intChar))) 
-        {
-            capturedString[index] = (char)intChar;
-            index++;
-            capturedString[index] = NULL_CHAR;
-            intChar = fgetc((FILE *)inStream);
-        }
-        ret = true;
-    }
-    return ret;
+    return true;
 }
 
-// re-implementation of strcpy()
-void copyString(char *dest_str, char *src_str) 
+int getStringLength(const char *testStr)
 {
     int index = 0;
-
-    if (dest_str != src_str)
+    while (index < STD_STR_LEN && testStr[index] != NULL_CHAR)
     {
-        while ((src_str[index] != NULL_CHAR && (index < MAX_STR_LEN))) 
-        {
-            dest_str[index] = src_str[index];
-            index++;
-            dest_str[index] = NULL_CHAR;
-        }
-    }
-}
-
-// re-implementation of strlen()
-int getStringLength(char *str_a) 
-{
-    int index;
-
-    for (index = 0; 
-            (index < STD_STR_LEN && 
-             (str_a[index] != NULL_CHAR)); 
-            index++) 
-    {
+        index++;
     }
     return index;
 }
 
-_Bool getStringToDelimter(FILE *in_stream,
-                    char delimiter,
-                    char *captured_str)
+bool getStringToDelimiter(FILE *inStream, char delimiter,
+                          char *capturedString)
 {
-    _Bool delim = getStringConstrained(in_stream,
-                    true,
-                    true,
-                    true,
-                    delimiter,
-                    captured_str);
-    return delim;
+    return getStringConstrained(inStream, true, true, true, delimiter,
+                                capturedString);
 }
 
-_Bool getStringToLineEnd(FILE *in_stream,char *captured_str)
+bool getStringToLineEnd(FILE *inStream, char *capturedString)
 {
-    _Bool line_end = getStringConstrained(in_stream,
-                                        true,
-                                        true,
-                                        true,
-                                        NON_PRINTABLE_CHAR,
-                                        captured_str);
-    return line_end;
+    return getStringConstrained(inStream, true, true, true,
+                                NON_PRINTABLE_CHAR, capturedString);
 }
 
-void getSubString(char *dest_str,
-                char *src_str,
-                int startIndex,
-                int endIndex)
+void getSubString(char *destStr, const char *sourceStr, int startIndex,
+                  int endIndex)
 {
-    char *temp_str;
-    int sourceIndex = startIndex;
-    int src_str_len = getStringLength(src_str);
+    int sourceStrLen = getStringLength(sourceStr);
     int destIndex = 0;
-  
-    if (((startIndex < 0) || 
-        (endIndex < startIndex)) || 
-        (src_str_len <= endIndex)) 
+    int sourceIndex = startIndex;
+    char *tempStr;
+    if (startIndex >= 0 && startIndex <= endIndex &&
+        endIndex < sourceStrLen)
     {
-        *dest_str = NULL_CHAR;
-    }
-  
-    else 
-    {
-        temp_str = (char *)malloc((long)(src_str_len + 1));
-        copyString(temp_str, src_str);
-        sourceIndex = startIndex;
-        while (sourceIndex <= endIndex) 
+        tempStr = (char *)malloc(sourceStrLen + 1);
+        copyString(tempStr, sourceStr);
+        while (sourceIndex <= endIndex)
         {
-            dest_str[destIndex] = temp_str[sourceIndex];
+            destStr[destIndex] = tempStr[sourceIndex];
             destIndex++;
             sourceIndex++;
-            dest_str[destIndex] = NULL_CHAR;
+            destStr[destIndex] = NULL_CHAR;
         }
-        free(temp_str);
+        free(tempStr);
     }
 }
 
-
-void setStrToLowerCase(char *dest_str, char *src_str) 
+void setStrToLowerCase(char *destStr, const char *sourceStr)
 {
-    char *temp_str;
+    int sourceStrLen = getStringLength(sourceStr);
+    char *tempStr = NULL;
     int index = 0;
-  
-    int src_str_len = getStringLength(src_str);
-    temp_str = (char *)malloc((long)(src_str_len + 1));
-
-    while ((src_str[index] != NULL_CHAR && (index < MAX_STR_LEN))) 
-    {  
-        temp_str[index] = toLowerCase(src_str[index]);
-        index++;
-        temp_str[index] = NULL_CHAR;
-    }
-    copyString(dest_str, temp_str);
-    free(temp_str);
-}
-
-char toLowerCase(char str_a)
-{
-    if (str_a >= 'A' && str_a <= 'Z' )
+    tempStr = (char *)malloc((char)sizeof(sourceStrLen) +
+                             (char)sizeof(NULL_CHAR) * 3);
+    copyString(tempStr, sourceStr);
+    while (tempStr[index] != NULL_CHAR && index < MAX_STR_LEN)
     {
-        return str_a - 'A' + 'a';
+        destStr[index] = toLowerCase(tempStr[index]);
+        index++;
+        destStr[index] = NULL_CHAR;
     }
-    return str_a;
+    free(tempStr);
 }
 
-
-
-
+int toLowerCase(char testChar)
+{
+    if (testChar >= 'A' && testChar <= 'Z')
+    {
+        return testChar - 'A' + 'a';
+    }
+    return testChar;
+}

@@ -4,53 +4,28 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include "constants.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include "constants.h"
 
-
-/**
- * Config Data struct 
- */
-typedef struct ConfigDataTypeStruct 
+typedef enum
 {
-    double version;
-    // TODO : change this paramater to string length?
-    char metaDataFileName[LARGE_STR_LENGTH];
-    char logToFileName[LARGE_STR_LENGTH];
-    // TODO : define specific bit types? int8_t?
-    int cpuSchedCode;
-    int quantumCycles;
-    _Bool memDisplay;
-    int memAvailable;
-    int procCycleRate;
-    int ioCycleRate;
-    int logToCode;
-} ConfigDataType;
-
-/**
- * Command Line definitions for parsing
- */
-typedef enum 
-{ 
     CMD_STR_LEN = 5,
     IO_ARG_STR_LEN = 5,
-    STR_ARG_LEN = 15 
+    STR_ARG_LEN = 15
 } OpCodeArrayCapacity;
 
-typedef enum 
-{ 
+// Struct for different process states
+typedef enum
+{
     NEW_STATE,
     READY_STATE,
     RUNNING_STATE,
     BLOCKED_STATE,
-    EXIT_STATE 
+    EXIT_STATE
 } ProcessState;
 
-
-/**
- * Operation Code struct
- */
+// Struct for op code command data structure
 typedef struct OpCodeTypeStruct
 {
     int pid;
@@ -60,8 +35,68 @@ typedef struct OpCodeTypeStruct
     int intArg2;
     int intArg3;
     double opEndTime;
-    struct OpCodeType * nextNode;
+    struct OpCodeTypeStruct *nextNode;
 } OpCodeType;
 
-#endif
+// Struct for config data type data structure
+typedef struct ConfigDataTypeStruct
+{
+    char metaDataFileName[STD_STR_LEN];
+    int cpuSchedCode;
+    int ioCycleRate;
+    int memAvailable;
+    int logToCode;
+    char logToFileName[STD_STR_LEN];
+    bool memDisplay;
+    int procCycleRate;
+    double version;
+    int quantumCycles;
+} ConfigDataType;
 
+typedef enum
+{
+    BAD_ARG_VAL = -1,
+    NO_ACCESS_ERR,
+    MD_FILE_ACCESS_ERR,
+    MD_CORRUPT_DESCRIPTOR_ERR,
+    OPCMD_ACCESS_ERR,
+    CORRUPT_OPCMD_ERR,
+    CORRUPT_OPCMD_ARG_ERR,
+    UNBALANCED_START_END_ERR,
+    COMPLETE_OPCMD_FOUND_MSG,
+    LAST_OPCMD_FOUND_MSG
+} OpCodeMessages;
+
+typedef enum
+{
+    CFG_FILE_ACCESS_ERR,
+    CFG_CORRUPT_DATA_DESCRIPTOR_ERR,
+    CFG_DATA_OUT_OF_RANGE_ERR,
+    CFG_CORRUPT_PROMPT_ERR,
+    CFG_VERSION_CODE,
+    CFG_MD_FILE_NAME_CODE,
+    CFG_CPU_SCHED_CODE,
+    CFG_QUANT_CYCLES_CODE,
+    CFG_MEM_DISPLAY_CODE,
+    CFG_MEM_AVAILABLE_CODE,
+    CFG_PROC_CYCLES_CODE,
+    CFG_IO_CYCLES_CODE,
+    CFG_LOG_TO_CODE,
+    CFG_LOG_FILE_NAME_CODE
+} ConfigCodeMessages;
+
+typedef enum
+{
+    CPU_SCHED_SJF_N_CODE,
+    CPU_SCHED_SRTF_P_CODE,
+    CPU_SCHED_FCFS_P_CODE,
+    CPU_SCHED_RR_P_CODE,
+    CPU_SCHED_FCFS_N_CODE,
+    LOGTO_MONITOR_CODE,
+    LOGTO_FILE_CODE,
+    LOGTO_BOTH_CODE,
+    NON_PREEMPTIVE_CODE,
+    PREEMPTIVE_CODE
+} ConfigDataCodes;
+
+#endif

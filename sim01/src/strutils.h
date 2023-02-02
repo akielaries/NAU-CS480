@@ -1,69 +1,35 @@
-/**
- * String utilities file. 
- */
-#ifndef STRINGUTILS_H
-#define STRINGUTILS_H
+#ifndef STRUTILS_H
+#define STRUTILS_H
 
 #include "constants.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+int compareString(const char *leftStr, const char *rightStr);
 
-/**
- * A series of re-implemented string operations seen in string.h
- */
+void concatenateString(char *destStr, const char *sourceStr);
 
-/**
- * re-implementation of strcmp()
- */
-int compareString(char *str_a, char *str_b);
+void copyString(char *destStr, const char *sourceStr);
 
-/**
- * re-implementation of strcat() 
- */
-void concatenateString(char *dest_str, char *src_str);
+int findSubString(const char *testStr, const char *searchSubStr);
 
-/**
- * re-implementatoin of strstr, finds a string within
- * a string
- */
-int findSubString(char *str_a, char *search_substr);
+bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
+                          bool clearLeadingSpace, bool stopAtNonPrintable,
+                          char delimiter, char *capturedString);
 
-/**
- * function for reading from input file stream give contraints
- */
-_Bool getStringConstrained(FILE *inStream,
-                    _Bool clearLeadingNonPrintable,
-                    _Bool clearLeadingSpace,
-                    _Bool stopAtNonPrintable,
-                    char delimiter,
-                    char *capturedString);
+int getStringLength(const char *testStr);
 
-/**
- * re-implementation of strcpy()
- */
-void copyString(char *dest_str, char *src_str);
+bool getStringToDelimiter(FILE *inStream, char delimiter,
+                          char *capturedString);
 
-/**
- * re-implementation of strlen()
- */
-int getStringLength(char *str_a);
+bool getStringToLineEnd(FILE *inStream, char *capturedString);
 
-_Bool getStringToDelimiter(FILE *in_stream, 
-                    char delimiter,
-                    char *captured_str);
+void getSubString(char *destStr, const char *sourceStr, int startIndex,
+                  int endIndex);
 
-bool getStringToLineEnd(FILE *in_stream, char *captured_str);
+void setStrToLowerCase(char *destStr, const char *sourceStr);
 
-void getSubString(char *dest_str,
-                char *src_str,
-                int startIndex,
-                int endIndex);
-
-void setStrToLowerCase(char *dest_str, char *src_str);
-
-char toLowerCase(char str_a);
+int toLowerCase(char testChar);
 
 #endif
-

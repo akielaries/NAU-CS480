@@ -1,0 +1,34 @@
+---
+Language: Cpp
+IndentWidth: 4
+UseTab: Never
+IndentCaseLabels: false
+ColumnLimit: 75
+BreakBeforeBraces: Allman
+
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+
+AlwaysBreakTemplateDeclarations: true
+
+AllowShortFunctionsOnASingleLine: None
+AccessModifierOffset: 0
+
+
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+IndentFunctionDeclarationAfterType: true
+IndentWidth: 4
+TabWidth: 4
+
+SpacesInParentheses: false
+SpacesInContainerLiterals: true
+SpacesInAngles: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+
+

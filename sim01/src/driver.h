@@ -1,24 +1,27 @@
 #ifndef DRIVER_H
 #define DRIVER_h
 
-#include <stdio.h>
-#include "types.h"
 #include "configops.h"
-#include "strutils.h"
-//#include "metadataops.h"
+#include "metadataops.h"
 #include "sim.h"
+#include "strutils.h"
+#include "types.h"
+#include <stdio.h>
 
-
-typedef enum {MIN_NUM_ARGS = 3, LAST_FOUR_LETTERS = 4} PRGRM_CONSTANTS;
+typedef enum
+{
+    MIN_NUM_ARGS = 3,
+    LAST_FOUR_LETTERS = 4
+} PRGRM_CONSTANTS;
 /**
  * Command Line Data struct
  */
 typedef struct CmdLineDataStruct
 {
-    _Bool programRunFlag;
-    _Bool configDisplayFlag;
-    _Bool mdDisplayFlag;
-    _Bool runSimFlag;
+    bool programRunFlag;
+    bool configDisplayFlag;
+    bool mdDisplayFlag;
+    bool runSimFlag;
     char fileName[STD_STR_LEN];
 } CmdLineData;
 
@@ -30,9 +33,7 @@ void clearCmdLineStruct(CmdLineData *clDataPtr);
 /**
  * Parse CMD Line
  */
-_Bool processCmdLine(int numArgs, 
-                    char **strVector, 
-                    CmdLineData *clDataPtr);
+bool processCmdLine(int numArgs, char **strVector, CmdLineData *clDataPtr);
 
 /**
  * Command Line Usage
@@ -40,4 +41,3 @@ _Bool processCmdLine(int numArgs,
 void usage();
 
 #endif
-
