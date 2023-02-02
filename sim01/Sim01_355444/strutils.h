@@ -14,16 +14,17 @@ void copyString(char *destStr, const char *sourceStr);
 
 int findSubString(const char *testStr, const char *searchSubStr);
 
-bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
-                          bool clearLeadingSpace, bool stopAtNonPrintable,
-                          char delimiter, char *capturedString);
+_Bool getStringConstrained(FILE *inStream, _Bool clearLeadingNonPrintable,
+                           _Bool clearLeadingSpace,
+                           _Bool stopAtNonPrintable, char delimiter,
+                           char *capturedString);
 
 int getStringLength(const char *testStr);
 
-bool getStringToDelimiter(FILE *inStream, char delimiter,
-                          char *capturedString);
+_Bool getStringToDelimiter(FILE *inStream, char delimiter,
+                           char *capturedString);
 
-bool getStringToLineEnd(FILE *inStream, char *capturedString);
+_Bool getStringToLineEnd(FILE *inStream, char *capturedString);
 
 void getSubString(char *destStr, const char *sourceStr, int startIndex,
                   int endIndex);

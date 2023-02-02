@@ -18,10 +18,10 @@ typedef enum
  */
 typedef struct CmdLineDataStruct
 {
-    bool programRunFlag;
-    bool configDisplayFlag;
-    bool mdDisplayFlag;
-    bool runSimFlag;
+    _Bool programRunFlag;
+    _Bool configDisplayFlag;
+    _Bool mdDisplayFlag;
+    _Bool runSimFlag;
     char fileName[STD_STR_LEN];
 } CmdLineData;
 
@@ -33,7 +33,8 @@ void clearCmdLineStruct(CmdLineData *clDataPtr);
 /**
  * Parse CMD Line
  */
-bool processCmdLine(int numArgs, char **strVector, CmdLineData *clDataPtr);
+_Bool processCmdLine(int numArgs, char **strVector,
+                     CmdLineData *clDataPtr);
 
 /**
  * Command Line Usage

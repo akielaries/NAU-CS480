@@ -5,18 +5,16 @@
 #define TYPES_H
 
 #include "constants.h"
-#include <stdbool.h>
 #include <stdio.h>
 
-typedef enum
+typedef enum OpCodeArrayCapacity
 {
     CMD_STR_LEN = 5,
     IO_ARG_STR_LEN = 5,
     STR_ARG_LEN = 15
 } OpCodeArrayCapacity;
 
-// Struct for different process states
-typedef enum
+typedef enum ProcessState
 {
     NEW_STATE,
     READY_STATE,
@@ -25,7 +23,34 @@ typedef enum
     EXIT_STATE
 } ProcessState;
 
-// Struct for op code command data structure
+typedef struct ConfigDataTypeStruct
+{
+    char metaDataFileName[STD_STR_LEN];
+    int cpuSchedCode;
+    int ioCycleRate;
+    int memAvailable;
+    int logToCode;
+    char logToFileName[STD_STR_LEN];
+    _Bool memDisplay;
+    int procCycleRate;
+    double version;
+    int quantumCycles;
+} ConfigDataType;
+
+typedef enum ConfigDataCodes
+{
+    CPU_SCHED_SJF_N_CODE,
+    CPU_SCHED_SRTF_P_CODE,
+    CPU_SCHED_FCFS_P_CODE,
+    CPU_SCHED_RR_P_CODE,
+    CPU_SCHED_FCFS_N_CODE,
+    LOGTO_MONITOR_CODE,
+    LOGTO_FILE_CODE,
+    LOGTO_BOTH_CODE,
+    NON_PREEMPTIVE_CODE,
+    PREEMPTIVE_CODE
+} ConfigDataCodes;
+
 typedef struct OpCodeTypeStruct
 {
     int pid;
@@ -38,33 +63,19 @@ typedef struct OpCodeTypeStruct
     struct OpCodeTypeStruct *nextNode;
 } OpCodeType;
 
-// Struct for config data type data structure
-typedef struct ConfigDataTypeStruct
-{
-    char metaDataFileName[STD_STR_LEN];
-    int cpuSchedCode;
-    int ioCycleRate;
-    int memAvailable;
-    int logToCode;
-    char logToFileName[STD_STR_LEN];
-    bool memDisplay;
-    int procCycleRate;
-    double version;
-    int quantumCycles;
-} ConfigDataType;
-
-typedef enum
+typedef enum OpCodeMessages
 {
     BAD_ARG_VAL = -1,
-    NO_ACCESS_ERR,
-    MD_FILE_ACCESS_ERR,
-    MD_CORRUPT_DESCRIPTOR_ERR,
-    OPCMD_ACCESS_ERR,
-    CORRUPT_OPCMD_ERR,
-    CORRUPT_OPCMD_ARG_ERR,
-    UNBALANCED_START_END_ERR,
-    COMPLETE_OPCMD_FOUND_MSG,
-    LAST_OPCMD_FOUND_MSG
+    NO_ACCESS_ERR = 0,
+    MD_FILE_ACCESS_ERR = 1,
+    MD_CORRUPT_DESCRIPTOR_ERR = 2,
+    OPCMD_ACCESS_ERR = 3,
+    CORRUPT_OPCMD_ERR = 4,
+    CORRUPT_OPCMD_ARG_ERR = 5,
+    UNBALANCED_START_END_ERR = 6,
+    COMPLETE_OPCMD_FOUND_MSG = 7,
+    LAST_OPCMD_FOUND_MSG = 8
+
 } OpCodeMessages;
 
 typedef enum
@@ -84,19 +95,5 @@ typedef enum
     CFG_LOG_TO_CODE,
     CFG_LOG_FILE_NAME_CODE
 } ConfigCodeMessages;
-
-typedef enum
-{
-    CPU_SCHED_SJF_N_CODE,
-    CPU_SCHED_SRTF_P_CODE,
-    CPU_SCHED_FCFS_P_CODE,
-    CPU_SCHED_RR_P_CODE,
-    CPU_SCHED_FCFS_N_CODE,
-    LOGTO_MONITOR_CODE,
-    LOGTO_FILE_CODE,
-    LOGTO_BOTH_CODE,
-    NON_PREEMPTIVE_CODE,
-    PREEMPTIVE_CODE
-} ConfigDataCodes;
 
 #endif

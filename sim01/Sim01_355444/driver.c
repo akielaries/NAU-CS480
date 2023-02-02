@@ -17,6 +17,9 @@ void usage()
     printf("     required config file name\n");
 }
 
+/**
+ * clears the cmd line struct
+ */
 void clearCmdLineStruct(CmdLineData *clDataPtr)
 {
     clDataPtr->programRunFlag = false;
@@ -26,11 +29,14 @@ void clearCmdLineStruct(CmdLineData *clDataPtr)
     clDataPtr->fileName[0] = NULL_CHAR;
 }
 
-bool processCmdLine(int numArgs, char **strVector, CmdLineData *clDataPtr)
+/**
+ * process cmd line args
+ */
+_Bool processCmdLine(int numArgs, char **strVector, CmdLineData *clDataPtr)
 {
     clearCmdLineStruct(clDataPtr);
-    bool atLeastOneSwitchFlag = false;
-    bool correctConfigFileFlag = false;
+    _Bool atLeastOneSwitchFlag = false;
+    _Bool correctConfigFileFlag = false;
     int argIndex = 1;
     int fileStrLen;
     int fileStrSubLoc;
@@ -89,7 +95,7 @@ int main(int argc, char **argv)
     OpCodeType *metaDataPtr = NULL;
     char errorMessage[MAX_STR_LEN];
     CmdLineData cmdLineData;
-    bool configUploadSuccess = false;
+    _Bool configUploadSuccess = false;
 
     printf("Simulator Program\n");
     printf("=================\n\n");

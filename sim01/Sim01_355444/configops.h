@@ -7,7 +7,6 @@
 #include "strutils.h"
 #include "types.h"
 #include <stdio.h>
-#include <stdbool.h>
 
 /**
  * Display configuration data
@@ -22,13 +21,13 @@ ConfigDataType *clearConfigData(ConfigDataType *configData);
 /**
  * Retrieves configuration data described in a .cnf file
  */
-bool getConfigData(const char *fileName, ConfigDataType **configData,
-                   char *endStateMsg);
+_Bool getConfigData(const char *fileName, ConfigDataType **configData,
+                    char *endStateMsg);
 
 /**
  * Retrieves the CPU Schedular Code
  */
-ConfigDataCodes getCPUSchedCode(char *lowerCaseCodeStr);
+ConfigDataCodes getCPUSchedCode(const char *lowerCaseCodeStr);
 
 /**
  * Convert config code to string
@@ -53,6 +52,6 @@ ConfigCodeMessages getDataLineCode(const char *dataBuffer);
 /**
  * find a specific line number for a config based param
  */
-bool valueInRange(int lineCode, int intVal, double doubleVal,
-                  const char *lowerCaseStringVal);
+_Bool valueInRange(int lineCode, int intVal, double doubleVal,
+                   const char *lowerCaseStringVal);
 #endif

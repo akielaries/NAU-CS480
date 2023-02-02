@@ -11,12 +11,12 @@ void displayConfigData(ConfigDataType *configData)
     char displayString[STD_STR_LEN];
     printf("Config File Display\n");
     printf("-------------------\n");
-    printf("Version                     : %3.2f\n", configData->version);
-    printf("Program File Name           : %s\n", configData->metaDataFileName);
+    printf("Version                : %3.2f\n", configData->version);
+    printf("Program File Name      : %s\n", configData->metaDataFileName);
     configCodeToString(configData->cpuSchedCode, displayString);
-    printf("CPU Schedule Selection      : %s\n", displayString);
-    printf("Quantum Time                : %d\n", configData->quantumCycles);
-    printf("Memory Display              : ");
+    printf("CPU Schedule Selection : %s\n", displayString);
+    printf("Quantum Time           : %d\n", configData->quantumCycles);
+    printf("Memory Display         : ");
     if (configData->memDisplay)
     {
         printf("On\n");
@@ -25,12 +25,12 @@ void displayConfigData(ConfigDataType *configData)
     {
         printf("Off\n");
     }
-    printf("Memory Available            : %d\n", configData->memAvailable);
-    printf("Process Cycle Rate          : %d\n", configData->procCycleRate);
-    printf("I/O Cycle Rate              : %d\n", configData->ioCycleRate);
+    printf("Memory Available       : %d\n", configData->memAvailable);
+    printf("Process Cycle Rate     : %d\n", configData->procCycleRate);
+    printf("I/O Cycle Rate         : %d\n", configData->ioCycleRate);
     configCodeToString(configData->logToCode, displayString);
-    printf("Log to Selection            : %s\n", displayString);
-    printf("Log File Name               : %s\n\n", configData->logToFileName);
+    printf("Log to Selection       : %s\n", displayString);
+    printf("Log File Name          : %s\n\n", configData->logToFileName);
 }
 
 /**
@@ -49,19 +49,18 @@ ConfigDataType *clearConfigData(ConfigDataType *configData)
 /**
  * Retrieves configuration data described in a .cnf file
  */
-bool getConfigData(const char *fileName, ConfigDataType **configData,
-                   char *endStateMsg)
+_Bool getConfigData(const char *fileName, ConfigDataType **configData,
+                    char *endStateMsg)
 {
     const int NUM_DATA_LINES = 10;
     const char READ_ONLY_FLAG[] = "r";
     ConfigDataType *tempData;
-
     FILE *fileAccessPtr;
     char dataBuffer[MAX_STR_LEN], lowerCaseDataBuffer[MAX_STR_LEN];
     int intData, dataLineCode, lineCtr = 0;
     double doubleData;
-
     char testMsg[] = "Configuration file upload successful";
+
     copyString(endStateMsg, testMsg);
     *configData = NULL;
 
@@ -72,10 +71,8 @@ bool getConfigData(const char *fileName, ConfigDataType **configData,
         copyString(endStateMsg, testMsg);
         return false;
     }
-    bool conf_check =
-        getStringToDelimiter(fileAccessPtr, COLON, dataBuffer);
 
-    if (conf_check == true ||
+    if (!getStringToDelimiter(fileAccessPtr, COLON, dataBuffer) ||
         compareString(dataBuffer, "Start Simulator Configuration File") !=
             STR_EQ)
     {
@@ -220,7 +217,7 @@ void configCodeToString(int code, char *outString)
 /**
  * Retrieves the CPU Schedular Code
  */
-ConfigDataCodes getCPUSchedCode(char *lowerCaseCodeStr)
+ConfigDataCodes getCPUSchedCode(const char *lowerCaseCodeStr)
 {
     ConfigDataCodes returnVal = CPU_SCHED_FCFS_N_CODE;
 
@@ -248,10 +245,11 @@ ConfigDataCodes getCPUSchedCode(char *lowerCaseCodeStr)
  */
 void stripTrailingSpaces(char *str)
 {
-    int index = getStringLength(str);
-    while (index--, str[index] == SPACE)
+    int index = getStringLength(str) - 1;
+    while (str[index] == SPACE)
     {
         str[index] = NULL_CHAR;
+        index--;
     }
 }
 
@@ -305,9 +303,8 @@ ConfigCodeMessages getDataLineCode(const char *dataBuffer)
 
 ConfigDataCodes getLogToCode(const char *lowerCaseLogToStr)
 {
-    ConfigDataCodes returnVal;
+    ConfigDataCodes returnVal = LOGTO_MONITOR_CODE;
 
-    returnVal = LOGTO_MONITOR_CODE;
     if (compareString(lowerCaseLogToStr, "both") == STR_EQ)
     {
         returnVal = LOGTO_BOTH_CODE;
@@ -319,10 +316,13 @@ ConfigDataCodes getLogToCode(const char *lowerCaseLogToStr)
     return returnVal;
 }
 
-bool valueInRange(int lineCode, int intVal, double doubleVal,
-                  const char *lowerCaseStringVal)
+/**
+ * function to parse config data values in a given interval
+ */
+_Bool valueInRange(int lineCode, int intVal, double doubleVal,
+                   const char *lowerCaseStringVal)
 {
-    bool result = true;
+    _Bool result = true;
     switch (lineCode)
     {
     case CFG_VERSION_CODE:

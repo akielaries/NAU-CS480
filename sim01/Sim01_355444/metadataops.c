@@ -38,7 +38,7 @@ OpCodeType *clearMetaDataList(OpCodeType *localPtr)
 
 int getNumberArg(int *number, const char *inputStr, int index)
 {
-    bool foundDigit = false;
+    _Bool foundDigit = false;
     *number = 0;
     int multiplier = 1;
 
@@ -81,7 +81,7 @@ int getStringArg(char *strArg, const char *inputStr, int index)
     return index;
 }
 
-bool verifyFirstStringArg(const char *strArg)
+_Bool verifyFirstStringArg(const char *strArg)
 {
     return (compareString(strArg, "access") == STR_EQ ||
             compareString(strArg, "allocate") == STR_EQ ||
@@ -100,7 +100,7 @@ bool verifyFirstStringArg(const char *strArg)
             compareString(strArg, "video signal") == STR_EQ);
 }
 
-bool isDigit(char testChar)
+_Bool isDigit(char testChar)
 {
     return (testChar >= '0' && testChar <= '9');
 }
@@ -117,7 +117,7 @@ int getCommand(char *cmd, const char *inputStr, int index)
     return index;
 }
 
-bool verifyValidCommand(char *testCmd)
+_Bool verifyValidCommand(char *testCmd)
 {
     return (compareString(testCmd, "sys") == STR_EQ ||
             compareString(testCmd, "app") == STR_EQ ||
@@ -170,13 +170,13 @@ void displayMetaData(const OpCodeType *localPtr)
     }
 }
 
-bool getMetaData(const char *fileName, OpCodeType **opCodeDataHead,
-                 char *endStateMsg)
+_Bool getMetaData(const char *fileName, OpCodeType **opCodeDataHead,
+                  char *endStateMsg)
 {
     const char READ_ONLY_FLAG[] = "r";
     int accessResult, startCount = 0, endCount = 0;
     char dataBuffer[MAX_STR_LEN];
-    bool returnState = true;
+    _Bool returnState = true;
     OpCodeType *newNodePtr;
     OpCodeType *localHeadPtr = NULL;
     FILE *fileAccessPtr;
@@ -240,7 +240,6 @@ bool getMetaData(const char *fileName, OpCodeType **opCodeDataHead,
         else
         {
             fclose(fileAccessPtr);
-
             *opCodeDataHead = clearMetaDataList(localHeadPtr);
 
             free(newNodePtr);
@@ -277,8 +276,8 @@ OpCodeMessages getOpCommand(FILE *filePtr, OpCodeType *inData)
     char cmdBuffer[MAX_CMD_LENGTH];
     char argStrBuffer[MAX_ARG_STR_LENGTH];
     int runningStringIndex = 0;
-    bool arg2FailureFlag = false;
-    bool arg3FailureFlag = false;
+    _Bool arg2FailureFlag = false;
+    _Bool arg3FailureFlag = false;
 
     if (getStringToDelimiter(filePtr, NEWLINE_CHAR, strBuffer))
     {

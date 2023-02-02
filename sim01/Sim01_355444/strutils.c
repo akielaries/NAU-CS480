@@ -78,9 +78,10 @@ int findSubString(const char *testStr, const char *searchSubStr)
     return SUBSTRING_NOT_FOUND;
 }
 
-bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
-                          bool clearLeadingSpace, bool stopAtNonPrintable,
-                          char delimiter, char *capturedString)
+_Bool getStringConstrained(FILE *inStream, _Bool clearLeadingNonPrintable,
+                           _Bool clearLeadingSpace,
+                           _Bool stopAtNonPrintable, char delimiter,
+                           char *capturedString)
 {
     int intChar = EOF, index = 0;
     capturedString[index] = NULL_CHAR;
@@ -119,14 +120,14 @@ int getStringLength(const char *testStr)
     return index;
 }
 
-bool getStringToDelimiter(FILE *inStream, char delimiter,
-                          char *capturedString)
+_Bool getStringToDelimiter(FILE *inStream, char delimiter,
+                           char *capturedString)
 {
     return getStringConstrained(inStream, true, true, true, delimiter,
                                 capturedString);
 }
 
-bool getStringToLineEnd(FILE *inStream, char *capturedString)
+_Bool getStringToLineEnd(FILE *inStream, char *capturedString)
 {
     return getStringConstrained(inStream, true, true, true,
                                 NON_PRINTABLE_CHAR, capturedString);

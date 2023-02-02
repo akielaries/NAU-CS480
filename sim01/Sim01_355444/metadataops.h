@@ -22,8 +22,8 @@ void displayMetaData(const OpCodeType *local_ptr);
 /**
  * retrieve metadata information
  */
-bool getMetaData(const char *fileName, OpCodeType **opCodeDataHead,
-                 char *endStateMsg);
+_Bool getMetaData(const char *fileName, OpCodeType **opCodeDataHead,
+                  char *endStateMsg);
 /**
  * clear metadata ll
  */
@@ -37,11 +37,11 @@ int getStringArg(char *strArg, const char *inputStr, int index);
 
 int getNumberArg(int *number, const char *inputStr, int index);
 
-bool verifyFirstStringArg(const char *strArg);
+_Bool verifyFirstStringArg(const char *strArg);
 
-bool verifyValidCommand(char *testCmd);
+_Bool verifyValidCommand(char *testCmd);
 
-bool isDigit(char testChar);
+_Bool isDigit(char testChar);
 
 int updateStartCount(int count, const char *opString);
 
