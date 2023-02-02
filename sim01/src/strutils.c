@@ -5,7 +5,7 @@
 
 
 // re-implementation of strcmp()
-int str_cmp(char *str_a, char *str_b)
+int compareString(char *str_a, char *str_b)
 {
     int diff, index;
 
@@ -21,47 +21,60 @@ int str_cmp(char *str_a, char *str_b)
             return diff;
         }
     }
-    return (str_len(str_a) - str_len(str_a));
+    return (getStringLength(str_a) - getStringLength(str_a));
+}
+
+// re-implementation of strcat()
+void concatenateString(char *dest_str, char *src_str) 
+{
+    int sourceIndex = 0;
+    int destIndex = getStringLength(dest_str);
+
+    while ((src_str[sourceIndex] != NULL_CHAR && 
+                (destIndex < MAX_STR_LEN))) 
+    {
+        dest_str[destIndex] = src_str[sourceIndex];
+        destIndex++; 
+        sourceIndex++; 
+        dest_str[destIndex] = '\0';
+    }
 }
 
 /**
  * re-implementatoin of strstr, finds a string within string 
  * returning the index
  */
-int str_substr(char *test_str,char *search_substr)
+int findSubString(char *str_a,char *search_substr)
 {
-  int iVar1;
-  //int testStrLen;
-  int internalIndex;
-  int searchIndex;
-  int masterIndex;
-  
-  iVar1 = str_len(test_str);
-  masterIndex = 0;
-  do 
-  { 
-      if (iVar1 <= masterIndex) {
-          return SUBSTRING_NOT_FOUND;
-    }
-    internalIndex = masterIndex;
-    searchIndex = 0;
-    while ((internalIndex <= iVar1 && 
-                (test_str[internalIndex] == 
-                 search_substr[searchIndex]))) {
-      internalIndex++;
-      searchIndex++;
-      if (search_substr[searchIndex] == NULL_CHAR) {
-        return masterIndex;
-      }
-    }
-    masterIndex = masterIndex + 1;
-  } while( true );
+    int str_a_len = getStringLength(str_a);
+    int masterIndex = 0;
+    int internalIndex;
+    int searchIndex;
+        
 
+    while (masterIndex < str_a_len)
+    {    
+        internalIndex = masterIndex;
+        searchIndex = 0;
 
+        while ((internalIndex <= str_a_len && 
+                (str_a[internalIndex] == search_substr[searchIndex])))
+        {
+            internalIndex++;
+            searchIndex++;
+
+            if (search_substr[searchIndex] == NULL_CHAR) 
+            { 
+                return masterIndex;
+            }
+        }
+        masterIndex++;
+    }
+    return SUBSTRING_NOT_FOUND;
 }
 
 // function for reading from input file stream give contraints
-_Bool str_cstr(FILE *inStream,
+_Bool getStringConstrained(FILE *inStream,
                     _Bool clearLeadingNonPrintable,
                     _Bool clearLeadingSpace,
                     _Bool stopAtNonPrintable,
@@ -109,7 +122,7 @@ _Bool str_cstr(FILE *inStream,
 }
 
 // re-implementation of strcpy()
-void str_cpy(char *dest_str, char *src_str) 
+void copyString(char *dest_str, char *src_str) 
 {
     int index = 0;
 
@@ -125,7 +138,7 @@ void str_cpy(char *dest_str, char *src_str)
 }
 
 // re-implementation of strlen()
-int str_len(char *str_a) 
+int getStringLength(char *str_a) 
 {
     int index;
 
@@ -137,4 +150,69 @@ int str_len(char *str_a)
     }
     return index;
 }
+
+_Bool getStringToDelimter(FILE *in_stream,
+                    char delimiter,
+                    char *captured_str)
+{
+    _Bool delim = getStringConstrained(in_stream,
+                    true,
+                    true,
+                    true,
+                    delimiter,
+                    captured_str);
+    return delim;
+}
+
+_Bool getStringToLineEnd(FILE *in_stream,char *captured_str)
+{
+    _Bool line_end = getStringConstrained(in_stream,
+                                        true,
+                                        true,
+                                        true,
+                                        NON_PRINTABLE_CHAR,
+                                        captured_str);
+    return line_end;
+}
+
+void getSubString(char *dest_str,
+                char *src_str,
+                int startIndex,
+                int endIndex)
+{
+    char *temp_str;
+    int sourceIndex = startIndex;
+
+    int src_str_len = getStringLength(src_str);
+    int destIndex = 0;
+  
+    if (((startIndex < 0) || 
+        (endIndex < startIndex)) || 
+        (src_str_len <= endIndex)) 
+    {
+        *dest_str = NULL_CHAR;
+    }
+  
+    else 
+    {
+        temp_str = (char *)malloc((long)(src_str_len + 1));
+        copyString(temp_str, src_str);
+        sourceIndex = startIndex;
+        while (sourceIndex <= endIndex) 
+        {
+            dest_str[destIndex] = temp_str[sourceIndex];
+            destIndex = destIndex + 1;
+            sourceIndex = sourceIndex + 1;
+            dest_str[destIndex] = NULL_CHAR;
+        }
+        free(temp_str);
+    }
+}
+
+
+
+
+
+
+
 

@@ -1,3 +1,6 @@
+/**
+ * String utilities file. 
+ */
 #ifndef STRINGUTILS_H
 #define STRINGUTILS_H
 
@@ -14,22 +17,23 @@
 /**
  * re-implementation of strcmp()
  */
-int str_cmp( char *str_a, char *str_b );
+int compareString(char *str_a, char *str_b);
 
-//void str_concat
+/**
+ * re-implementation of strcat() 
+ */
+void concatenateString(char *dest_str, char *src_str);
 
 /**
  * re-implementatoin of strstr, finds a string within
  * a string
  */
-int str_substr(char *test_str,char *search_substr);
-
-//void str_subget
+int findSubString(char *str_a, char *search_substr);
 
 /**
  * function for reading from input file stream give contraints
  */
-_Bool str_cstr(FILE *inStream,
+_Bool getStringConstrained(FILE *inStream,
                     _Bool clearLeadingNonPrintable,
                     _Bool clearLeadingSpace,
                     _Bool stopAtNonPrintable,
@@ -39,16 +43,23 @@ _Bool str_cstr(FILE *inStream,
 /**
  * re-implementation of strcpy()
  */
-void str_cpy(char *dest_str, char *src_str);
+void copyString(char *dest_str, char *src_str);
 
 /**
  * re-implementation of strlen()
  */
-int str_len( char *str_a );
+int getStringLength(char *str_a);
 
-//_Bool str_delimeter
+_Bool getStringToDelimiter(FILE *in_stream, 
+                    char delimiter,
+                    char *captured_str);
 
-//_Bool str_endline
+bool getStringToLineEnd(FILE *in_stream, char *captured_str);
+
+void getSubString(char *dest_str,
+                char *src_str,
+                int startIndex,
+                int endIndex);
 
 //void str_set
 

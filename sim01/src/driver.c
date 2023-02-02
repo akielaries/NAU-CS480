@@ -35,11 +35,13 @@ int main( int argc, char **argv )
             usage();
     //    }
 
+
+    printf("\n\n<------ TESTS ------>\n\n");
     char leftStr[] = "STRING TEST";
     char rightStr[] = "g f g";
 
     // Using strcmp()
-    int res = str_cmp(leftStr, rightStr);
+    int res = compareString(leftStr, rightStr);
 
     if (res==0)
         printf("Strings are equal");
@@ -47,11 +49,30 @@ int main( int argc, char **argv )
         printf("Strings are unequal");
 
     printf("\nValue returned by strcmp() is:  %d\n", res);
-    int lenres = str_len(leftStr);
+    int lenres = getStringLength(leftStr);
     printf("\nLength returned by strlen() is: %d\n", lenres);
 
+    char testStr[] = "Hello, World!";
+    char searchSubStr[] = "World";
 
-    printf("Simulator Program End.\n\n");
+    int result = findSubString( testStr, searchSubStr );
+
+    if (result != SUBSTRING_NOT_FOUND) {
+        printf("The substring '%s' was found in '%s' starting at index %d\n",
+                searchSubStr, testStr, result);
+    } else {
+        printf("The substring '%s' was not found in '%s'\n", 
+                searchSubStr, testStr);
+    }
+
+    char destStr[MAX_STR_LEN] = "Hello";
+    char sourceStr[] = ", World!";
+
+    concatenateString(destStr, sourceStr);
+    printf("The concatenated string is: %s\n", destStr);
+
+
+    printf("\n\nSimulator Program End.\n\n");
     return 0;
 }
 
