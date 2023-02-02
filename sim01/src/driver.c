@@ -18,27 +18,97 @@ void usage() {
     printf("     required config file name\n");
 }
 
-int main( int argc, char **argv ) 
+void clearCmdLineStruct(CmdLineData *clDataPtr)
+{
+    clDataPtr->programRunFlag = false;
+    clDataPtr->configDisplayFlag = false;
+    clDataPtr->mdDisplayFlag = false;
+    clDataPtr->runSimFlag = false;
+    clDataPtr->fileName[ 0 ] = NULL_CHAR;
+}
+
+_Bool processCmdLine(int numArgs,
+                    char **strVector,
+                    CmdLineData *clDataPtr)
+{
+    clearCmdLineStruct(clDataPtr);
+    _Bool atLeastOneSwitchFlag = false;
+    _Bool correctConfigFileFlag = false;
+    int argIndex = 1;
+    int fileStrLen;
+    int fileStrSubLoc;
+
+    if (numArgs >= MIN_NUM_ARGS)
     {
+        while (argIndex < numArgs)
+        {
+            // DISPLAY CONFIG
+            if(compareString(strVector[argIndex], "-dc") == STR_EQ)
+            {
+                clDataPtr->configDisplayFlag = true;
+                atLeastOneSwitchFlag = true;
+            }
+            // DISPLAY METADATA
+            else if(compareString(strVector[argIndex], "-dm") == STR_EQ )
+            {
+                clDataPtr->mdDisplayFlag = true;
+                atLeastOneSwitchFlag = true;
+            }
+            // RUN SIMULATOR
+            else if(compareString( strVector[ argIndex ], "-rs") == STR_EQ )
+            {
+                clDataPtr->runSimFlag = true;
+                atLeastOneSwitchFlag = true;
+            }
+            // READING .cnf FILE
+            else
+            {
+                fileStrLen = getStringLength(strVector[numArgs - 1]);
+                fileStrSubLoc = findSubString(strVector[numArgs - 1], ".cnf");
+
+                if(fileStrSubLoc != SUBSTRING_NOT_FOUND &&
+                    fileStrSubLoc == fileStrLen - LAST_FOUR_LETTERS)
+                {
+                    copyString(clDataPtr->fileName, strVector[numArgs - 1]);
+                    correctConfigFileFlag = true;
+                }
+                else
+                {
+                    clearCmdLineStruct(clDataPtr);
+                }
+            }
+            argIndex++;
+        }
+    }
+    return atLeastOneSwitchFlag && correctConfigFileFlag;
+}
+
+int main( int argc, char **argv ) 
+{
+    ConfigDataType *configDataPtr = NULL;
+    OpCodeType *metaDataPtr = NULL;
+    char errorMessage[MAX_STR_LEN];
+    CmdLineData cmdLineData;
+    _Bool configUploadSuccess = false;
+
     printf("Simulator Program\n");
     printf("=================\n\n");
 
-    //_Bool input_arg;
+    _Bool _Var1 = processCmdLine(argc,argv,&cmdLineData);
+    if (_Var1 == false) 
+    {
+        usage();
+    }
+    else 
+    {
+        printf("<------------->");
+    }
 
-    //CmdLineData cmdLineData;
-    //ConfigDataType *config_dataptr = 0x0;
 
-    // process the cmd line argument
-    //input_arg = processCmdLine(argc,argv,&cmdLineData);
-
-    //if ( input_arg == false ) 
-    //    {
-    //        // show usage of the simulator
-            usage();
-    //    }
-
+    printf("\n\nSimulator Program End.\n\n");
 
     printf("\n\n<------ TESTS ------>\n\n");
+    /**
     char leftStr[] = "STRING TEST";
     char rightStr[] = "g f g";
 
@@ -73,9 +143,6 @@ int main( int argc, char **argv )
     concatenateString(destStr, sourceStr);
     printf("The concatenated string is: %s\n", destStr);
 
-
-    printf("\n\n<------ TESTS ------>\n\n");
-
     char source[] = "Hello World";
    char dest[100];
 
@@ -108,9 +175,9 @@ int main( int argc, char **argv )
     setStrToLowerCase(dest_str_1, source_str_1);
 
     printf("The lowercase string is: %s\n", dest_str_1);
+    */
+    printf("\n\n<------ TESTS ------>\n\n");
 
-
-    printf("\n\nSimulator Program End.\n\n");
     return 0;
 }
 

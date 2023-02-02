@@ -211,7 +211,6 @@ void getSubString(char *dest_str,
 
 void setStrToLowerCase(char *dest_str, char *src_str) 
 {
-    char lc;
     char *temp_str;
     int index = 0;
   

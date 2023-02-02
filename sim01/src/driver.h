@@ -3,25 +3,36 @@
 
 #include <stdio.h>
 #include "types.h"
-//#include "configops.h"
+#include "configops.h"
 #include "strutils.h"
 //#include "metadataops.h"
 #include "sim.h"
 
 
-typedef enum { MIN_NUM_ARGS = 3, LAST_FOUR_LETTERS = 4 } PRGRM_CONSTANTS;
-
+typedef enum {MIN_NUM_ARGS = 3, LAST_FOUR_LETTERS = 4} PRGRM_CONSTANTS;
 /**
  * Command Line Data struct
  */
-struct CmdLineData
-    {
-        _Bool programRunFlag;
-        _Bool configDisplayFlag;
-        _Bool mdDisplayFlag;
-        _Bool runSimFlag;
-        char fileName[STD_STR_LEN];
-    } CmdLineData;
+typedef struct CmdLineDataStruct
+{
+    _Bool programRunFlag;
+    _Bool configDisplayFlag;
+    _Bool mdDisplayFlag;
+    _Bool runSimFlag;
+    char fileName[STD_STR_LEN];
+} CmdLineData;
+
+/**
+ * clear CMD Line struct
+ */
+void clearCmdLineStruct(CmdLineData *clDataPtr);
+
+/**
+ * Parse CMD Line
+ */
+_Bool processCmdLine(int numArgs, 
+                    char **strVector, 
+                    CmdLineData *clDataPtr);
 
 /**
  * Command Line Usage

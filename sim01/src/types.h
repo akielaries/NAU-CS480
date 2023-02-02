@@ -12,20 +12,20 @@
 /**
  * Config Data struct 
  */
-typedef struct ConfigDataType 
+typedef struct ConfigDataTypeStruct 
 {
-        double version;
-        // TODO : change this paramater to string length?
-        char metaDataFileName[LARGE_STR_LENGTH];
-        char logToFileName[LARGE_STR_LENGTH];
-        // TODO : define specific bit types? int8_t?
-        int cpuSchedCode;
-        int quantumCycles;
-        _Bool memDisplay;
-        int memAvailable;
-        int procCycleRate;
-        int ioCycleRate;
-        int logToCode;
+    double version;
+    // TODO : change this paramater to string length?
+    char metaDataFileName[LARGE_STR_LENGTH];
+    char logToFileName[LARGE_STR_LENGTH];
+    // TODO : define specific bit types? int8_t?
+    int cpuSchedCode;
+    int quantumCycles;
+    _Bool memDisplay;
+    int memAvailable;
+    int procCycleRate;
+    int ioCycleRate;
+    int logToCode;
 } ConfigDataType;
 
 /**
@@ -33,24 +33,34 @@ typedef struct ConfigDataType
  */
 typedef enum 
 { 
-        CMD_STR_LEN = 5,
-        IO_ARG_STR_LEN = 5,
-        STR_ARG_LEN = 15 
+    CMD_STR_LEN = 5,
+    IO_ARG_STR_LEN = 5,
+    STR_ARG_LEN = 15 
 } OpCodeArrayCapacity;
+
+typedef enum 
+{ 
+    NEW_STATE,
+    READY_STATE,
+    RUNNING_STATE,
+    BLOCKED_STATE,
+    EXIT_STATE 
+} ProcessState;
+
 
 /**
  * Operation Code struct
  */
-typedef struct OpCodeType
+typedef struct OpCodeTypeStruct
 {
-        int pid;
-        char command[CMD_STR_LEN];
-        char inOutArg[IO_ARG_STR_LEN];
-        char strArg1[STR_ARG_LEN];
-        int intArg2;
-        int intArg3;
-        double opEndTime;
-        struct OpCodeType * nextNode;
+    int pid;
+    char command[CMD_STR_LEN];
+    char inOutArg[IO_ARG_STR_LEN];
+    char strArg1[STR_ARG_LEN];
+    int intArg2;
+    int intArg3;
+    double opEndTime;
+    struct OpCodeType * nextNode;
 } OpCodeType;
 
 #endif
