@@ -4,6 +4,8 @@
  */
 #include "driver.h"
 #include <string.h>
+#include <assert.h>
+
 /**
  * Function to return the usage of sim01
  */
@@ -70,6 +72,42 @@ int main( int argc, char **argv )
 
     concatenateString(destStr, sourceStr);
     printf("The concatenated string is: %s\n", destStr);
+
+
+    printf("\n\n<------ TESTS ------>\n\n");
+
+    char source[] = "Hello World";
+   char dest[100];
+
+   // Test 1: Test when startIndex is 0 and endIndex is 5
+   getSubString(dest, source, 0, 5);
+   //assert(strcmp(dest, "Hello") == 0);
+   printf("%s   %s\n", dest, source);
+
+   char sourceStr_A[] = "This is a sample string";
+   char destStr_A[100];
+   int startIndex = 4;
+   int endIndex = 10;
+
+   // Call the getSubString function
+   getSubString(destStr_A, sourceStr_A, startIndex, endIndex);
+
+   // Print the result
+   printf("Substring of '%s' from index %d to %d: '%s'\n",
+          sourceStr_A, startIndex, endIndex, destStr_A);
+
+    char testChar = 'K';
+
+    int lowerCaseChar = toLowerCase(testChar);
+
+    printf("The lower case character is: %c\n", lowerCaseChar);
+
+    char source_str_1[100] = "HELLO, World!, AGAIN";
+    char dest_str_1[100];
+
+    setStrToLowerCase(dest_str_1, source_str_1);
+
+    printf("The lowercase string is: %s\n", dest_str_1);
 
 
     printf("\n\nSimulator Program End.\n\n");

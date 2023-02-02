@@ -61,9 +61,9 @@ void getSubString(char *dest_str,
                 int startIndex,
                 int endIndex);
 
-//void str_set
+void setStrToLowerCase(char *dest_str, char *src_str);
 
-
+char toLowerCase(char str_a);
 
 #endif
 

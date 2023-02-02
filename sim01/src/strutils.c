@@ -182,7 +182,6 @@ void getSubString(char *dest_str,
 {
     char *temp_str;
     int sourceIndex = startIndex;
-
     int src_str_len = getStringLength(src_str);
     int destIndex = 0;
   
@@ -201,8 +200,8 @@ void getSubString(char *dest_str,
         while (sourceIndex <= endIndex) 
         {
             dest_str[destIndex] = temp_str[sourceIndex];
-            destIndex = destIndex + 1;
-            sourceIndex = sourceIndex + 1;
+            destIndex++;
+            sourceIndex++;
             dest_str[destIndex] = NULL_CHAR;
         }
         free(temp_str);
@@ -210,8 +209,33 @@ void getSubString(char *dest_str,
 }
 
 
+void setStrToLowerCase(char *dest_str, char *src_str) 
+{
+    char lc;
+    char *temp_str;
+    int index = 0;
+  
+    int src_str_len = getStringLength(src_str);
+    temp_str = (char *)malloc((long)(src_str_len + 1));
 
+    while ((src_str[index] != NULL_CHAR && (index < MAX_STR_LEN))) 
+    {  
+        temp_str[index] = toLowerCase(src_str[index]);
+        index++;
+        temp_str[index] = NULL_CHAR;
+    }
+    copyString(dest_str, temp_str);
+    free(temp_str);
+}
 
+char toLowerCase(char str_a)
+{
+    if (str_a >= 'A' && str_a <= 'Z' )
+    {
+        return str_a - 'A' + 'a';
+    }
+    return str_a;
+}
 
 
 
