@@ -14,15 +14,6 @@ typedef enum OpCodeArrayCapacity
     STR_ARG_LEN = 15
 } OpCodeArrayCapacity;
 
-typedef enum ProcessState
-{
-    NEW_STATE,
-    READY_STATE,
-    RUNNING_STATE,
-    BLOCKED_STATE,
-    EXIT_STATE
-} ProcessState;
-
 typedef struct ConfigDataTypeStruct
 {
     char metaDataFileName[STD_STR_LEN];
@@ -78,7 +69,7 @@ typedef enum OpCodeMessages
 
 } OpCodeMessages;
 
-typedef enum
+typedef enum ConfigCodeMessages
 {
     CFG_FILE_ACCESS_ERR,
     CFG_CORRUPT_DATA_DESCRIPTOR_ERR,

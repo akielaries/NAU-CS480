@@ -2,7 +2,7 @@
 #include "StringUtils.h"
 
 // local constants
-    // none
+// none
 
 // function implementations
 /*
@@ -24,8 +24,8 @@ int compareString(const char *leftStr, const char *rightStr)
     int diff, index = 0;
 
     // Loop to end of shortest string
-    while (leftStr[index] != NULL_CHAR && rightStr[index] !=  NULL_CHAR 
-                                                         && index < MAX_STR_LEN) 
+    while (leftStr[index] != NULL_CHAR && rightStr[index] != NULL_CHAR &&
+           index < MAX_STR_LEN)
     {
         // get difference in character
         diff = leftStr[index] - rightStr[index];
@@ -43,8 +43,8 @@ int compareString(const char *leftStr, const char *rightStr)
     // end loop
 
     // return difference in length if any
-        // function: getStringLength
-    return getStringLength(leftStr) - getStringLength(rightStr); 
+    // function: getStringLength
+    return getStringLength(leftStr) - getStringLength(rightStr);
 }
 
 /*
@@ -61,33 +61,33 @@ void concatenateString(char *destStr, const char *sourceStr)
 {
     // Initialize variables
 
-        // set dest index
-            // function: getStringLength
-        int destIndex = getStringLength(destStr);
+    // set dest index
+    // function: getStringLength
+    int destIndex = getStringLength(destStr);
 
-        // get source string length
-            // function: getStringLength
-        int sourceStrLen = getStringLength(sourceStr);
+    // get source string length
+    // function: getStringLength
+    int sourceStrLen = getStringLength(sourceStr);
 
-        // create tem string pointer
-        char *tempStr;
+    // create tem string pointer
+    char *tempStr;
 
-        // create other variables
-        int sourceIndex = 0;
+    // create other variables
+    int sourceIndex = 0;
 
     // copy source string in case of aliasing
-        // function: malloc copyString
+    // function: malloc copyString
     tempStr = (char *)malloc(sizeof(sourceStrLen + 1));
     copyString(tempStr, sourceStr);
 
     // loop to end of source string
-    while(tempStr[sourceIndex] != NULL_CHAR && destIndex < MAX_STR_LEN)
+    while (tempStr[sourceIndex] != NULL_CHAR && destIndex < MAX_STR_LEN)
     {
         // assign characters to end of dest string
         destStr[destIndex] = tempStr[sourceIndex];
 
         // update indicies
-        destIndex++; 
+        destIndex++;
         sourceIndex++;
 
         // set temporary end of dest string
@@ -96,7 +96,7 @@ void concatenateString(char *destStr, const char *sourceStr)
     // end loop
 
     // release memory
-        // function: free
+    // function: free
     free(tempStr);
 }
 
@@ -120,7 +120,7 @@ void copyString(char *destStr, const char *sourceStr)
     {
         // loop to end of source str
         while (sourceStr[index] != NULL_CHAR && index < MAX_STR_LEN)
-        { 
+        {
             // assign characters to end of destination string
             destStr[index] = sourceStr[index];
 
@@ -140,24 +140,22 @@ Process: linear search for given substring within another string
 Function Input/Parameters: source test string (char *),
                            source search string (char *)
 Function Output/Parameters: none
-Function OUtput/Returned: index of found substring, or SUBSTRING_NOT_FOUND if
-                          substring not found
-Device Input/device: none
-Device Output/device: none
+Function OUtput/Returned: index of found substring, or SUBSTRING_NOT_FOUND
+if substring not found Device Input/device: none Device Output/device: none
 Dependencies: getStringLength
 */
 int findSubstring(const char *testStr, const char *searchSubStr)
 {
     // Initialize variables
-        // initialize test string length
-            // function: getStringLength
-        int testStrLen = getStringLength(testStr);
+    // initialize test string length
+    // function: getStringLength
+    int testStrLen = getStringLength(testStr);
 
-        // initialize a master index - location of substring stat point
-        int masterIndex = 0;
+    // initialize a master index - location of substring stat point
+    int masterIndex = 0;
 
-        // initialize other variables
-        int searchIndex, internalIndex;
+    // initialize other variables
+    int searchIndex, internalIndex;
 
     // loop across test string
     while (masterIndex < testStrLen)
@@ -170,8 +168,8 @@ int findSubstring(const char *testStr, const char *searchSubStr)
 
         // loop to end of test string
         // while test string/sub string characters are the same
-        while (internalIndex <= testStrLen 
-                         && testStr[internalIndex] == searchSubStr[searchIndex])
+        while (internalIndex <= testStrLen &&
+               testStr[internalIndex] == searchSubStr[searchIndex])
         {
             // increment test string, substring indices
             internalIndex++;
@@ -210,31 +208,27 @@ Device Input/device: none
 Device Output/device: none
 Dependencies: fgetc
 */
-bool getStringConstrained(FILE *inStream, 
-                          bool clearLeadingNonPrintable,
-                          bool clearLeadingSpace, 
-                          bool stopAtNonPrintable, 
-                          char delimiter, 
-                          char *capturedString)
+bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
+                          bool clearLeadingSpace, bool stopAtNonPrintable,
+                          char delimiter, char *capturedString)
 {
     // Initialize variables
     int intChar = EOF, index = 0;
 
-        // initialize output string
-        capturedString[index] = NULL_CHAR;
+    // initialize output string
+    capturedString[index] = NULL_CHAR;
 
     // capture first value in stream
-        // function: fgetc
+    // function: fgetc
     intChar = fgetc(inStream);
-    
-    // loop to clear non printable of space characters, if indicated
-    while ((intChar != EOF) 
-            && ((clearLeadingNonPrintable && intChar < (int)SPACE) 
-                               || (clearLeadingSpace && intChar == (int)SPACE)))
-    {
 
+    // loop to clear non printable of space characters, if indicated
+    while ((intChar != EOF) &&
+           ((clearLeadingNonPrintable && intChar < (int)SPACE) ||
+            (clearLeadingSpace && intChar == (int)SPACE)))
+    {
         // get next char
-            // function: fgetc
+        // function: fgetc
         intChar = fgetc(inStream);
     }
     // end loop
@@ -247,20 +241,20 @@ bool getStringConstrained(FILE *inStream,
     }
 
     // loop to capture input
-    while(
-         // continues in not at end of file and max string length not reached
-         (intChar != EOF && index < MAX_STR_LEN -1)
+    while (
+        // continues in not at end of file and max string length not
+        // reached
+        (intChar != EOF && index < MAX_STR_LEN - 1)
 
-         // AND
-         // continued if not printable flag set and characters are printable
-         // OR contines if not printable flag not set
-         && ((stopAtNonPrintable && intChar >= (int)SPACE)
-                                                       || (!stopAtNonPrintable))
+        // AND
+        // continued if not printable flag set and characters are printable
+        // OR contines if not printable flag not set
+        && ((stopAtNonPrintable && intChar >= (int)SPACE) ||
+            (!stopAtNonPrintable))
 
-         // AND
-         // contines of specifeied delimiter is not found
-         && (intChar != (char)delimiter)
-        )
+        // AND
+        // contines of specifeied delimiter is not found
+        && (intChar != (char)delimiter))
     {
         // place character in array element
         capturedString[index] = (char)intChar;
@@ -272,7 +266,7 @@ bool getStringConstrained(FILE *inStream,
         capturedString[index] = NULL_CHAR;
 
         // get next character as integer
-            // function: fgetc
+        // function: fgetc
         intChar = fgetc(inStream);
     }
     // end loop
@@ -283,13 +277,10 @@ bool getStringConstrained(FILE *inStream,
 
 /*
 Name: getStringLength
-Process: finds the length of a string by counting characters up to the NULL_CHAR
-Function Input/Parameters: c-style string (char *)
-Function Output/Parameters: none
-Function OUtput/Returned: length of string
-Device Input/device: none
-Device Output/device: none
-Dependencies: none
+Process: finds the length of a string by counting characters up to the
+NULL_CHAR Function Input/Parameters: c-style string (char *) Function
+Output/Parameters: none Function OUtput/Returned: length of string Device
+Input/device: none Device Output/device: none Dependencies: none
 */
 int getStringLength(const char *testStr)
 {
@@ -321,80 +312,78 @@ Device Input/device: none
 Device Output/device: none
 Dependencies: getStringConstrained
 */
-bool getStringToDelimiter(FILE *inStream, char delimiter, char *capturedString)
+bool getStringToDelimiter(FILE *inStream, char delimiter,
+                          char *capturedString)
 {
     // call engine function with delimiter
-        // function: getStringConstrained
+    // function: getStringConstrained
     return getStringConstrained(
-        inStream,       // file stream pointer
-        true,           // clears leading no printable character
-        true,           // bool clearLeadingSpace
-        true,           // stops at non printable
-        delimiter,      // stops at delimiter
-        capturedString  // returns string
-                               );
+        inStream,      // file stream pointer
+        true,          // clears leading no printable character
+        true,          // bool clearLeadingSpace
+        true,          // stops at non printable
+        delimiter,     // stops at delimiter
+        capturedString // returns string
+    );
 }
 
 /*
 Name: getStringToLineEnd
-Process: captures a string form the input stream to the 
+Process: captures a string form the input stream to the
          end of the line
 Function Input/Parameters: input stream (FILE *)
 Function Output/Parameters: string returned (char *)
 Function OUtput/Returned: success of operation (bool)
-Device Input/device: none 
+Device Input/device: none
 Device Output/device: none
 Dependencies: getStringConstrained
 */
 bool getStringToLineEnd(FILE *inStream, char *capturedString)
 {
     // call engine function with delimiter
-        // function: getStringConstrained
+    // function: getStringConstrained
     return getStringConstrained(
-        inStream,       // file stream pointer
-        true,           // clears leading no printable character
-        true,           // bool clearLeadingSpace
-        true,           // stops at non printable
-        NON_PRINTABLE_CHAR,      // stops at delimiter
-        capturedString  // returns string
-                               );
+        inStream,           // file stream pointer
+        true,               // clears leading no printable character
+        true,               // bool clearLeadingSpace
+        true,               // stops at non printable
+        NON_PRINTABLE_CHAR, // stops at delimiter
+        capturedString      // returns string
+    );
 }
 
 /*
 Name: getSubstring
-Process: captures sub string within larger string between two inclusive indeces.
-         returns empty string if either index is out of range,
-         assumes enough memory in dest string
-Function Input/Parameters: source string(char *),
-                           start and end indices (int)
-Function Output/Parameters: dest string (char *)
-Function OUtput/Returned: none
-Device Input/device: none
-Device Output/device: none
-Dependencies: getStringLength, malloc, copyString, free
+Process: captures sub string within larger string between two inclusive
+indeces. returns empty string if either index is out of range, assumes
+enough memory in dest string Function Input/Parameters: source string(char
+*), start and end indices (int) Function Output/Parameters: dest string
+(char *) Function OUtput/Returned: none Device Input/device: none Device
+Output/device: none Dependencies: getStringLength, malloc, copyString, free
 */
 void getSubString(char *destStr, const char *sourceStr, int startIndex,
-                                                                   int endIndex)
+                  int endIndex)
 {
     // Initialize variables
-        // set length of source string
-            // function: getStringLength
-        int sourceStrLen = getStringLength(sourceStr);
+    // set length of source string
+    // function: getStringLength
+    int sourceStrLen = getStringLength(sourceStr);
 
-        // initialize the destination index to zero
-        int destIndex = 0;
+    // initialize the destination index to zero
+    int destIndex = 0;
 
-        // initialize  source index to start index (parameter)
-        int sourceIndex = startIndex;
+    // initialize  source index to start index (parameter)
+    int sourceIndex = startIndex;
 
-        // create pointer for temp string
-        char *tempStr;
+    // create pointer for temp string
+    char *tempStr;
 
     // check for indices within limits
-    if (startIndex >= 0 && startIndex <= endIndex && endIndex < sourceIndex)
+    if (startIndex >= 0 && startIndex <= endIndex &&
+        endIndex < sourceIndex)
     {
         // create temp sting
-            // function: malloc, copyString
+        // function: malloc, copyString
         tempStr = (char *)malloc(sourceStrLen + 1);
         copyString(tempStr, sourceStr);
 
@@ -414,7 +403,7 @@ void getSubString(char *destStr, const char *sourceStr, int startIndex,
         // end loop
 
         // return memory for temp string
-            // function: free
+        // function: free
         free(tempStr);
     }
 }
@@ -432,18 +421,18 @@ Dependencies: toLowerCase
 void setStrToLowerCase(char *destStr, const char *sourceStr)
 {
     // Initialize function
-        // get source string length
-            // function: getStringLength
-        int sourceStrLen = getStringLength(sourceStr);
+    // get source string length
+    // function: getStringLength
+    int sourceStrLen = getStringLength(sourceStr);
 
-        // create temp string pointer
-        char *tempStr;
+    // create temp string pointer
+    char *tempStr;
 
-        // create other variables
-        int index = 0;
+    // create other variables
+    int index = 0;
 
     // copy source string in case of aliasing
-        // function: malloc, copyString
+    // function: malloc, copyString
     tempStr = (char *)malloc(sizeof(sourceStrLen + 1));
 
     // loop across src string
@@ -458,12 +447,11 @@ void setStrToLowerCase(char *destStr, const char *sourceStr)
 
         // set temp end of destination string
         destStr[index] = NULL_CHAR;
-
     }
     // end loop
 
     // release memory used
-        // function: free
+    // function: free
     free(tempStr);
 }
 
@@ -490,6 +478,6 @@ char toLowerCase(char testChar)
     }
 
     // otherwise, assume no upper case letter,
-    // retrun character unchanged 
-    return testChar; 
+    // retrun character unchanged
+    return testChar;
 }

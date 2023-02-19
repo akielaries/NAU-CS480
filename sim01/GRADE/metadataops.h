@@ -2,14 +2,15 @@
 #define METADATAOPS_H
 
 // Header files
-#include <stdlib.h>
-#include <stdbool.h>
-#include "datatypes.h"
 #include "StandardConstants.h"
 #include "StringUtils.h"
+#include "datatypes.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
 // constants
-typedef enum {
+typedef enum
+{
     BAD_ARG_VAL = -1,
     NO_ACCESS_ERR,
     MD_FILE_ACCESS_ERR,
@@ -32,8 +33,8 @@ int getCommand(char *cmd, const char *inputStr, int index);
 
 void displayMetaData(const OpCodeType *localPtr);
 
-bool getMetaData(const char *filename, 
-        OpCodeType **opCodeDataHead, char *endStateMsg);
+bool getMetaData(const char *filename, OpCodeType **opCodeDataHead,
+                 char *endStateMsg);
 
 OpCodeMessages getOpCommand(FILE *filePtr, OpCodeType *inData);
 

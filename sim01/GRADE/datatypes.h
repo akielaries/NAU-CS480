@@ -2,14 +2,15 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
 
-#include <stdio.h>
-#include <stdbool.h>
 #include "StandardConstants.h"
+#include <stdbool.h>
+#include <stdio.h>
 
 // GLOBAL CONSTANTS... may be used in other variables
 typedef struct ConfigDataTypeStruct
-{   int quantumCycles ;
-    int cpuSchedCode; 
+{
+    int quantumCycles;
+    int cpuSchedCode;
     int logToCode;
     bool memDisplay;
     int memAvailable;

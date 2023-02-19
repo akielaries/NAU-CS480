@@ -52,4 +52,4 @@
 // constant for substring search failure
 #define SUBSTRING_NOT_FOUND -1
 
-#endif  // STANDARD_CONSTANTS
+#endif // STANDARD_CONSTANTS

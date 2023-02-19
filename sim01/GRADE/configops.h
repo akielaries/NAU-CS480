@@ -2,13 +2,14 @@
 #define CONFIGOPS_H
 
 // Header Files
-#include <stdlib.h>
-#include <stdbool.h>
-#include "datatypes.h"
 #include "StringUtils.h"
+#include "datatypes.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
 // GLOBAL CONSTANTS
-typedef enum {
+typedef enum
+{
     CFG_FILE_ACCESS_ERR,
     CFG_CORRUPT_DESCRIPTOR_ERR,
     CFG_DATA_OUT_OF_RANGE_ERR,
@@ -25,7 +26,8 @@ typedef enum {
     CFG_LOG_FILE_NAME_CODE
 } ConfigCodeMessages;
 
-typedef enum {
+typedef enum
+{
     CPU_SCHED_SJF_N_CODE,
     CPU_SCHED_SRTF_P_CODE,
     CPU_SCHED_FCFC_P_CODE,
@@ -56,7 +58,7 @@ ConfigDataCodes getLogToCode(const char *lowerCaseLogToStr);
 
 void stripTrailingSpaces(char *str);
 
-bool valueInRange(int lineCode, int intVal, double doubleVal, 
-                                            const char *lowerCaseStringVal);
+bool valueInRange(int lineCode, int intVal, double doubleVal,
+                  const char *lowerCaseStringVal);
 
 #endif // CONFIG_OPS_H

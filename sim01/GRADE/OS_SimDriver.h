@@ -3,14 +3,14 @@
 #define OS_SIMDRIVER_H
 
 // Header files
-#include <stdio.h>
-#include <stdbool.h>
 #include "StandardConstants.h"
-#include "datatypes.h"
 #include "StringUtils.h"
 #include "configops.h"
+#include "datatypes.h"
 #include "metadataops.h"
 #include "simulator.h"
+#include <stdbool.h>
+#include <stdio.h>
 
 // Program constants
 typedef enum

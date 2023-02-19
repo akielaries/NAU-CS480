@@ -3,7 +3,7 @@
 
 #include "configops.h"
 #include "metadataops.h"
-#include "sim.h"
+#include "simulator.h"
 #include "strutils.h"
 #include "types.h"
 #include <stdio.h>
@@ -13,6 +13,7 @@ typedef enum
     MIN_NUM_ARGS = 3,
     LAST_FOUR_LETTERS = 4
 } PRGRM_CONSTANTS;
+
 /**
  * Command Line Data struct
  */

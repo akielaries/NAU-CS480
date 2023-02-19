@@ -4,7 +4,7 @@
 /*
 Name: runSim
 Process: primary simulation driver
-Function Input/Parameters: config data (configDataType *), 
+Function Input/Parameters: config data (configDataType *),
                            metadata (OpCodeType *)
 Function Output/Parameters: none
 Function OUtput/Returned: none

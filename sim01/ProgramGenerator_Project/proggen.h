@@ -13,15 +13,17 @@ const int OPTIME_MIN = 5;
 const char NULL_CHAR = '\0';
 const char ENDLINE_CHAR[] = "\n";
 
-typedef enum { False, True } Boolean;
+typedef enum
+{
+    False,
+    True
+} Boolean;
 
 // function prototypes
 
-void getNewOp( int percent, char opStr[], Boolean firstOpFlag );
-Boolean getOdds( int oddPercent );
-int getRandBetween( int low, int high );
-int intToString( int value, char valStr[], int index );
+void getNewOp(int percent, char opStr[], Boolean firstOpFlag);
+Boolean getOdds(int oddPercent);
+int getRandBetween(int low, int high);
+int intToString(int value, char valStr[], int index);
 
 #endif // PROGGEN_H
-
-

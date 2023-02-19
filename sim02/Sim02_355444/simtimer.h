@@ -24,10 +24,11 @@
 // Header files
 // ///////////////////////////////////////////////////////////////
 
-#include "mainprog.h"
-#include <math.h>
-#include <string.h>
 #include <sys/time.h>
+//#include <string.h>
+#include "constants.h"
+#include "types.h"
+#include <math.h>
 
 // Global Constants
 // //////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ enum TIMER_CTRL_CODES
 };
 
 extern const char RADIX_POINT;
-extern const char SPACE;
+// extern const char SPACE;
 
 // Function Prototyp
 // /////////////////////////////////////////////////////////
