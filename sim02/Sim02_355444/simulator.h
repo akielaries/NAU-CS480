@@ -23,22 +23,14 @@ typedef struct PCBdata
     int pid;
     int state;
     int time_left;
-    double start_time;
+    double time_start;
     _Bool quant_time_out;
 
-    OpCodeType *cmd_start;
-    OpCodeType *cmd_next;
-
+    struct OpCodeTypeStruct *OCcurr;
+    struct OpCodeTypeStruct *OClist;
     struct PCBdata *next_ptr;
     // TODO: struct manipulation?
 } PCBdata;
-
-// PCB node
-typedef struct PCBnode
-{
-    PCBdata *PCB;
-    struct PCBnode *next_ptr;
-} PCBnode;
 
 // logging
 typedef struct LOGnode
@@ -46,6 +38,7 @@ typedef struct LOGnode
     char LOG_out[128];
     struct LOGnode *next_ptr;
 } LOGnode;
+
 
 /* add lines to log buffer */
 LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input);
@@ -57,7 +50,7 @@ LOGnode *LOGnode_del(LOGnode *local_ptr);
 PCBdata *PCBnode_add(PCBdata *local_ptr, PCBdata *new_ptr);
 
 /* clears PCB data */
-PCBdata *PCBnode_del(PCBdata *local_ptr, PCBdata *new_ptr);
+PCBdata *PCBnode_del(PCBdata *local_ptr);
 
 /* display PCB data */
 void PCB_display(PCBdata *head_ptr);

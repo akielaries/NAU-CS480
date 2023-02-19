@@ -9,7 +9,7 @@ simulator: driver.o simulator.o strutils.o metadataops.o configops.o simtimer.o
 					configops.o \
 					strutils.o \
 					metadataops.o \
-                    simtimer.o \
+					simtimer.o \
 					-o sim02 -lpthread
 
 driver.o: driver.c
