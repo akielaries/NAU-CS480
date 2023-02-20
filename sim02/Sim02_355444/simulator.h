@@ -68,7 +68,7 @@ void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr);
 void PCBdisplay(PCBdata *head_ptr);
 
 /* runs the simulator log report */
-void LOGdump(int log_counter, ConfigDataType *config_dataptr, char *txt_input);
+void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input);
 
 /* function that creates a seperate thread of IN/OUT operations */
 void *IOthread(void *time_elapsed);

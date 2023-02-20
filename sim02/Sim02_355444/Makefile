@@ -35,5 +35,5 @@ run:
 
 
 clean:
-	rm -f *.o sim02
+	rm -f *.lgf *.o sim02
 

@@ -279,13 +279,13 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
   int loopCount;
   int minId;
   int minTime;
-  PcbNodeType_0 *wkgPtr;
-  PcbNodeType_0 *wkgPtra;
-  PcbNodeType_0 *wkgPtrb;
-  PcbNodeType_0 *wkgPtrc;
-  PcbNodeType_0 *wkgPtrd;
+  PCBdata *wkgPtr;
+  PCBdata *wkgPtra;
+  PCBdata *wkgPtrb;
+  PCBdata *wkgPtrc;
+  PCBdata *wkgPtrd;
 
-  // TODO FIXME LEAVE OF HERE
+  // TODO FIXME LEAVE OFF HERE
   minTime = 0;
   minId = -1;
   loopCount = 0;
