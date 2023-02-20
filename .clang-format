@@ -1,9 +1,10 @@
 ---
 Language: Cpp
-IndentWidth: 4
+IndentWidth: 2
+TabWidth: 2
 UseTab: Never
 IndentCaseLabels: false
-ColumnLimit: 75
+ColumnLimit: 80
 BreakBeforeBraces: Allman
 
 AlignConsecutiveAssignments: false
@@ -19,8 +20,6 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 
 IndentFunctionDeclarationAfterType: true
-IndentWidth: 4
-TabWidth: 4
 
 SpacesInParentheses: false
 SpacesInContainerLiterals: true

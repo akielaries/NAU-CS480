@@ -15,9 +15,8 @@ void copyString(char *destStr, const char *sourceStr);
 int findSubString(const char *testStr, const char *searchSubStr);
 
 _Bool getStringConstrained(FILE *inStream, _Bool clearLeadingNonPrintable,
-                           _Bool clearLeadingSpace,
-                           _Bool stopAtNonPrintable, char delimiter,
-                           char *capturedString);
+                           _Bool clearLeadingSpace, _Bool stopAtNonPrintable,
+                           char delimiter, char *capturedString);
 
 int getStringLength(const char *testStr);
 

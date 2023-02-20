@@ -15,8 +15,8 @@ const char ENDLINE_CHAR[] = "\n";
 
 typedef enum
 {
-    False,
-    True
+  False,
+  True
 } Boolean;
 
 // function prototypes

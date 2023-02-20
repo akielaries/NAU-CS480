@@ -15,7 +15,7 @@ Dependencies: tbd
 
 void runSim(ConfigDataType *configPtr, OpCodeType *metaDAtaMstrPtr)
 {
-    // stub function
+  // stub function
 
-    // void funciton, no return
+  // void funciton, no return
 }

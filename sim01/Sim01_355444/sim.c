@@ -5,5 +5,5 @@
 
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 {
-    printf("runSim called here.\n");
+  printf("runSim called here.\n");
 }

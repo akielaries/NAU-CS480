@@ -22,8 +22,7 @@ bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
 
 int getStringLength(const char *testStr);
 
-bool getStringToDelimiter(FILE *inStream, char delimiter,
-                          char *capturedString);
+bool getStringToDelimiter(FILE *inStream, char delimiter, char *capturedString);
 
 bool getStringToLineEnd(FILE *inStream, char *capturedString);
 

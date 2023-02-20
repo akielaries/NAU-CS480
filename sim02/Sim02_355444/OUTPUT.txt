@@ -262,3 +262,135 @@ No memory configured
 
 Simulator Program End.
 
+
+Simulator Program
+=================
+
+Simulator Run
+-------------
+
+  0.000000, OS: Simulator start
+  0.000007, OS: Process 0 set to READY state from NEW state
+  0.000009, OS: Process 1 set to READY state from NEW state
+  0.000011, OS: Process 2 set to READY state from NEW state
+  0.000013, OS: Process 3 set to READY state from NEW state
+  0.000015, OS: Process 4 set to READY state from NEW state
+--------------------------------------------------
+After memory initialization
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  0.000020, OS: Process 0 selected with 1830 ms remaining
+  0.000022, OS: Process 0 set from READY to RUNNING
+
+  0.000029, Process: 0, hard drive input operation start
+  0.360043, Process: 0, hard drive input operation end
+  0.360047, Process: 0, cpu process operation start
+  0.450054, Process: 0, cpu process operation end
+  0.450058, Process: 0, cpu process operation start
+  0.540065, Process: 0, cpu process operation end
+  0.540069, Process: 0, cpu process operation start
+  0.630084, Process: 0, cpu process operation end
+  0.630088, Process: 0, monitor output operation start
+  1.830105, Process: 0, monitor output operation end
+
+  1.830108, OS: Process 0 ended
+--------------------------------------------------
+After clear process 0 success
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  1.830112, OS: Process 0 set to EXIT
+  1.830115, OS: Process 1 selected with 1360 ms remaining
+  1.830116, OS: Process 1 set from READY to RUNNING
+
+  1.830118, Process: 1, mem allocate request (2048, 4096)
+--------------------------------------------------
+After allocate success
+0 [ Used, P#: 1, 2048-6143 ] 4095
+4096 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  1.830121, Process: 1, successful mem allocate request
+  1.830122, Process: 1, hard drive input operation start
+  2.430130, Process: 1, hard drive input operation end
+  2.430134, Process: 1, mem allocate request (2760, 2890)
+--------------------------------------------------
+After allocate overlap failure
+0 [ Used, P#: 1, 2048-6143 ] 4095
+4096 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  2.430138, Process: 1, failed mem allocate request
+
+  2.430140, OS: Segmentation fault, Process 1 ended
+--------------------------------------------------
+After clear process 1 success
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  2.430143, OS: Process 1 set to EXIT
+  2.430145, OS: Process 2 selected with 3350 ms remaining
+  2.430146, OS: Process 2 set from READY to RUNNING
+
+  2.430148, Process: 2, video signal input operation start
+  3.830171, Process: 2, video signal input operation end
+  3.830197, Process: 2, cpu process operation start
+  3.930223, Process: 2, cpu process operation end
+  3.930228, Process: 2, monitor output operation start
+  5.330240, Process: 2, monitor output operation end
+  5.330244, Process: 2, hard drive input operation start
+  5.690259, Process: 2, hard drive input operation end
+  5.690263, Process: 2, cpu process operation start
+  5.780270, Process: 2, cpu process operation end
+
+  5.780274, OS: Process 2 ended
+--------------------------------------------------
+After clear process 2 success
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+  5.780277, OS: Process 2 set to EXIT
+  5.780279, OS: Process 3 selected with 4770 ms remaining
+  5.780281, OS: Process 3 set from READY to RUNNING
+
+  5.780283, Process: 3, sound signal input operation start
+  6.480289, Process: 3, sound signal input operation end
+  6.480293, Process: 3, monitor output operation start
+  8.480301, Process: 3, monitor output operation end
+  8.480305, Process: 3, keyboard input operation start
+  9.480313, Process: 3, keyboard input operation end
+  9.480317, Process: 3, cpu process operation start
+  9.570324, Process: 3, cpu process operation end
+  9.570328, Process: 3, video signal output operation start
+ 10.550336, Process: 3, video signal output operation end
+
+ 10.550341, OS: Process 3 ended
+--------------------------------------------------
+After clear process 3 success
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+ 10.550382, OS: Process 3 set to EXIT
+ 10.550385, OS: Process 4 selected with 3640 ms remaining
+ 10.550386, OS: Process 4 set from READY to RUNNING
+
+ 10.550388, Process: 4, keyboard input operation start
+ 12.350396, Process: 4, keyboard input operation end
+ 12.350401, Process: 4, sound signal output operation start
+ 13.150409, Process: 4, sound signal output operation end
+ 13.150414, Process: 4, serial output operation start
+ 13.790422, Process: 4, serial output operation end
+ 13.790427, Process: 4, cpu process operation start
+ 13.890436, Process: 4, cpu process operation end
+ 13.890440, Process: 4, hard drive input operation start
+ 14.190448, Process: 4, hard drive input operation end
+
+ 14.190452, OS: Process 4 ended
+--------------------------------------------------
+After clear process 4 success
+0 [ Open, P#: x, 0-0 ] 11999
+--------------------------------------------------
+ 14.190457, OS: Process 4 set to EXIT
+ 14.190458, OS: System stop
+--------------------------------------------------
+After clear all process success
+No memory configured
+--------------------------------------------------
+ 14.190460, OS: Simulation end
+
+Simulator Program End.
+

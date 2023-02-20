@@ -34,9 +34,9 @@
 
 enum TIMER_CTRL_CODES
 {
-    ZERO_TIMER,
-    LAP_TIMER,
-    STOP_TIMER
+  ZERO_TIMER,
+  LAP_TIMER,
+  STOP_TIMER
 };
 
 extern const char RADIX_POINT;

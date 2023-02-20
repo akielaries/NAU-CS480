@@ -15,19 +15,19 @@
 // Program constants
 typedef enum
 {
-    MIN_NUM_ARGS = 3,
-    LAST_FOUR_LETTERS = 4
+  MIN_NUM_ARGS = 3,
+  LAST_FOUR_LETTERS = 4
 } PRGRM_CONSTANTS;
 
 // Commandline struct for storing command line switch settings
 typedef struct CmdLineDataStruct
 {
-    bool programRunFlag;
-    bool configDisplayFlag;
-    bool mdDisplayFlag;
-    bool runSimflag;
+  bool programRunFlag;
+  bool configDisplayFlag;
+  bool mdDisplayFlag;
+  bool runSimflag;
 
-    char fileName[STD_STR_LEN];
+  char fileName[STD_STR_LEN];
 } CmdLineData;
 
 // Function prototypes
