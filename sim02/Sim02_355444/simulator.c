@@ -16,7 +16,7 @@ LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
   else
   {
     new_ptr = (LOGnode *)malloc(sizeof(LOGnode) + 1);
-    copyString(new_ptr->LOG_out, txt_input);
+ F   copyString(new_ptr->LOG_out, txt_input);
     new_ptr->next_ptr = 0;
     return new_ptr;
   }
@@ -38,7 +38,7 @@ LOGnode *LOGnode_del(LOGnode *local_ptr)
   return 0;
 }
 
-void LOGdump(int log_counter, ConfigDataType *config_dataptr, char *txt_input)
+void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
 {
   char outputString[MAX_STR_LEN];
   char timeString[MIN_STR_LEN];
@@ -66,7 +66,7 @@ void LOGdump(int log_counter, ConfigDataType *config_dataptr, char *txt_input)
       OS_Toggle_3467 = 1;
   }*/
 
-  if (log_counter)
+  if (trigger)
   {
     accessTimer(LAP_TIMER, timeString);
   }
@@ -89,14 +89,14 @@ void LOGdump(int log_counter, ConfigDataType *config_dataptr, char *txt_input)
     copyString(config->logToFileName, config_dataptr->logToFileName);
 
     accessTimer(LAP_TIMER, timeString);
-    log_counter = 1;
+    trigger = 1;
 
     if (config->logToCode == 6)
     {
       printf("Simulator running with output to file\n");
     }
   }
-  if (log_counter == 1)
+  if (trigger == 1)
   {
     concatenateString(outputString, timeString);
     concatenateString(outputString, ", ");
