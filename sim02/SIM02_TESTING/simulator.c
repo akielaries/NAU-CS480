@@ -4,35 +4,30 @@
 #include "simulator.h"
 
 /* LOG node */
-LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
+LOGnode LOGnode_add(LOGnode local_ptr, char *txt_input)
 {
-  if (local_ptr == NULL)
+  if (local_ptr.next_ptr == NULL)
   {
-    local_ptr = (LOGnode *)malloc(sizeof(LOGnode));
-    copyString(local_ptr->LOG_out, txt_input);
-    local_ptr->next_ptr = NULL;
+    LOGnode new_ptr = {0};
+    copyString(new_ptr.LOG_out, txt_input);
+    local_ptr.next_ptr = &new_ptr;
   }
   else
   {
-    local_ptr->next_ptr = LOGnode_add(local_ptr->next_ptr, txt_input);
+    LOGnode_add(*(local_ptr.next_ptr), txt_input);
   }
   return local_ptr;
 }
 
-LOGnode *LOGnode_del(LOGnode *local_ptr)
+LOGnode LOGnode_del(LOGnode *local_ptr)
 {
-  if (!local_ptr)
-  {
-    return 0;
-  }
-  else
+  if (local_ptr != NULL)
   {
     LOGnode_del(local_ptr->next_ptr);
   }
 
   free(local_ptr);
   // 0LL? long long expected?
-  return 0;
 }
 
 void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
@@ -43,7 +38,7 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   FILE *outFilePtr;
   int status_cmp = 0;
   ConfigDataType *config;
-  LOGnode *local_ptr;
+  LOGnode local_ptr;
   LOGnode *wkg_ptr;
 
   copyString(WRITE_FLAG, "w");
@@ -70,13 +65,29 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     }
   }
 
+  /*
+    if (OS_Toggle_3467 && compareString(outputString, "OS:"))
+    {
+        copyString(outputString, "\n ");
+        OS_Toggle_3467 = 0;
+    }
+    else if (OS_Toggle_3467 || compareString(outputString, "OS:"))
+    {
+        copyString(outputString, " ");
+    }
+    else
+    {
+        copyString(outputString, "\n ");
+        OS_Toggle_3467 = 1;
+    }*/
+
   if (trigger)
   {
     accessTimer(LAP_TIMER, timeString);
   }
   else
   {
-    local_ptr = 0;
+    local_ptr = (LOGnode){0};
     // TODO: CHECK IF MALLOC IS CORRECT
     config = (ConfigDataType *)malloc(sizeof(ConfigDataType));
     // replace with actual function code?
@@ -228,7 +239,7 @@ PCBdata *PCBcreate(ConfigDataType *config_dataptr, OpCodeType *md_head_ptr)
     if (!compareString(md_head_ptr->command, "app") &&
         !compareString(md_head_ptr->strArg1, "start"))
     {
-      new_ptr = (PCBdata *)malloc(sizeof(PCBdata));
+      new_ptr = (PCBdata *)malloc(sizeof(PCBdata) + 1);
       new_ptr->pid = pidSet;
       new_ptr->state = 0;
       new_ptr->time_left = 0;
@@ -471,9 +482,9 @@ void *IOthread(void *time_elapsed)
 
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 {
-  // char timeString[MIN_STR_LEN];
+  char timeString[MIN_STR_LEN];
   char reportString[MAX_STR_LEN];
-  // double sim_time = 0.0;
+  double sim_time = 0.0;
   PCBdata *PCB_ptr;
   PCBdata *PCB_wkg;
   PCBdata *ID_ptr;

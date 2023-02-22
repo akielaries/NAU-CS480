@@ -42,10 +42,10 @@ typedef struct LOGnode
 } LOGnode;
 
 /* add lines to log buffer */
-LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input);
+LOGnode LOGnode_add(LOGnode local_ptr, char *txt_input);
 
 /* delete lines in log buffer */
-LOGnode *LOGnode_del(LOGnode *local_ptr);
+LOGnode LOGnode_del(LOGnode *local_ptr);
 
 /* inserts PCB data into the list */
 PCBdata *PCBnode_add(PCBdata *local_ptr, PCBdata *new_ptr);
