@@ -1,9 +1,9 @@
 // Program Information ////////////////////////////////////////////////////////
 /**
  * @file SimpleTimer.c
- * 
+ *
  * @brief Implementation file for using a timer with micro-second precision
- * 
+ *
  * @author Michael Leverington
  *
  * @details Implements member methods for timing
@@ -11,9 +11,9 @@
  * @version 3.00 (02 February 2017) Update to simulator timer
             2.00 (13 January 2017) Update to C language
  *          1.00 (11 September 2015)
- *          
+ *
  * @Note Requires SimpleTimer.h.
- * 
+ *
  */
 
 // Precompiler directives /////////////////////////////////////////////////////
@@ -29,203 +29,196 @@
 
 const char RADIX_POINT = '.';
 
-void runTimer( int milliSeconds )
-   {
-    struct timeval startTime, endTime;
-    int startSec, startUSec, endSec, endUSec;
-    int uSecDiff, mSecDiff, secDiff, timeDiff;
+void runTimer(int milliSeconds)
+{
+  struct timeval startTime, endTime;
+  int startSec, startUSec, endSec, endUSec;
+  int uSecDiff, mSecDiff, secDiff, timeDiff;
 
-    gettimeofday( &startTime, NULL );
- 
-    startSec = startTime.tv_sec;
-    startUSec = startTime.tv_usec;
+  gettimeofday(&startTime, NULL);
 
-    timeDiff = 0;
+  startSec = startTime.tv_sec;
+  startUSec = startTime.tv_usec;
 
-    while( timeDiff < milliSeconds )
-       {
-        gettimeofday( &endTime, NULL );
+  timeDiff = 0;
 
-        endSec = endTime.tv_sec;
-        endUSec = endTime.tv_usec;
-        uSecDiff = endUSec - startUSec;
+  while (timeDiff < milliSeconds)
+  {
+    gettimeofday(&endTime, NULL);
 
-        if( uSecDiff < 0 )
-           {
-            uSecDiff = uSecDiff + 1000000;
+    endSec = endTime.tv_sec;
+    endUSec = endTime.tv_usec;
+    uSecDiff = endUSec - startUSec;
 
-            endSec = endSec - 1;
-           }
+    if (uSecDiff < 0)
+    {
+      uSecDiff = uSecDiff + 1000000;
 
-        mSecDiff = uSecDiff / 1000;
-        secDiff = ( endSec - startSec ) * 1000;
-        timeDiff = secDiff + mSecDiff;
-       }
-   }
+      endSec = endSec - 1;
+    }
 
-double accessTimer( int controlCode, char *timeStr )
-   {
-    static Boolean running = False;
-    static int startSec = 0, endSec = 0, startUSec = 0, endUSec = 0;
-    static int lapSec = 0, lapUSec = 0;
-    struct timeval startData, lapData, endData;
-    double fpTime = 0.0;
+    mSecDiff = uSecDiff / 1000;
+    secDiff = (endSec - startSec) * 1000;
+    timeDiff = secDiff + mSecDiff;
+  }
+}
 
-    switch( controlCode )
-       {
-        case ZERO_TIMER:
-           gettimeofday( &startData, NULL );
-           running = True;
+double accessTimer(int controlCode, char *timeStr)
+{
+  static Boolean running = False;
+  static int startSec = 0, endSec = 0, startUSec = 0, endUSec = 0;
+  static int lapSec = 0, lapUSec = 0;
+  struct timeval startData, lapData, endData;
+  double fpTime = 0.0;
 
-           startSec = startData.tv_sec;
-           startUSec = startData.tv_usec;
+  switch (controlCode)
+  {
+  case ZERO_TIMER:
+    gettimeofday(&startData, NULL);
+    running = True;
 
-           fpTime = 0.000000000;
-           lapSec = 0.000000000;
-           lapUSec = 0.000000000;
+    startSec = startData.tv_sec;
+    startUSec = startData.tv_usec;
 
-           timeToString( lapSec, lapUSec, timeStr ); 
-           break;
-           
-        case LAP_TIMER:
-           if( running == True )
-              {
-               gettimeofday( &lapData, NULL );
+    fpTime = 0.000000000;
+    lapSec = 0.000000000;
+    lapUSec = 0.000000000;
 
-               lapSec = lapData.tv_sec;
-               lapUSec = lapData.tv_usec;
+    timeToString(lapSec, lapUSec, timeStr);
+    break;
 
-               fpTime = processTime( startSec, lapSec, 
-                                                 startUSec, lapUSec, timeStr );
-              }
+  case LAP_TIMER:
+    if (running == True)
+    {
+      gettimeofday(&lapData, NULL);
 
-           else
-              {
-               fpTime = 0.000000000;
-              }
-           break;
+      lapSec = lapData.tv_sec;
+      lapUSec = lapData.tv_usec;
 
-        case STOP_TIMER:
-           if( running == True )
-              {
-               gettimeofday( &endData, NULL );
-               running = False;
+      fpTime = processTime(startSec, lapSec, startUSec, lapUSec, timeStr);
+    }
 
-               endSec = endData.tv_sec;
-               endUSec = endData.tv_usec;
+    else
+    {
+      fpTime = 0.000000000;
+    }
+    break;
 
-               fpTime = processTime( startSec, endSec, 
-                                                 startUSec, endUSec, timeStr );
-              }
+  case STOP_TIMER:
+    if (running == True)
+    {
+      gettimeofday(&endData, NULL);
+      running = False;
 
-           // assume timer not running
-           else
-              {
-               fpTime = 0.000000000;
-              }
-           break;
-       }
+      endSec = endData.tv_sec;
+      endUSec = endData.tv_usec;
 
-    return fpTime;
-   }
+      fpTime = processTime(startSec, endSec, startUSec, endUSec, timeStr);
+    }
 
-double processTime( double startSec, double endSec, 
-                           double startUSec, double endUSec, char *timeStr )
-   {
-    double secDiff = endSec - startSec;
-    double uSecDiff = endUSec - startUSec;
-    double fpTime;
+    // assume timer not running
+    else
+    {
+      fpTime = 0.000000000;
+    }
+    break;
+  }
 
-    fpTime = (double) secDiff + (double) uSecDiff / 1000000;
+  return fpTime;
+}
 
-    if( uSecDiff < 0 )
-       {
-        uSecDiff = uSecDiff + 1000000;
-        secDiff = secDiff - 1;
-       }
+double processTime(double startSec, double endSec, double startUSec,
+                   double endUSec, char *timeStr)
+{
+  double secDiff = endSec - startSec;
+  double uSecDiff = endUSec - startUSec;
+  double fpTime;
 
-    timeToString( secDiff, uSecDiff, timeStr );
+  fpTime = (double)secDiff + (double)uSecDiff / 1000000;
 
-    return fpTime;
-   }
+  if (uSecDiff < 0)
+  {
+    uSecDiff = uSecDiff + 1000000;
+    secDiff = secDiff - 1;
+  }
 
+  timeToString(secDiff, uSecDiff, timeStr);
+
+  return fpTime;
+}
 
 /* This is a bit of a drawn-out function, but it is written
    to force the time result to always be in the form x.xxxxxxx
    when printed as a string; this will not always be the case
    if the time is presented as a floating point number
 */
-void timeToString( int secTime, int uSecTime, char *timeStr )
-   {
-    int low, high, index = 0;
-    char temp;
+void timeToString(int secTime, int uSecTime, char *timeStr)
+{
+  int low, high, index = 0;
+  char temp;
 
-    while( uSecTime > 0 )
-       {
-        timeStr[ index ] = (char) ( uSecTime % 10 + '0' );
-        uSecTime /= 10;
+  while (uSecTime > 0)
+  {
+    timeStr[index] = (char)(uSecTime % 10 + '0');
+    uSecTime /= 10;
 
-        index++;
-        
-       }
+    index++;
+  }
 
-    while( index < 6 )
-       {
-        timeStr[ index ] = '0';
+  while (index < 6)
+  {
+    timeStr[index] = '0';
 
-        index++;
-       }
+    index++;
+  }
 
-    timeStr[ index ] = RADIX_POINT;
+  timeStr[index] = RADIX_POINT;
+
+  index++;
+
+  if (secTime < 10) // single digit in display
+  {
+    timeStr[index] = (char)(secTime % 10 + '0');
 
     index++;
 
-    if( secTime < 10 ) // single digit in display
-       {
-        timeStr[ index ] = (char) ( secTime % 10 + '0' );
+    timeStr[index] = SPACE;
 
-        index++;
+    index++;
 
-        timeStr[ index ] = SPACE;
+    secTime = 0;
+  }
+  /*
+      if( secTime == 0 )
+         {
+          timeStr[ index ] = '0';
 
-        index++;
+          index++;
+         }
+  */
+  while (secTime > 0)
+  {
+    timeStr[index] = (char)(secTime % 10 + '0');
 
-        secTime = 0;
-       }
-/*
-    if( secTime == 0 )
-       {
-        timeStr[ index ] = '0';
-    
-        index++;
-       }
-*/
-    while( secTime > 0 )
-       {
-        timeStr[ index ] = (char) ( secTime % 10 + '0' );
+    secTime /= 10;
 
-        secTime /= 10;
+    index++;
+  }
 
-        index++;
-       }
+  timeStr[index] = NULL_CHAR;
 
-    timeStr[ index ] = NULL_CHAR;
+  low = 0;
+  high = index - 1;
 
-    low = 0; high = index - 1;
+  while (low < high)
+  {
+    temp = timeStr[low];
+    timeStr[low] = timeStr[high];
+    timeStr[high] = temp;
 
-    while( low < high )
-       {
-        temp = timeStr[ low ];
-        timeStr[ low ] = timeStr[ high ];
-        timeStr[ high ] = temp;
-
-        low++; high--;
-       }
-   }
+    low++;
+    high--;
+  }
+}
 
 #endif // ifndef SIMTIMER_C
-
-
-
-
-

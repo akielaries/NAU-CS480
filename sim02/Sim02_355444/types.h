@@ -7,9 +7,11 @@
 #include "constants.h"
 #include <stdio.h>
 
-typedef enum {True, False} Boolean;
-
-
+typedef enum
+{
+  True,
+  False
+} Boolean;
 
 typedef enum OpCodeArrayCapacity
 {
@@ -54,6 +56,7 @@ typedef struct OpCodeTypeStruct
   char strArg1[STR_ARG_LEN];
   int intArg2;
   int intArg3;
+  int op_time;
   double opEndTime;
   struct OpCodeTypeStruct *next_ptr;
 } OpCodeType;
