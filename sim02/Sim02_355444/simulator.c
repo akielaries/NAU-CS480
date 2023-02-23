@@ -39,9 +39,6 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   char timeString[MIN_STR_LEN];
   char WRITE_FLAG[2];
   FILE *outFilePtr;
-  int status_cmp = 0;
-  LOGnode *local_ptr;
-  LOGnode *wkg_ptr;
 
   copyString(WRITE_FLAG, "w+");
   getSubString(outputString, txt_input, 0, 2);
@@ -54,7 +51,6 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   }
   else
   {
-    local_ptr = 0;
     accessTimer(LAP_TIMER, timeString);
     trigger = 1;
 
@@ -69,11 +65,6 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     concatenateString(outputString, ", ");
     concatenateString(outputString, txt_input);
     if (config_dataptr->logToCode == LOGTO_BOTH_CODE ||
-        config_dataptr->logToCode == LOGTO_FILE_CODE)
-    {
-      local_ptr = LOGnode_add(local_ptr, outputString);
-    }
-    if (config_dataptr->logToCode == LOGTO_BOTH_CODE ||
         config_dataptr->logToCode == LOGTO_MONITOR_CODE)
     {
       puts(outputString);
@@ -81,7 +72,6 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   }
   else
   {
-    wkg_ptr = local_ptr;
     outFilePtr = fopen(config_dataptr->logToFileName, WRITE_FLAG);
     fprintf(outFilePtr,
             "\n==================================================\n");
@@ -100,18 +90,12 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     fprintf(outFilePtr, "================\n");
     fprintf(outFilePtr, "Begin Simulation\n\n");
 
-    while (local_ptr)
-    {
-      fprintf(outFilePtr, "%s\n", local_ptr->LOG_out);
-      local_ptr = local_ptr->next_ptr;
-    }
 
     fprintf(outFilePtr, "\nEnd Simulation - Complete\n");
     fprintf(outFilePtr, "=========================\n\n");
 
     fclose(outFilePtr);
 
-    local_ptr = LOGnode_del(local_ptr);
   }
 }
 
