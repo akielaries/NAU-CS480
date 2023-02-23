@@ -17,6 +17,7 @@ LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
     local_ptr->next_ptr = LOGnode_add(local_ptr->next_ptr, txt_input);
   }
   return local_ptr;
+  // free(local_ptr);
 }
 
 LOGnode *LOGnode_del(LOGnode *local_ptr)
@@ -42,11 +43,12 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   char WRITE_FLAG[2];
   FILE *outFilePtr;
   int status_cmp = 0;
-  ConfigDataType *config;
+  // ConfigDataType *config_temp;
+  // config_temp = (ConfigDataType *)malloc(sizeof(ConfigDataType));
   LOGnode *local_ptr;
   LOGnode *wkg_ptr;
 
-  copyString(WRITE_FLAG, "w");
+  copyString(WRITE_FLAG, "w+");
   getSubString(outputString, txt_input, 0, 2);
 
   _Bool OS_STATUS = true;
@@ -78,71 +80,72 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   {
     local_ptr = 0;
     // TODO: CHECK IF MALLOC IS CORRECT
-    config = (ConfigDataType *)malloc(sizeof(ConfigDataType));
+    // config_dataptr = (ConfigDataType *)malloc(sizeof(ConfigDataType));
     // replace with actual function code?
     // copyConfigData(config, config_dataptr);
-    config->version = config_dataptr->version;
-    copyString(config->metaDataFileName, config_dataptr->metaDataFileName);
-    config->cpuSchedCode = config_dataptr->cpuSchedCode;
-    config->quantumCycles = config_dataptr->quantumCycles;
-    config->memDisplay = config_dataptr->memDisplay;
-    config->memAvailable = config_dataptr->memAvailable;
-    config->procCycleRate = config_dataptr->procCycleRate;
-    config->ioCycleRate = config_dataptr->ioCycleRate;
-    config->logToCode = config_dataptr->logToCode;
-    copyString(config->logToFileName, config_dataptr->logToFileName);
-
+    /*
+    config_dataptr->version = config_dataptr->version;
+    copyString(config_dataptr->metaDataFileName,
+    config_dataptr->metaDataFileName); config_dataptr->cpuSchedCode =
+    config_dataptr->cpuSchedCode; config_dataptr->quantumCycles =
+    config_dataptr->quantumCycles; config_dataptr->memDisplay =
+    config_dataptr->memDisplay; config_dataptr->memAvailable =
+    config_dataptr->memAvailable; config_dataptr->procCycleRate =
+    config_dataptr->procCycleRate; config_dataptr->ioCycleRate =
+    config_dataptr->ioCycleRate; config_dataptr->logToCode =
+    config_dataptr->logToCode; copyString(config_dataptr->logToFileName,
+    config_dataptr->logToFileName);
+    */
     accessTimer(LAP_TIMER, timeString);
     trigger = 1;
 
-    if (config->logToCode == LOGTO_FILE_CODE)
+    if (config_dataptr->logToCode == LOGTO_FILE_CODE)
     {
       printf("Simulator running with output to file\n");
     }
   }
   if (trigger == 1)
   {
-    printf("OUTPUT: %s", outputString);
+    // printf("OUTPUT: %s", outputString);
     concatenateString(outputString, timeString);
     concatenateString(outputString, ", ");
     concatenateString(outputString, txt_input);
-    if (config->logToCode == LOGTO_BOTH_CODE ||
-        config->logToCode == LOGTO_FILE_CODE)
+    if (config_dataptr->logToCode == LOGTO_BOTH_CODE || config_dataptr->logToCode == LOGTO_FILE_CODE)
     {
       local_ptr = LOGnode_add(local_ptr, outputString);
     }
-    if (config->logToCode == 7 || config->logToCode == 5)
+    if (config_dataptr->logToCode == LOGTO_BOTH_CODE || config_dataptr->logToCode == LOGTO_MONITOR_CODE)
     {
-      printf(outputString);
+      puts(outputString);
     }
   }
   else
   {
     wkg_ptr = local_ptr;
-    outFilePtr = fopen(config->logToFileName, WRITE_FLAG);
+    outFilePtr = fopen(config_dataptr->logToFileName, WRITE_FLAG);
     fwrite("\n==================================================\n", 1uLL,
            0x34uLL, outFilePtr);
 
     fwrite("Simulator Log File Header\n\n", 1uLL, 0x1BuLL, outFilePtr);
 
     fprintf(outFilePtr, "File Name                       : %s\n",
-            config->metaDataFileName);
+            config_dataptr->metaDataFileName);
 
     // configCodeToString(config->cpuSchedCode, outputString);
 
     fprintf(outFilePtr, "CPU Scheduling                  : %s\n", outputString);
 
     fprintf(outFilePtr, "Quantum Cycles                  : %d\n",
-            (unsigned int)config->quantumCycles);
+            config_dataptr->quantumCycles);
 
     fprintf(outFilePtr, "Memory Available (KB)           : %d\n",
-            (unsigned int)config->memAvailable);
+            config_dataptr->memAvailable);
 
     fprintf(outFilePtr, "Processor Cycle Rate (ms/cycle) : %d\n",
-            (unsigned int)config->procCycleRate);
+            config_dataptr->procCycleRate);
 
     fprintf(outFilePtr, "I/O Cycle Rate (ms/cycle)       : %d\n\n",
-            (unsigned int)config->ioCycleRate);
+            config_dataptr->ioCycleRate);
 
     fwrite("================\n", 1uLL, 0x11uLL, outFilePtr);
 
@@ -156,7 +159,7 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     fwrite("=========================\n\n", 1, 0x1BuLL, outFilePtr);
     fclose(outFilePtr);
     local_ptr = LOGnode_del(local_ptr);
-    free(config);
+    // free(config_temp);
   }
 }
 
@@ -233,7 +236,7 @@ PCBdata *PCBcreate(ConfigDataType *config_dataptr, OpCodeType *md_head_ptr)
       new_ptr->state = 0;
       new_ptr->time_left = 0;
       new_ptr->time_start = (double)md_head_ptr->intArg2;
-      new_ptr->quant_time = false; // TODO: FALSE?
+      new_ptr->quant_time = 0; // TODO: FALSE?
       new_ptr->OCcurr = 0;
       new_ptr->OClist = md_head_ptr;
       // TODO: new_ptr->memList = 0;
@@ -273,6 +276,7 @@ PCBdata *PCBcreate(ConfigDataType *config_dataptr, OpCodeType *md_head_ptr)
     }
   }
   return head_ptr;
+  free(new_ptr);
 }
 
 int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
@@ -289,7 +293,7 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
     {
       if (local_ptr->state == 1)
       {
-        return (unsigned int)local_ptr->pid;
+        return local_ptr->pid;
       }
       if (local_ptr->state == 3 || !local_ptr->state)
       {
@@ -305,7 +309,7 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
         !local_ptr->quant_time)
     {
       local_ptr->quant_time = 0;
-      return (unsigned int)local_ptr->pid;
+      return local_ptr->pid;
     }
     local_ptr->quant_time = 0;
 
@@ -323,7 +327,7 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
 
       if (local_ptr->state == 1)
       {
-        return (unsigned int)local_ptr->pid;
+        return local_ptr->pid;
       }
       if (local_ptr->state == 3 || !local_ptr->state)
         ++newBlockedCount;
@@ -422,7 +426,7 @@ void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr)
           local_ptr->state = 1;
           sprintf(reportString,
                   "OS: Process %d set to READY state from NEW state",
-                  (unsigned int)local_ptr->pid);
+                  local_ptr->pid);
 
           LOGdump(1, config_dataptr, reportString);
         }
@@ -439,17 +443,15 @@ void PCBdisplay(PCBdata *head_ptr)
   {
     while (wkg_ptr)
     {
-      printf("PCB pid: %d, state: %d, time remaining: %d,\n",
-             (unsigned int)wkg_ptr->pid, (unsigned int)wkg_ptr->state,
-             (unsigned int)wkg_ptr->time_left);
+      printf("PCB pid: %d, state: %d, time remaining: %d,\n", wkg_ptr->pid,
+             wkg_ptr->state, wkg_ptr->time_left);
 
       printf("\tcurrent command: %s, ", wkg_ptr->OClist->command);
 
       printf("\tcurrent op code: %s, \n", wkg_ptr->OClist->strArg1);
 
       printf("\tfirst int arg: %d, second int arg: %d\n\n",
-             (unsigned int)wkg_ptr->OClist->intArg2,
-             (unsigned int)wkg_ptr->OClist->intArg3);
+             wkg_ptr->OClist->intArg2, wkg_ptr->OClist->intArg3);
 
       wkg_ptr = wkg_ptr->next_ptr;
     }
@@ -460,14 +462,77 @@ void PCBdisplay(PCBdata *head_ptr)
   }
 }
 
-/* TODO: this probably IS NOT NEEDED
-void *IOthread(void *time_elapsed)
+void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
 {
-    int cycles = (int *)time_elapsed;
-    runTimer(*cycles);
-    return ((void *) 0);
+  char reportString[128];
+  PCBdata *pcbWkgPtr;
+  int oneCycle, cyclesToRun, quantumCount;
+  _Bool isPreemptive, continueRun;
+
+  oneCycle = CNF_ptr->procCycleRate;
+  quantumCount = CNF_ptr->quantumCycles;
+  cyclesToRun = OPC_ptr->intArg2;
+  continueRun = true;
+  isPreemptive = (OPC_ptr->intArg3 == 9);
+  pcbWkgPtr = PCBnode_pid(PCB_ptr, OPC_ptr->pid);
+
+  while (continueRun)
+  {
+    runTimer(oneCycle);
+    pcbWkgPtr->time_left -= oneCycle;
+    cyclesToRun--;
+    quantumCount--;
+    if (!cyclesToRun || isPreemptive)
+    {
+      continueRun = false;
+    }
+  }
+
+  if (cyclesToRun > 0 && isPreemptive)
+  {
+    pcbWkgPtr->quant_time = 1;
+    sprintf(reportString,
+            "OS: Process %d quantum time out, cpu process operation end",
+            OPC_ptr->pid);
+    LOGdump(1, CNF_ptr, reportString);
+  }
+  else
+  {
+    sprintf(reportString, "Process: %d, %s %s operation end",
+            OPC_ptr->pid, OPC_ptr->command, OPC_ptr->strArg1);
+    LOGdump(1, CNF_ptr, reportString);
+  }
+
+  OPC_ptr->intArg2 = cyclesToRun;
 }
-*/
+
+void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
+{
+  char reportString[MAX_STR_LEN];
+  PCBdata *local_ptr;
+
+  if (OPC_ptr->intArg3 == 8)
+  {
+    runTimer(OPC_ptr->intArg2);
+    sprintf(reportString, "Process: %d, %s %sput operation end",
+            OPC_ptr->pid, OPC_ptr->strArg1,
+            OPC_ptr->inOutArg);
+    //LOGdump(1, OPC_ptr, reportString);
+  }
+  else
+  {
+    sprintf(reportString, "OS: Process %d blocked for %sput operation",
+            OPC_ptr->pid, OPC_ptr->inOutArg);
+    //LOGdump(1, OPC_ptr, reportString);
+
+    local_ptr = PCBnode_pid(PCB_ptr, OPC_ptr->pid);
+    local_ptr->state = 3;
+
+    sprintf(reportString, "OS: Process %d set from RUNNING to BLOCKED",
+            OPC_ptr->pid);
+    //LOGdump(1, OPC_ptr, reportString);
+  }
+}
 
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 {
@@ -551,10 +616,10 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
       {
         PCB_wkg = PCBnode_pid(PCB_ptr, currentPid);
         sprintf(reportString, "OS: Process %d selected with %d ms remaining",
-                (unsigned int)currentPid, (unsigned int)PCB_wkg->time_left);
+                currentPid, PCB_wkg->time_left);
         LOGdump(1, config_dataptr, reportString);
         sprintf(reportString, "OS: Process %d set from READY to RUNNING",
-                (unsigned int)currentPid);
+                currentPid);
         LOGdump(1, config_dataptr, reportString);
       }
       if (compareString(OPC_ptr->command, "app") ||
@@ -570,27 +635,25 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
               if (!compareString(OPC_ptr->command, "cpu"))
               {
                 sprintf(reportString, "Process: %d, %s %s operation start",
-                        (unsigned int)OPC_ptr->pid, OPC_ptr->command,
-                        OPC_ptr->strArg1);
+                        OPC_ptr->pid, OPC_ptr->command, OPC_ptr->strArg1);
                 LOGdump(1, config_dataptr, reportString);
                 // TODO: replace this with the code
-                // from processRunOp function
-                // processRunOp(config_dataptr, OPC_ptr, PCB_ptr);
+                // from PROCthread function
+                PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
                 // ********************* COMMENT BACK
               }
             }
             else
             {
               sprintf(reportString, "Process: %d, %s %sput operation start",
-                      (unsigned int)OPC_ptr->pid, OPC_ptr->strArg1,
-                      OPC_ptr->inOutArg);
+                      OPC_ptr->pid, OPC_ptr->strArg1, OPC_ptr->inOutArg);
 
               LOGdump(1, config_dataptr, reportString);
               OPC_ptr->intArg2 *= config_dataptr->ioCycleRate;
 
               // TODO: replace with a code from function?
               // FIXME: THIS IS WHERE pthread MAGIG SHOULD HAPPEN
-              // processIoOp(OPC_ptr, PCB_ptr);
+              IOthread(OPC_ptr, PCB_ptr);
               // ********************** TODO COMMENT BACK
               PCB_wkg = PCBnode_pid(PCB_ptr, currentPid);
               PCB_wkg->time_left -= OPC_ptr->intArg2;
@@ -600,36 +663,30 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
           else
           {
             sprintf(reportString, "Process: %d, mem %s request (%d, %d)",
-                    (unsigned int)OPC_ptr->pid, OPC_ptr->strArg1,
-                    (unsigned int)OPC_ptr->intArg2,
-                    (unsigned int)OPC_ptr->intArg3);
+                    OPC_ptr->pid, OPC_ptr->strArg1, OPC_ptr->intArg2,
+                    OPC_ptr->intArg3);
             LOGdump(1, config_dataptr, reportString);
 
-            // if (processMemRequest(config_dataptr, OPC_ptr))
-            //{
             sprintf(reportString, "Process: %d, successful mem %s request",
-                    (unsigned int)OPC_ptr->pid, OPC_ptr->strArg1);
+                    OPC_ptr->pid, OPC_ptr->strArg1);
 
             LOGdump(1, config_dataptr, reportString);
             OPC_ptr->intArg2 = 0;
-            //}
-            // else
-            //{
+
             sprintf(reportString, "Process: %d, failed mem %s request",
-                    (unsigned int)OPC_ptr->pid, OPC_ptr->strArg1);
+                    OPC_ptr->pid, OPC_ptr->strArg1);
 
             LOGdump(1, config_dataptr, reportString);
 
             sprintf(reportString, "OS: Segmentation fault, Process % d ended",
-                    (unsigned int)OPC_ptr->pid);
+                    OPC_ptr->pid);
 
             LOGdump(1, config_dataptr, reportString);
             copyString(OPC_ptr->strArg1, "clearOne");
             // processMemRequest(config_dataptr, OPC_ptr);
             PCB_wkg->state = 4;
 
-            sprintf(reportString, "OS: Process %d set to EXIT",
-                    (unsigned int)currentPid);
+            sprintf(reportString, "OS: Process %d set to EXIT", currentPid);
 
             LOGdump(1, config_dataptr, reportString);
             //}
@@ -637,8 +694,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
         }
         else
         {
-          sprintf(reportString, "OS: Process %d ended",
-                  (unsigned int)currentPid);
+          sprintf(reportString, "OS: Process %d ended", currentPid);
           LOGdump(1, config_dataptr, reportString);
           OPC_ptr->pid = currentPid;
           copyString(reportString, "clearOne");
@@ -646,8 +702,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
           // processMemRequest(config_dataptr, OPC_ptr);
           PCB_wkg = PCBnode_pid(PCB_ptr, currentPid);
           PCB_wkg->state = 4;
-          sprintf(reportString, "OS: Process %d set to EXIT",
-                  (unsigned int)currentPid);
+          sprintf(reportString, "OS: Process %d set to EXIT", currentPid);
           LOGdump(1, config_dataptr, reportString);
         }
       }
@@ -655,10 +710,10 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
       {
         PCB_wkg = PCBnode_pid(PCB_ptr, currentPid);
         sprintf(reportString, "OS: Process %d selected with %d ms remaining",
-                (unsigned int)currentPid, (unsigned int)PCB_wkg->time_left);
+                currentPid, PCB_wkg->time_left);
         LOGdump(1, config_dataptr, reportString);
         sprintf(reportString, "OS: Process %d set from READY to RUNNING",
-                (unsigned int)currentPid);
+                currentPid);
         LOGdump(1, config_dataptr, reportString);
         OPC_ptr->intArg2 = 0;
       }

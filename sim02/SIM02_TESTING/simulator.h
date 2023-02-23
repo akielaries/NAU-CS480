@@ -17,7 +17,7 @@ typedef enum ProcessState
   RUNNING_STATE,
   BLOCKED_STATE,
   EXIT_STATE
-} ProcessState;
+};
 
 // PCB data
 typedef struct PCBdata
@@ -32,14 +32,14 @@ typedef struct PCBdata
   struct OpCodeTypeStruct *OClist;
   struct PCBdata *next_ptr;
   // TODO: struct manipulation?
-} PCBdata;
+};
 
 // logging
 typedef struct LOGnode
 {
   char LOG_out[1024];
   struct LOGnode *next_ptr;
-} LOGnode;
+};
 
 /* add lines to log buffer */
 LOGnode LOGnode_add(LOGnode local_ptr, char *txt_input);

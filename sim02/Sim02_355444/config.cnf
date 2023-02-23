@@ -7,6 +7,6 @@ Memory Available (KB)             : 12000
 Memory Display (On/Off)           : On
 Processor Cycle Time (msec)       : 10
 I/O Cycle Time (msec)             : 20
-Log To                            : Both
+Log To                            : Monitor
 Log File Path                     : logfile_1.lgf
 End Simulator Configuration File.

@@ -4,8 +4,8 @@
 #ifndef METADATAOPS_H
 #define METADATAOPS_H
 
+#include "StringUtils.h"
 #include "constants.h"
-#include "strutils.h"
 #include "types.h"
 #include <stdio.h>
 

@@ -1,9 +1,9 @@
 #ifndef SIMULATOR_H
 #define SIMULATOR_H
 
+#include "StringUtils.h"
 #include "constants.h"
 #include "simtimer.h"
-#include "strutils.h"
 #include "types.h"
 #include <pthread.h>
 #include <stdio.h>
@@ -31,7 +31,6 @@ typedef struct PCBdata
   struct OpCodeTypeStruct *OCcurr;
   struct OpCodeTypeStruct *OClist;
   struct PCBdata *next_ptr;
-  // TODO: struct manipulation?
 } PCBdata;
 
 // logging
@@ -72,10 +71,9 @@ void PCBdisplay(PCBdata *head_ptr);
 void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input);
 
 /* function that creates a seperate thread of IN/OUT operations */
-void IOthread(void *time_elapsed);
+void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 
-/* removes necessary code from opcode list */
-//_Bool
+void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 
 /* simulator driver */
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr);

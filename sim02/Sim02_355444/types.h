@@ -7,6 +7,10 @@
 #include "constants.h"
 #include <stdio.h>
 
+typedef enum {True, False} Boolean;
+
+
+
 typedef enum OpCodeArrayCapacity
 {
   CMD_STR_LEN = 5,
