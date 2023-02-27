@@ -90,12 +90,10 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     fprintf(outFilePtr, "================\n");
     fprintf(outFilePtr, "Begin Simulation\n\n");
 
-
     fprintf(outFilePtr, "\nEnd Simulation - Complete\n");
     fprintf(outFilePtr, "=========================\n\n");
 
     fclose(outFilePtr);
-
   }
 }
 
@@ -420,6 +418,36 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
   OPC_ptr->intArg2 = cyclesToRun;
 }
 
+void *PROCthread_wrapper(void *arg)
+{
+  void **args = (void **)arg;
+  ConfigDataType* config_dataptr = (ConfigDataType *)args[0];
+  OpCodeType *OPC_ptr = (OpCodeType *)args[1];
+  PCBdata *PCB_ptr = (PCBdata *)args[2];
+
+  PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
+
+  pthread_exit(NULL);
+}
+
+void *TIMERthread(void *arg, int type)
+{
+    void **args = (void **)arg;
+    pthread_t TIMER;
+    int time_val = 0;
+
+    if (type == 0) {  // 0 indicates OpCodeType
+        OpCodeType *OPC_ptr = (OpCodeType *)args[0];
+        time_val = OPC_ptr->intArg2;
+    } else if (type == 1) {  // 1 indicates ConfigDataType
+        ConfigDataType *CNF_ptr = (ConfigDataType *)args[0];
+        time_val = CNF_ptr->procCycleRate;
+    }
+
+    pthread_create(&TIMER, NULL, runTimer, (void *)&time_val);
+    pthread_join(TIMER, NULL);
+}
+
 void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
 {
   char reportString[MAX_STR_LEN];
@@ -540,7 +568,27 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
                 sprintf(reportString, "Process: %d, %s %s operation start",
                         OPC_ptr->pid, OPC_ptr->command, OPC_ptr->strArg1);
                 LOGdump(1, config_dataptr, reportString);
+
                 PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
+                
+                /*pthread_t PROC;
+
+                void *args[3] = {(void*)config_dataptr, 
+                                    (void *)OPC_ptr, 
+                                    (void *)PCB_ptr
+                                };
+                int proc_rc = pthread_create(&PROC, NULL, PROCthread_wrapper, args);
+
+                if (proc_rc != 0)
+                {
+                  fprintf(stderr, "Error: Failed to create PROC thread\n");
+                }
+                proc_rc = pthread_join(PROC, NULL);
+
+                if (proc_rc != 0)
+                {
+                  fprintf(stderr, "Error: Failed to join PROC thread\n");
+                }*/
               }
             }
             else
@@ -551,21 +599,22 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
               LOGdump(1, config_dataptr, reportString);
               OPC_ptr->intArg2 *= config_dataptr->ioCycleRate;
 
-              pthread_t IO;
+              IOthread(OPC_ptr, PCB_ptr);
+              /*pthread_t IO;
 
               void *args[2] = {(void *)OPC_ptr, (void *)PCB_ptr};
-              int rc = pthread_create(&IO, NULL, IOthread_wrapper, args);
+              int io_rc = pthread_create(&IO, NULL, IOthread_wrapper, args);
 
-              if (rc != 0)
+              if (io_rc != 0)
               {
                 fprintf(stderr, "Error: Failed to create IO thread\n");
               }
-              rc = pthread_join(IO, NULL);
+              io_rc = pthread_join(IO, NULL);
 
-              if (rc != 0)
+              if (io_rc != 0)
               {
                 fprintf(stderr, "Error: Failed to join IO thread\n");
-              }
+              }*/
 
               PCB_wkg = PCBnode_pid(PCB_ptr, currentPid);
               PCB_wkg->time_left -= OPC_ptr->intArg2;

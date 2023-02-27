@@ -76,7 +76,13 @@ void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 /* IOthread pthread function wrapper. acts as driver for IOthreading*/
 void *IOthread_wrapper(void *arg);
 
+/* function that creates a seperate thread for processes */
 void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
+
+/* PROCthread wrapper function */
+void *PROCthread_wrapper(void *arg);
+
+void *TIMERthread(void *arg, int type);
 
 /* simulator driver */
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr);

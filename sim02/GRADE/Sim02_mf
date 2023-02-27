@@ -1,0 +1,9 @@
+CC = gcc
+DEBUG = -g
+LFLAGS = -Wall -std=c99 -pedantic -lpthread $(DEBUG)
+
+Sim02 : MainDriver.c configuration.c metaData.c simulator.c simtimer.c simulatorUtility.c
+	$(CC) $(LFLAGS) MainDriver.c configuration.c metaData.c simulator.c simtimer.c simulatorUtility.c -o Sim02
+
+clean:
+	\rm *.o Sim02
