@@ -421,7 +421,7 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
 void *PROCthread_wrapper(void *arg)
 {
   void **args = (void **)arg;
-  ConfigDataType* config_dataptr = (ConfigDataType *)args[0];
+  ConfigDataType *config_dataptr = (ConfigDataType *)args[0];
   OpCodeType *OPC_ptr = (OpCodeType *)args[1];
   PCBdata *PCB_ptr = (PCBdata *)args[2];
 
@@ -432,20 +432,23 @@ void *PROCthread_wrapper(void *arg)
 
 void *TIMERthread(void *arg, int type)
 {
-    void **args = (void **)arg;
-    pthread_t TIMER;
-    int time_val = 0;
+  void **args = (void **)arg;
+  pthread_t TIMER;
+  int time_val = 0;
 
-    if (type == 0) {  // 0 indicates OpCodeType
-        OpCodeType *OPC_ptr = (OpCodeType *)args[0];
-        time_val = OPC_ptr->intArg2;
-    } else if (type == 1) {  // 1 indicates ConfigDataType
-        ConfigDataType *CNF_ptr = (ConfigDataType *)args[0];
-        time_val = CNF_ptr->procCycleRate;
-    }
+  if (type == 0)
+  { // 0 indicates OpCodeType
+    OpCodeType *OPC_ptr = (OpCodeType *)args[0];
+    time_val = OPC_ptr->intArg2;
+  }
+  else if (type == 1)
+  { // 1 indicates ConfigDataType
+    ConfigDataType *CNF_ptr = (ConfigDataType *)args[0];
+    time_val = CNF_ptr->procCycleRate;
+  }
 
-    pthread_create(&TIMER, NULL, runTimer, (void *)&time_val);
-    pthread_join(TIMER, NULL);
+  pthread_create(&TIMER, NULL, runTimer, (void *)&time_val);
+  pthread_join(TIMER, NULL);
 }
 
 void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
@@ -570,14 +573,15 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
                 LOGdump(1, config_dataptr, reportString);
 
                 PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
-                
+
                 /*pthread_t PROC;
 
-                void *args[3] = {(void*)config_dataptr, 
-                                    (void *)OPC_ptr, 
+                void *args[3] = {(void*)config_dataptr,
+                                    (void *)OPC_ptr,
                                     (void *)PCB_ptr
                                 };
-                int proc_rc = pthread_create(&PROC, NULL, PROCthread_wrapper, args);
+                int proc_rc = pthread_create(&PROC, NULL, PROCthread_wrapper,
+                args);
 
                 if (proc_rc != 0)
                 {
