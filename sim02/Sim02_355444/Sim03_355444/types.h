@@ -45,10 +45,7 @@ typedef enum ConfigDataCodes
   LOGTO_FILE_CODE = 6,
   LOGTO_BOTH_CODE = 7,
   NON_PREEMPTIVE_CODE = 8,
-  PREEMPTIVE_CODE = 9,
-  WAIT = -505,
-  EXIT = -606,
-  NULL_PID = -1
+  PREEMPTIVE_CODE = 9
 } ConfigDataCodes;
 
 typedef struct OpCodeTypeStruct

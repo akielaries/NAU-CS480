@@ -12,21 +12,12 @@
 // process state struct
 typedef enum ProcessState
 {
-  NEW_STATE = 0,
-  READY_STATE = 1,
-  RUNNING_STATE = 2,
-  BLOCKED_STATE = 3,
-  EXIT_STATE = 4
+  NEW_STATE,
+  READY_STATE,
+  RUNNING_STATE,
+  BLOCKED_STATE,
+  EXIT_STATE
 } ProcessState;
-
-// INTERUPT MANAGEMENT
-typedef enum Interrupts
-{
-  INIT_MNGR = 0,
-  INTERRUPT_CHECK = 1,
-  SET_IO_START = 2,
-  RESOLVE_INTERRUPTS = 3
-} Interrupts;
 
 // PCB data
 typedef struct PCBdata
@@ -39,21 +30,8 @@ typedef struct PCBdata
 
   struct OpCodeTypeStruct *OCcurr;
   struct OpCodeTypeStruct *OClist;
-  struct MEMnode *MEMlist;
   struct PCBdata *next_ptr;
 } PCBdata;
-
-// Memory data
-typedef struct MEMnode
-{
-  int physicalStart;
-  int physicalStop;
-  int memBlockState;
-  int processNumber;
-  int logicalStart;
-  int logicalStop;
-  struct MEMnode *next_ptr;
-} MEMnode;
 
 // logging
 typedef struct LOGnode
@@ -62,21 +40,11 @@ typedef struct LOGnode
   struct LOGnode *next_ptr;
 } LOGnode;
 
-typedef enum LOGtrig
-{
-  INIT_LOG = 0,
-  ADD_LOG = 1,
-  DUMP_LOG = 2
-} LOGtrig;
-
 /* add lines to log buffer */
 LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input);
 
 /* delete lines in log buffer */
 LOGnode *LOGnode_del(LOGnode *local_ptr);
-
-/* runs the simulator log report */
-void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input);
 
 /* inserts PCB data into the list */
 PCBdata *PCBnode_add(PCBdata *local_ptr, PCBdata *new_ptr);
@@ -99,6 +67,9 @@ void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr);
 /* display PCB data */
 void PCBdisplay(PCBdata *head_ptr);
 
+/* runs the simulator log report */
+void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input);
+
 /* function that creates a seperate thread of IN/OUT operations */
 void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 
@@ -112,36 +83,6 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 void *PROCthread_wrapper(void *arg);
 
 void *TIMERthread(void *arg, int type);
-
-/* add node to InterruptMNGR */
-OpCodeType *addInterrupt(OpCodeType *local_ptr, OpCodeType *new_ptr);
-
-/*remove OP code from list */
-OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr);
-
-/* copy OpCode information function */
-void OPCcopy(OpCodeType *destination, OpCodeType *source);
-
-/* function to process interrupts */
-_Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
-                    ConfigDataType *config_dataptr);
-
-/* add/append nodes to MEMnode data struct */
-MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
-                     int logStart, int logStop);
-
-/* function to recycle memory nodes */
-void MEMnode_recycle(MEMnode *tempNode, int memState, int procNum, int phyStart,
-                     int phyStop, int logStart, int logStop);
-
-/* memory fix function to reuse memory over skipped blocks */
-void MEMrepair(MEMnode *MEM_ptr);
-
-/* displays memory related logging data */
-void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag);
-
-/* driver function for Memory Management Unit handling memory requests */
-_Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr);
 
 /* simulator driver */
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr);

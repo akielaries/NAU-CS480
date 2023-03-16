@@ -10,7 +10,7 @@ Simulator: driver.o simulator.o StringUtils.o metadataops.o configops.o simtimer
 					StringUtils.o \
 					metadataops.o \
 					simtimer.o \
-					-o sim03 -pthread
+					-o sim02 -pthread
 
 driver.o: driver.c
 	$(CC) $(CFLAGS) driver.c
@@ -31,9 +31,9 @@ simtimer.o: simtimer.c simtimer.h
 	$(CC) $(CFLAGS) simtimer.c
 
 run:
-	./sim03
+	./sim02
 
 
 clean:
-	rm -f *.lgf *.o sim03
+	rm -f *.lgf *.o sim02
 

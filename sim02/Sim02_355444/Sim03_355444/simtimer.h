@@ -21,11 +21,11 @@
 
 // Header files ///////////////////////////////////////////////////////////////
 
-#include "stringUtility.h"
+#include "constants.h"
+#include "types.h"
 #include <math.h>
 #include <string.h>
 #include <sys/time.h>
-//#include "mainprog.h"
 
 // Global Constants  //////////////////////////////////////////////////////////
 

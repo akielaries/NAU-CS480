@@ -1,6 +1,6 @@
 Start Simulator Configuration File:
 Version/Phase                     : 1.07
-File Path                         : test_data.mdf
+File Path                         : mid_size.mdf
 CPU Scheduling Code               : FCFS-N
 Quantum Time (cycles)             : 55
 Memory Available (KB)             : 12000

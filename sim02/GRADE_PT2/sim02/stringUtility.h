@@ -1,35 +1,35 @@
 #ifndef STRING_UTILITY_H
 #define STRING_UTILITY_H
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <pthread.h>
 #include "StandardConstants.h"
+#include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int compareString( const char *oneStr, const char *otherStr );
+int compareString(const char *oneStr, const char *otherStr);
 
-void concatenateString( char *destStr, const char *sourceStr );
+void concatenateString(char *destStr, const char *sourceStr);
 
-void copyString( char *destStr, const char *sourceStr );
+void copyString(char *destStr, const char *sourceStr);
 
-int findSubString( const char *testStr, const char *searchSubStr );
+int findSubString(const char *testStr, const char *searchSubStr);
 
-bool getStringConstrained( FILE *inStream, bool clearLeadingNonPrintable,
-                                bool clearLeadingSpace, bool stopAtNonPrintable,
-                                            char delimiter, char *capturedStr );
+bool getStringConstrained(FILE *inStream, bool clearLeadingNonPrintable,
+                          bool clearLeadingSpace, bool stopAtNonPrintable,
+                          char delimiter, char *capturedStr);
 
-int getStringLength( const char *testStr );
+int getStringLength(const char *testStr);
 
-bool getStringToDelimiter( FILE *inStream, char delimiter, char *capturedStr );
+bool getStringToDelimiter(FILE *inStream, char delimiter, char *capturedStr);
 
-bool getStringToLineEnd( FILE *inStream, char *capturedStr );
+bool getStringToLineEnd(FILE *inStream, char *capturedStr);
 
-void getSubString( char *destStr, const char *sourceStr,
-	                                              int startIndex, int endIndex );
+void getSubString(char *destStr, const char *sourceStr, int startIndex,
+                  int endIndex);
 
-void setStrToLowerCase( char *destStr, const char *sourceStr );
+void setStrToLowerCase(char *destStr, const char *sourceStr);
 
-char toLowerCase( char testChar );
+char toLowerCase(char testChar);
 
 #endif // STRING_UTILITY_H

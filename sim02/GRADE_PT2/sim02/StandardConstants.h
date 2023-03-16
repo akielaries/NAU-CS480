@@ -18,13 +18,13 @@
 // constant for end of c-string null character
 #define CARRIAGE_RETURN_CHAR '\r'
 
-//constant for a COLON
+// constant for a COLON
 #define COLON ':'
 
-//constant for a COMMA
+// constant for a COMMA
 #define COMMA ','
 
-//Constant to print a dash
+// Constant to print a dash
 #define DASH '-'
 
 // constant for end of c-string null character
@@ -39,13 +39,13 @@
 // constant for end of c-string null character
 #define NULL_CHAR '\0'
 
-//Constant for printing a pipe
+// Constant for printing a pipe
 #define PIPE '|'
 
-//Constant for a period
+// Constant for a period
 #define PERIOD '.'
 
-//Constant for PRECISION
+// Constant for PRECISION
 #define PRECISION 2
 
 // constant for space character
@@ -54,4 +54,4 @@
 // constant for standard string length
 #define STD_STR_LEN 64
 
-#endif  // STANDARD_CONSTANTS
+#endif // STANDARD_CONSTANTS
