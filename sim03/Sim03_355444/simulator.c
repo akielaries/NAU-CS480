@@ -44,6 +44,7 @@ LOGnode *LOGnode_del(LOGnode *local_ptr)
 
 void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
 {
+  // TODO: GET THIS WORKING CORRECTLY, OUTPUT TO FILE
   char outputString[MAX_STR_LEN];
   char timeString[MIN_STR_LEN];
   char WRITE_FLAG[2];
@@ -68,7 +69,7 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
       printf("Simulator running with output to file\n");
     }
   }
-  if (trigger == 1)
+  if (trigger == ADD_LOG)
   {
     concatenateString(outputString, timeString);
     concatenateString(outputString, ", ");
@@ -717,10 +718,12 @@ void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
   }
 }
 
-_Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
+_Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
+          OpCodeType *OPC_ptr)
 {
   char displayStr[MAX_STR_LEN];
-  MEMnode *tempNodePtr = NULL;
+  MEMnode *tempNodePtr;
+  MEMnode *head_ptr = MEM_head;
   int highMemLoc;
   int lowMemLoc;
   int processId;
@@ -734,16 +737,178 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
   int logicalOffset;
   int logicalLow;
 
-  if (tempNodePtr == NULL)
+  if (head_ptr == (MEMnode *)NULL)
   {
-    tempNodePtr = MEMnode_add(lowestMemLoc, highestMemLoc, 1, -1, 0, 0);
+    // FIXME: remember to free this pointer
+    head_ptr = MEMnode_add(lowestMemLoc, highestMemLoc, MEM_OPEN, NULL_PID,
+                           MEM_INIT, MEM_INIT);
     copyString(displayStr, "After memory initialization");
-    MEMdisplay(tempNodePtr, displayStr, displayFlag);
-    return true;
+    MEMdisplay(head_ptr, displayStr, displayFlag);
+    // return true;
+    displayFlag = true;
   }
 
-  printf("MEMORY??");
-  return true;
+  else
+  {
+    if (compareString(OPC_ptr->strArg1, "clearAll") ||
+        compareString(OPC_ptr->strArg1, "clearOne"))
+    {
+      logicalLow = 1;
+      logicalOffset = 1;
+    }
+    else
+    {
+      logicalLow = OPC_ptr->intArg2;
+      logicalOffset = OPC_ptr->intArg3;
+    }
+
+    requestedMemory = logicalOffset;
+    logicalHigh = logicalOffset + logicalLow - 1;
+    processId = OPC_ptr->pid;
+
+    if ((!compareString(OPC_ptr->strArg1, "allocate") ||
+         !compareString(OPC_ptr->strArg1, "access")) &&
+        (logicalLow < 0 || logicalOffset < 1 ||
+         config_dataptr->memAvailable <= logicalLow ||
+         config_dataptr->memAvailable <= logicalHigh))
+    {
+      copyString(displayStr, "After limits out of range");
+      MEMdisplay(head_ptr, displayStr, displayFlag);
+      displayFlag = false;
+    }
+    else
+    {
+      if (compareString(OPC_ptr->strArg1, "allocate"))
+      {
+      //if (!compareString(OPC_ptr->strArg1, "access"))
+      //{
+        for (wkgMemPtr = head_ptr; wkgMemPtr != NULL; wkgMemPtr = wkgMemPtr->next_ptr)
+        {
+          if (wkgMemPtr->processNumber == processId &&
+              wkgMemPtr->logicalStart <= logicalLow &&
+              wkgMemPtr->logicalStop >= logicalLow &&
+              wkgMemPtr->logicalStart <= logicalHigh &&
+              wkgMemPtr->logicalStop >= logicalHigh)
+          {
+            copyString(displayStr, "After access success");
+            MEMdisplay(head_ptr, displayStr, displayFlag);
+            displayFlag = true;
+            // return false
+          }
+        }
+        copyString(displayStr, "After access failure");
+        MEMdisplay(head_ptr, displayStr, displayFlag);
+        displayFlag = false;
+        return false;
+      }
+      if (compareString(OPC_ptr->strArg1, "clearOne"))
+      {
+        wkgMemPtr = head_ptr;
+        while (wkgMemPtr)
+        {
+          head_ptr = wkgMemPtr;
+          wkgMemPtr = wkgMemPtr->next_ptr;
+          free(head_ptr);
+        }
+        head_ptr = NULL;
+        copyString(displayStr, "After clear all process success");
+        MEMdisplay(head_ptr, displayStr, displayFlag);
+        return true;
+      }
+      else
+      {
+        for (wkgMemPtr = head_ptr; wkgMemPtr; wkgMemPtr = wkgMemPtr->next_ptr)
+        {
+          if (wkgMemPtr->processNumber == processId)
+            MEMnode_recycle(wkgMemPtr, 1, -1, wkgMemPtr->physicalStart,
+                            wkgMemPtr->physicalStop, 0, 0);
+        }
+        MEMrepair(head_ptr);
+        sprintf(displayStr, "After clear process %d success", processId);
+        MEMdisplay(head_ptr, displayStr, displayFlag);
+        return true;
+      }
+    }
+    else
+    {
+      for (wkgMemPtr = head_ptr; wkgMemPtr != NULL; wkgMemPtr = wkgMemPtr->next_ptr)
+      {
+        if (wkgMemPtr->processNumber == processId &&
+            ((wkgMemPtr->logicalStart <= logicalLow &&
+              wkgMemPtr->logicalStop >= logicalLow) ||
+             (wkgMemPtr->logicalStart <= logicalHigh &&
+              wkgMemPtr->logicalStop >= logicalHigh)))
+        {
+          copyString(displayStr, "After allocate overlap failure");
+          MEMdisplay(head_ptr, displayStr, displayFlag);
+          return false;
+        }
+      }
+      wkgMemPtr = head_ptr;
+      trlgPtr = head_ptr;
+      while (wkgMemPtr &&
+             (wkgMemPtr->memBlockState == 2 ||
+              wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
+                  requestedMemory))
+      {
+        trlgPtr = wkgMemPtr;
+        wkgMemPtr = wkgMemPtr->next_ptr;
+      }
+    }
+    if (wkgMemPtr != NULL)
+    {
+      if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
+          requestedMemory)
+      {
+        MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
+                        wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
+                        logicalLow, logicalHigh);
+
+        copyString(displayStr, "After allocate failure");
+        MEMdisplay(head_ptr, displayStr, displayFlag);
+        return false;
+      }
+    }
+
+    lowMemLoc = wkgMemPtr->physicalStart;
+    highMemLoc = lowMemLoc + requestedMemory - 1;
+    tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
+                              logicalLow, logicalHigh);
+    if (wkgMemPtr == head_ptr)
+    {
+      head_ptr = tempNodePtr;
+    }
+    else
+    {
+      trlgPtr->next_ptr = tempNodePtr;
+    }
+    wkgMemPtr->physicalStart = highMemLoc + 1;
+    tempNodePtr->next_ptr = wkgMemPtr;
+    copyString(displayStr, "After allocate success");
+    MEMdisplay(head_ptr, displayStr, displayFlag);
+  }
+
+  // printf("MEMORY??");
+  return displayFlag;
+}
+
+void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr)
+{
+  char reportString[MAX_STR_LEN];
+  OpCodeType *temp_ptr = NULL;
+  int oneCycle = config_dataptr->procCycleRate;
+  _Bool interruptFound = false;
+
+  copyString(reportString, "OS: CPU idle, all active processes blocked");
+  LOGdump(ADD_LOG, config_dataptr, reportString);
+  while (!interruptFound)
+  {
+    runTimer(oneCycle);
+    interruptFound =
+        interruptMNGR(INTERRUPT_CHECK, temp_ptr, PCB_ptr, config_dataptr);
+  }
+  copyString(reportString, "OS: CPU interrupt, end idle");
+  LOGdump(ADD_LOG, config_dataptr, reportString);
 }
 
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
@@ -754,6 +919,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   PCBdata *PCB_wkg;
   PCBdata *ID_ptr;
   OpCodeType *OPC_ptr = NULL;
+  MEMnode *MEM_head = NULL;
 
   int currentPID = NULL_PID;
   bool isPreemptive;
@@ -773,17 +939,18 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   PCB_ptr = PCBcreate(config_dataptr, meta_data_ptr);
 
   isPreemptive = meta_data_ptr->next_ptr->intArg3 == PREEMPTIVE_CODE;
-  // processIntRequest(INIT_MNGR, 0LL, PCB_ptr);
   // process interrupt requests
   interruptMNGR(INIT_MNGR, OPC_ptr, PCB_ptr, config_dataptr);
-
+  // change state of PCB
   PCBstate(config_dataptr, PCB_ptr);
 
   LOGdump(INIT_LOG, config_dataptr, "OS: Simulator start");
 
-  MMU(config_dataptr, meta_data_ptr);
+  // call Memory Mgmt Unit for processing requests
+  MMU(MEM_head, config_dataptr, meta_data_ptr);
 
-  // enter this loop while runFlag is = to true
+  // enter this loop while runFlag is = to true, this is set to true since
+  // we entered this function the needed flag was already called (-rs)
   do
   {
     currentPID = PCBparse(config_dataptr, PCB_ptr);
@@ -796,6 +963,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
     else if (currentPID == WAIT)
     {
+      CPUidle(config_dataptr, PCB_ptr);
       printf("_______WAITING");
     }
 
@@ -805,6 +973,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
       ID_ptr = PCBnode_pid(PCB_ptr, currentPID);
 
+      // get the next opcode
       if (ID_ptr->OCcurr != NULL)
       {
         if (ID_ptr->OCcurr->intArg2 == 0)
@@ -830,13 +999,18 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
           isPreemptive && currentPID != lastPid)
       {
         PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
+
         sprintf(reportString, "OS: Process %d selected with %d ms remaining",
                 currentPID, PCB_wkg->time_left);
+
         LOGdump(ADD_LOG, config_dataptr, reportString);
+
         sprintf(reportString, "OS: Process %d set from READY to RUNNING\n",
                 currentPID);
+
         LOGdump(ADD_LOG, config_dataptr, reportString);
       }
+
       if (compareString(OPC_ptr->command, "app") ||
           compareString(OPC_ptr->strArg1, "start"))
       {
@@ -851,6 +1025,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
               {
                 sprintf(reportString, "Process: %d, %s %s operation start",
                         OPC_ptr->pid, OPC_ptr->command, OPC_ptr->strArg1);
+
                 LOGdump(ADD_LOG, config_dataptr, reportString);
 
                 PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
@@ -867,7 +1042,6 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
               IO_args[0] = (void *)OPC_ptr;
               IO_args[1] = (void *)PCB_ptr;
-              // void *args[2] = {(void *)OPC_ptr, (void *)PCB_ptr};
 
               io_init = pthread_create(&IO, NULL, IOthread_wrapper, IO_args);
 
@@ -892,14 +1066,16 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
             sprintf(reportString, "Process: %d, mem %s request (%d, %d)",
                     OPC_ptr->pid, OPC_ptr->strArg1, OPC_ptr->intArg2,
                     OPC_ptr->intArg3);
+
             LOGdump(ADD_LOG, config_dataptr, reportString);
 
-            if (MMU(config_dataptr, OPC_ptr))
+            if (MMU(MEM_head, config_dataptr, OPC_ptr))
             {
               sprintf(reportString, "Process: %d, successful mem %s request",
                       OPC_ptr->pid, OPC_ptr->strArg1);
 
               LOGdump(ADD_LOG, config_dataptr, reportString);
+
               OPC_ptr->intArg2 = 0;
             }
             else
@@ -913,7 +1089,11 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
                       OPC_ptr->pid);
 
               LOGdump(ADD_LOG, config_dataptr, reportString);
+
               copyString(OPC_ptr->strArg1, "clearOne");
+
+              MMU(MEM_head, config_dataptr, OPC_ptr);
+
               PCB_wkg->state = EXIT_STATE;
 
               sprintf(reportString, "OS: Process %d set to EXIT", currentPID);
@@ -925,25 +1105,40 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
         else
         {
           sprintf(reportString, "OS: Process %d ended\n", currentPID);
+
           LOGdump(ADD_LOG, config_dataptr, reportString);
+
           OPC_ptr->pid = currentPID;
+
           copyString(reportString, "clearOne");
+
           copyString(OPC_ptr->strArg1, reportString);
+
+          MMU(MEM_head, config_dataptr, OPC_ptr);
+
           PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
+
           PCB_wkg->state = EXIT_STATE;
+
           sprintf(reportString, "OS: Process %d set to EXIT", currentPID);
+
           LOGdump(ADD_LOG, config_dataptr, reportString);
         }
       }
       else
       {
         PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
+
         sprintf(reportString, "OS: Process %d selected with %d ms remaining",
                 currentPID, PCB_wkg->time_left);
+
         LOGdump(ADD_LOG, config_dataptr, reportString);
+
         sprintf(reportString, "OS: Process %d set from READY to RUNNING\n",
                 currentPID);
+
         LOGdump(ADD_LOG, config_dataptr, reportString);
+
         OPC_ptr->intArg2 = 0;
       }
     }
@@ -954,8 +1149,13 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   while (runFlag); // dirty trick for a do while loop
 
   PCB_ptr = PCBnode_del(PCB_ptr);
+
   copyString(OPC_ptr->strArg1, "clearAll");
+
+  MMU(MEM_head, config_dataptr, OPC_ptr);
+
   LOGdump(ADD_LOG, config_dataptr, "OS: Simulation end");
+
   LOGdump(DUMP_LOG, config_dataptr, reportString);
 
   accessTimer(STOP_TIMER, reportString);

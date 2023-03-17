@@ -19,6 +19,14 @@ typedef enum ProcessState
   EXIT_STATE = 4
 } ProcessState;
 
+// memory state struct
+typedef enum MemState
+{
+  MEM_INIT = 0,
+  MEM_OPEN = 1,
+  MEM_USED = 2
+} MemState;
+
 // INTERUPT MANAGEMENT
 typedef enum Interrupts
 {
@@ -62,6 +70,7 @@ typedef struct LOGnode
   struct LOGnode *next_ptr;
 } LOGnode;
 
+// different triggers for the LOGdump function
 typedef enum LOGtrig
 {
   INIT_LOG = 0,
@@ -141,7 +150,11 @@ void MEMrepair(MEMnode *MEM_ptr);
 void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag);
 
 /* driver function for Memory Management Unit handling memory requests */
-_Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr);
+_Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
+          OpCodeType *OPC_ptr);
+
+/* function that checks for interrupts and deams CPU idle based on condition */
+void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr);
 
 /* simulator driver */
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr);
