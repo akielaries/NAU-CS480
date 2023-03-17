@@ -748,6 +748,7 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
     displayFlag = true;
   }
 
+  // continue on if head pointer is not null
   else
   {
     if (compareString(OPC_ptr->strArg1, "clearAll") ||
@@ -792,8 +793,8 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
           {
             copyString(displayStr, "After access success");
             MEMdisplay(head_ptr, displayStr, displayFlag);
-            displayFlag = true;
-            // return false
+            //displayFlag = true;
+            return false;
           }
         }
         copyString(displayStr, "After access failure");
@@ -801,6 +802,7 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
         displayFlag = false;
         return false;
       }
+
       if (compareString(OPC_ptr->strArg1, "clearOne"))
       {
         wkgMemPtr = head_ptr;
@@ -815,6 +817,7 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
         MEMdisplay(head_ptr, displayStr, displayFlag);
         return true;
       }
+      
       else
       {
         for (wkgMemPtr = head_ptr; wkgMemPtr; wkgMemPtr = wkgMemPtr->next_ptr)
@@ -874,6 +877,7 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
     highMemLoc = lowMemLoc + requestedMemory - 1;
     tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
                               logicalLow, logicalHigh);
+
     if (wkgMemPtr == head_ptr)
     {
       head_ptr = tempNodePtr;
