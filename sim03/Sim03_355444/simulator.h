@@ -133,6 +133,9 @@ OpCodeType *addInterrupt(OpCodeType *local_ptr, OpCodeType *new_ptr);
 /*remove OP code from list */
 OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr);
 
+/* function to return next op code */
+OpCodeType *getNextOpCode(PCBdata *PCB_ptr, int PCB_pid);
+
 /* copy OpCode information function */
 void OPCcopy(OpCodeType *destination, OpCodeType *source);
 

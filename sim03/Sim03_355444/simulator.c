@@ -12,6 +12,23 @@
  */
 #include "simulator.h"
 
+OpCodeType *getNextOpCode(PCBdata *PCB_ptr, int PCB_pid)
+{
+  PCBdata *local_ptr;
+
+  local_ptr = PCBnode_pid(PCB_ptr, PCB_pid);
+  if (local_ptr->OCcurr)
+  {
+    if (!local_ptr->OCcurr->intArg2)
+      local_ptr->OCcurr = local_ptr->OCcurr->next_ptr;
+  }
+  else
+  {
+    local_ptr->OCcurr = PCB_ptr->OClist;
+  }
+  return local_ptr->OCcurr;
+}
+
 void copyConfigData(ConfigDataType *dest, ConfigDataType *src)
 {
   dest->version = src->version;
@@ -42,18 +59,6 @@ LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
     new_ptr->next_ptr = NULL;
     return new_ptr;
   }
-
-  /**
-  if (local_ptr == NULL)
-  {
-    local_ptr = (LOGnode *)malloc(sizeof(LOGnode));
-    copyString(local_ptr->LOG_out, txt_input);
-    local_ptr->next_ptr = NULL;
-    return local_ptr;
-  }
-
-  local_ptr->next_ptr = LOGnode_add(local_ptr->next_ptr, txt_input);
-  return local_ptr;*/
 }
 
 LOGnode *LOGnode_del(LOGnode *local_ptr)
@@ -460,10 +465,10 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
   {
     runTimer(oneCycle);
     PCB_wkg_ptr->time_left -= oneCycle;
-    cyclesToRun--;
-    quantumCount--;
+    --cyclesToRun;
+    --quantumCount;
     interrupt = interruptMNGR(INTERRUPT_CHECK, OPC_ptr, PCB_ptr, CNF_ptr);
-    if (!cyclesToRun || isPreemptive)
+    if ((!cyclesToRun || isPreemptive) && (!quantumCount || interrupt))
     {
       cont = false;
     }
@@ -840,7 +845,8 @@ _Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
     }
     else
     {
-      if (compareString(OPC_ptr->strArg1, "allocate"))
+      printf("DO SOMETHING");
+      /*if (compareString(OPC_ptr->strArg1, "allocate"))
       {
         // if (!compareString(OPC_ptr->strArg1, "access"))
         //{
@@ -860,7 +866,7 @@ _Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
             return false;
           }
         }
-      }
+      }*/
     }
   }
   return displayFlag;
@@ -1038,11 +1044,12 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
     else
     {
+      // get the next opcode
+      // OPC_ptr = getNextOpCode(PCB_ptr, currentPID);
       PCBstate(config_dataptr, PCB_ptr);
 
       ID_ptr = PCBnode_pid(PCB_ptr, currentPID);
 
-      // get the next opcode
       if (ID_ptr->OCcurr != NULL)
       {
         if (ID_ptr->OCcurr->intArg2 == 0)
@@ -1126,6 +1133,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
                 fprintf(stderr, "Error: Failed to join IO thread\n");
               }
 
+              printf("<--- REACHED --->");
               PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
               PCB_wkg->time_left -= OPC_ptr->intArg2;
               OPC_ptr->intArg2 = 0;
@@ -1214,6 +1222,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
     }
     // interruptMNGR(RESOLVE_INTERRUPTS, OPC_ptr, PCB_ptr, config_dataptr);
     lastPid = currentPID;
+
   }
 
   while (runFlag); // dirty trick for a do while loop
