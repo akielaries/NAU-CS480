@@ -704,35 +704,35 @@ MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
   return result;
 }
 
-void MEMnode_recycle(MEMnode *tempNode, int memState, int procNum, int phyStart,
-                     int phyStop, int logStart, int logStop)
+void MEMnode_recycle(MEMnode **tempNode, int memState, int procNum,
+                     int phyStart, int phyStop, int logStart, int logStop)
 {
-  tempNode->memBlockState = memState;
-  tempNode->processNumber = procNum;
-  tempNode->physicalStart = phyStart;
-  tempNode->physicalStop = phyStop;
-  tempNode->logicalStart = logStart;
-  tempNode->logicalStop = logStop;
+  (*tempNode)->memBlockState = memState;
+  (*tempNode)->processNumber = procNum;
+  (*tempNode)->physicalStart = phyStart;
+  (*tempNode)->physicalStop = phyStop;
+  (*tempNode)->logicalStart = logStart;
+  (*tempNode)->logicalStop = logStop;
 }
 
-void MEMrepair(MEMnode *MEM_ptr)
+void MEMrepair(MEMnode **MEM_ptr)
 {
   MEMnode *removePtr; // [rsp+10h] [rbp-10h]
 
   while (MEM_ptr)
   {
-    if (MEM_ptr->memBlockState == 1 && MEM_ptr->next_ptr &&
-        MEM_ptr->next_ptr->memBlockState == 1)
+    if ((*MEM_ptr)->memBlockState == 1 && (*MEM_ptr)->next_ptr &&
+        (*MEM_ptr)->next_ptr->memBlockState == 1)
     {
-      MEMnode_recycle(MEM_ptr, 1, -1, MEM_ptr->physicalStart,
-                      MEM_ptr->next_ptr->physicalStop, 0, 0);
-      removePtr = MEM_ptr->next_ptr;
-      MEM_ptr->next_ptr = removePtr->next_ptr;
+      MEMnode_recycle(MEM_ptr, 1, -1, (*MEM_ptr)->physicalStart,
+                      (*MEM_ptr)->next_ptr->physicalStop, 0, 0);
+      removePtr = (*MEM_ptr)->next_ptr;
+      (*MEM_ptr)->next_ptr = removePtr->next_ptr;
       free(removePtr);
     }
     else
     {
-      MEM_ptr = MEM_ptr->next_ptr;
+      (*MEM_ptr) = (*MEM_ptr)->next_ptr;
     }
   }
 }
@@ -779,12 +779,12 @@ void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
   }
 }
 
-_Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
+_Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
           OpCodeType *OPC_ptr)
 {
   char displayStr[MAX_STR_LEN];
   MEMnode *tempNodePtr;
-  MEMnode *head_ptr = MEM_head;
+  MEMnode *head_ptr = (*MEM_head);
   int highMemLoc;
   int lowMemLoc;
   int processId;
@@ -811,7 +811,7 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
 
   else
   {
-      printf("<---CHECK MEMORY--->");
+    printf("<---CHECK MEMORY--->");
     if (compareString(OPC_ptr->strArg1, "clearAll") ||
         compareString(OPC_ptr->strArg1, "clearOne"))
     {
@@ -853,10 +853,10 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
               wkgMemPtr->logicalStart <= logicalHigh &&
               wkgMemPtr->logicalStop >= logicalHigh)
           {
-            //copyString(displayStr, "After access success");
+            // copyString(displayStr, "After access success");
             copyString(displayStr, "After allocate overlap failure");
             MEMdisplay(head_ptr, displayStr, displayFlag);
-            //displayFlag = true;
+            // displayFlag = true;
             return false;
           }
         }
@@ -865,102 +865,102 @@ _Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
   }
   return displayFlag;
 }
-        /*
-        copyString(displayStr, "After access failure");
-        MEMdisplay(head_ptr, displayStr, displayFlag);
-        displayFlag = false;
-        return false;
-      }
-      if (compareString(OPC_ptr->strArg1, "clearOne"))
-      {
-        wkgMemPtr = head_ptr;
-        while (wkgMemPtr)
-        {
-          head_ptr = wkgMemPtr;
-          wkgMemPtr = wkgMemPtr->next_ptr;
-          free(head_ptr);
-        }
-        head_ptr = NULL;
-        copyString(displayStr, "After clear all process success");
-        MEMdisplay(head_ptr, displayStr, displayFlag);
-        return true;
-      }
-      else
-      {
-        for (wkgMemPtr = head_ptr; wkgMemPtr; wkgMemPtr = wkgMemPtr->next_ptr)
-        {
-          if (wkgMemPtr->processNumber == processId)
-            MEMnode_recycle(wkgMemPtr, 1, -1, wkgMemPtr->physicalStart,
-                            wkgMemPtr->physicalStop, 0, 0);
-        }
-        MEMrepair(head_ptr);
-        sprintf(displayStr, "After clear process %d success", processId);
-        MEMdisplay(head_ptr, displayStr, displayFlag);
-        return true;
-      }
-    }
-    else
-    {
-      for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
-           wkgMemPtr = wkgMemPtr->next_ptr)
-      {
-        if (wkgMemPtr->processNumber == processId &&
-            ((wkgMemPtr->logicalStart <= logicalLow &&
-              wkgMemPtr->logicalStop >= logicalLow) ||
-             (wkgMemPtr->logicalStart <= logicalHigh &&
-              wkgMemPtr->logicalStop >= logicalHigh)))
-        {
-          copyString(displayStr, "After allocate overlap failure");
-          MEMdisplay(head_ptr, displayStr, displayFlag);
-          return false;
-        }
-      }
-      wkgMemPtr = head_ptr;
-      trlgPtr = head_ptr;
-      while (wkgMemPtr &&
-             (wkgMemPtr->memBlockState == 2 ||
-              wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
-                  requestedMemory))
-      {
-        trlgPtr = wkgMemPtr;
-        wkgMemPtr = wkgMemPtr->next_ptr;
-      }
-    }
-    if (wkgMemPtr != NULL)
-    {
-      if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
-          requestedMemory)
-      {
-        MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
-                        wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
-                        logicalLow, logicalHigh);
+/*
+copyString(displayStr, "After access failure");
+MEMdisplay(head_ptr, displayStr, displayFlag);
+displayFlag = false;
+return false;
+}
+if (compareString(OPC_ptr->strArg1, "clearOne"))
+{
+wkgMemPtr = head_ptr;
+while (wkgMemPtr)
+{
+  head_ptr = wkgMemPtr;
+  wkgMemPtr = wkgMemPtr->next_ptr;
+  free(head_ptr);
+}
+head_ptr = NULL;
+copyString(displayStr, "After clear all process success");
+MEMdisplay(head_ptr, displayStr, displayFlag);
+return true;
+}
+else
+{
+for (wkgMemPtr = head_ptr; wkgMemPtr; wkgMemPtr = wkgMemPtr->next_ptr)
+{
+  if (wkgMemPtr->processNumber == processId)
+    MEMnode_recycle(wkgMemPtr, 1, -1, wkgMemPtr->physicalStart,
+                    wkgMemPtr->physicalStop, 0, 0);
+}
+MEMrepair(head_ptr);
+sprintf(displayStr, "After clear process %d success", processId);
+MEMdisplay(head_ptr, displayStr, displayFlag);
+return true;
+}
+}
+else
+{
+for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
+   wkgMemPtr = wkgMemPtr->next_ptr)
+{
+if (wkgMemPtr->processNumber == processId &&
+    ((wkgMemPtr->logicalStart <= logicalLow &&
+      wkgMemPtr->logicalStop >= logicalLow) ||
+     (wkgMemPtr->logicalStart <= logicalHigh &&
+      wkgMemPtr->logicalStop >= logicalHigh)))
+{
+  copyString(displayStr, "After allocate overlap failure");
+  MEMdisplay(head_ptr, displayStr, displayFlag);
+  return false;
+}
+}
+wkgMemPtr = head_ptr;
+trlgPtr = head_ptr;
+while (wkgMemPtr &&
+     (wkgMemPtr->memBlockState == 2 ||
+      wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
+          requestedMemory))
+{
+trlgPtr = wkgMemPtr;
+wkgMemPtr = wkgMemPtr->next_ptr;
+}
+}
+if (wkgMemPtr != NULL)
+{
+if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
+  requestedMemory)
+{
+MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
+                wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
+                logicalLow, logicalHigh);
 
-        copyString(displayStr, "After allocate failure");
-        MEMdisplay(head_ptr, displayStr, displayFlag);
-        return false;
-      }
-    }
+copyString(displayStr, "After allocate failure");
+MEMdisplay(head_ptr, displayStr, displayFlag);
+return false;
+}
+}
 
-    lowMemLoc = wkgMemPtr->physicalStart;
-    highMemLoc = lowMemLoc + requestedMemory - 1;
-    tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
-                              logicalLow, logicalHigh);
-    if (wkgMemPtr == head_ptr)
-    {
-      head_ptr = tempNodePtr;
-    }
-    else
-    {
-      trlgPtr->next_ptr = tempNodePtr;
-    }
-    wkgMemPtr->physicalStart = highMemLoc + 1;
-    tempNodePtr->next_ptr = wkgMemPtr;
-    copyString(displayStr, "After allocate success");
-    MEMdisplay(head_ptr, displayStr, displayFlag);
-  }
+lowMemLoc = wkgMemPtr->physicalStart;
+highMemLoc = lowMemLoc + requestedMemory - 1;
+tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
+                      logicalLow, logicalHigh);
+if (wkgMemPtr == head_ptr)
+{
+head_ptr = tempNodePtr;
+}
+else
+{
+trlgPtr->next_ptr = tempNodePtr;
+}
+wkgMemPtr->physicalStart = highMemLoc + 1;
+tempNodePtr->next_ptr = wkgMemPtr;
+copyString(displayStr, "After allocate success");
+MEMdisplay(head_ptr, displayStr, displayFlag);
+}
 
-  // printf("MEMORY??");
-  return displayFlag;
+// printf("MEMORY??");
+return displayFlag;
 }*/
 
 void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr)
@@ -1016,9 +1016,8 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   // change state of PCB
   PCBstate(config_dataptr, PCB_ptr);
 
-
   // call Memory Mgmt Unit for processing requests
-  MMU(MEM_head, config_dataptr, meta_data_ptr);
+  MMU(&MEM_head, config_dataptr, meta_data_ptr);
 
   // enter this loop while runFlag is = to true, this is set to true since
   // we entered this function the needed flag was already called (-rs)
@@ -1035,7 +1034,6 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
     else if (currentPID == WAIT)
     {
       CPUidle(config_dataptr, PCB_ptr);
-      printf("_______WAITING");
     }
 
     else
@@ -1141,7 +1139,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
             LOGdump(ADD_LOG, config_dataptr, reportString);
 
-            if (MMU(MEM_head, config_dataptr, OPC_ptr))
+            if (MMU(&MEM_head, config_dataptr, OPC_ptr))
             {
               sprintf(reportString, "Process: %d, successful mem %s request",
                       OPC_ptr->pid, OPC_ptr->strArg1);
@@ -1164,7 +1162,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
               copyString(OPC_ptr->strArg1, "clearOne");
 
-              MMU(MEM_head, config_dataptr, OPC_ptr);
+              MMU(&MEM_head, config_dataptr, OPC_ptr);
 
               PCB_wkg->state = EXIT_STATE;
 
@@ -1186,7 +1184,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
           copyString(OPC_ptr->strArg1, reportString);
 
-          MMU(MEM_head, config_dataptr, OPC_ptr);
+          MMU(&MEM_head, config_dataptr, OPC_ptr);
 
           PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
 
@@ -1224,7 +1222,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
   copyString(OPC_ptr->strArg1, "clearAll");
 
-  MMU(MEM_head, config_dataptr, OPC_ptr);
+  MMU(&MEM_head, config_dataptr, OPC_ptr);
 
   LOGdump(ADD_LOG, config_dataptr, "OS: Simulation end");
 

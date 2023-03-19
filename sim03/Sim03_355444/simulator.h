@@ -145,17 +145,17 @@ MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
                      int logStart, int logStop);
 
 /* function to recycle memory nodes */
-void MEMnode_recycle(MEMnode *tempNode, int memState, int procNum, int phyStart,
-                     int phyStop, int logStart, int logStop);
+void MEMnode_recycle(MEMnode **tempNode, int memState, int procNum,
+                     int phyStart, int phyStop, int logStart, int logStop);
 
 /* memory fix function to reuse memory over skipped blocks */
-void MEMrepair(MEMnode *MEM_ptr);
+void MEMrepair(MEMnode **MEM_ptr);
 
 /* displays memory related logging data */
 void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag);
 
 /* driver function for Memory Management Unit handling memory requests */
-_Bool MMU(MEMnode *MEM_head, ConfigDataType *config_dataptr,
+_Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
           OpCodeType *OPC_ptr);
 
 /* function that checks for interrupts and deams CPU idle based on condition */
