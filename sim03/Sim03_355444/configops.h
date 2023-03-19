@@ -25,7 +25,7 @@ _Bool getConfigData(const char *fileName, ConfigDataType **configData,
                     char *endStateMsg);
 
 /**
- * Retrieves the CPU Schedular Code
+ * Retrieves the CPU Scheduler Code
  */
 ConfigDataCodes getCPUSchedCode(const char *lowerCaseCodeStr);
 

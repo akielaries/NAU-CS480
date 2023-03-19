@@ -2,6 +2,7 @@
 #define SIMULATOR_H
 
 #include "StringUtils.h"
+#include "configops.h"
 #include "constants.h"
 #include "simtimer.h"
 #include "types.h"
@@ -78,6 +79,9 @@ typedef enum LOGtrig
   DUMP_LOG = 2
 } LOGtrig;
 
+/* function to copy over data stored in ConfigDataType */
+void copyConfigData(ConfigDataType *dest, ConfigDataType *src);
+
 /* add lines to log buffer */
 LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input);
 
@@ -109,7 +113,8 @@ void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr);
 void PCBdisplay(PCBdata *head_ptr);
 
 /* function that creates a seperate thread of IN/OUT operations */
-void IOthread(OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
+void IOthread(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr,
+              PCBdata *PCB_ptr);
 
 /* IOthread pthread function wrapper. acts as driver for IOthreading*/
 void *IOthread_wrapper(void *arg);

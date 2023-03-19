@@ -201,7 +201,7 @@ _Bool getConfigData(const char *fileName, ConfigDataType **configData,
  */
 void configCodeToString(int code, char *outString)
 {
-  char displayStrings[8][10] = {"SJF",    "SRTF-P",  "FCFS-P", "RR-P",
+  char displayStrings[8][10] = {"SJF-N",  "SRTF-P",  "FCFS-P", "RR-P",
                                 "FCFS-N", "Monitor", "File",   "Both"};
 
   copyString(outString, displayStrings[code]);
