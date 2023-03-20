@@ -1,7 +1,7 @@
 Start Simulator Configuration File:
 Version/Phase                     : 1.07
-File Path                         : test_data.mdf
-CPU Scheduling Code               : FCFS-N
+File Path                         : rand_test.mdf
+CPU Scheduling Code               : SJF-N
 Quantum Time (cycles)             : 55
 Memory Available (KB)             : 12000
 Memory Display (On/Off)           : On

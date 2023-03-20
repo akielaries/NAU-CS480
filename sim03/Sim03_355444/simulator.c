@@ -784,12 +784,11 @@ void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
   }
 }
 
-_Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
-          OpCodeType *OPC_ptr)
+_Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
 {
   char displayStr[MAX_STR_LEN];
   MEMnode *tempNodePtr;
-  MEMnode *head_ptr = (*MEM_head);
+  static MEMnode *head_ptr = NULL; //(*MEM_head);
   int highMemLoc;
   int lowMemLoc;
   int processId;
@@ -996,7 +995,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   PCBdata *PCB_wkg;
   PCBdata *ID_ptr;
   OpCodeType *OPC_ptr = NULL;
-  MEMnode *MEM_head = NULL;
+  // MEMnode *MEM_head = NULL;
 
   int currentPID = NULL_PID;
   bool isPreemptive;
@@ -1023,7 +1022,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   PCBstate(config_dataptr, PCB_ptr);
 
   // call Memory Mgmt Unit for processing requests
-  MMU(&MEM_head, config_dataptr, meta_data_ptr);
+  MMU(config_dataptr, meta_data_ptr);
 
   // enter this loop while runFlag is = to true, this is set to true since
   // we entered this function the needed flag was already called (-rs)
@@ -1133,7 +1132,6 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
                 fprintf(stderr, "Error: Failed to join IO thread\n");
               }
 
-              printf("<--- REACHED --->");
               PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
               PCB_wkg->time_left -= OPC_ptr->intArg2;
               OPC_ptr->intArg2 = 0;
@@ -1147,7 +1145,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
             LOGdump(ADD_LOG, config_dataptr, reportString);
 
-            if (MMU(&MEM_head, config_dataptr, OPC_ptr))
+            if (MMU(config_dataptr, OPC_ptr))
             {
               sprintf(reportString, "Process: %d, successful mem %s request",
                       OPC_ptr->pid, OPC_ptr->strArg1);
@@ -1170,7 +1168,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
               copyString(OPC_ptr->strArg1, "clearOne");
 
-              MMU(&MEM_head, config_dataptr, OPC_ptr);
+              MMU(config_dataptr, OPC_ptr);
 
               PCB_wkg->state = EXIT_STATE;
 
@@ -1192,7 +1190,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
           copyString(OPC_ptr->strArg1, reportString);
 
-          MMU(&MEM_head, config_dataptr, OPC_ptr);
+          MMU(config_dataptr, OPC_ptr);
 
           PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
 
@@ -1231,7 +1229,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
   copyString(OPC_ptr->strArg1, "clearAll");
 
-  MMU(&MEM_head, config_dataptr, OPC_ptr);
+  MMU(config_dataptr, OPC_ptr);
 
   LOGdump(ADD_LOG, config_dataptr, "OS: Simulation end");
 

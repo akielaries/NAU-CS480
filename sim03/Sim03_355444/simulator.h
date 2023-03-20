@@ -158,8 +158,7 @@ void MEMrepair(MEMnode **MEM_ptr);
 void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag);
 
 /* driver function for Memory Management Unit handling memory requests */
-_Bool MMU(MEMnode **MEM_head, ConfigDataType *config_dataptr,
-          OpCodeType *OPC_ptr);
+_Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr);
 
 /* function that checks for interrupts and deams CPU idle based on condition */
 void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr);
