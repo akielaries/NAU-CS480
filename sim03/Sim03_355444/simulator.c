@@ -792,9 +792,9 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
   int highMemLoc;
   int lowMemLoc;
   int processId;
-  int logicalHigh;
+  int logicalHigh; // iVar3    // IVAR4 IS BEING USED FOR compareString
   int requestedMemory;
-  _Bool displayFlag = config_dataptr->memDisplay;
+  _Bool displayFlag = config_dataptr->memDisplay; // _Var2
   int highestMemLoc = config_dataptr->memAvailable - 1;
   int lowestMemLoc = 0;
   MEMnode *wkgMemPtr;
@@ -822,6 +822,7 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
       logicalLow = 1;
       logicalOffset = 1;
     }
+
     else
     {
       logicalLow = OPC_ptr->intArg2;
@@ -842,10 +843,10 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
       MEMdisplay(head_ptr, displayStr, displayFlag);
       displayFlag = false;
     }
+
     else
     {
-      printf("DO SOMETHING");
-      /*if (compareString(OPC_ptr->strArg1, "allocate"))
+      if (compareString(OPC_ptr->strArg1, "allocate"))
       {
         // if (!compareString(OPC_ptr->strArg1, "access"))
         //{
@@ -865,9 +866,48 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
             return false;
           }
         }
-      }*/
+        wkgMemPtr = head_ptr;
+        trlgPtr = head_ptr;
+
+        while ((wkgMemPtr != NULL &&
+                ((wkgMemPtr->memBlockState == MEM_USED ||
+                  ((wkgMemPtr->physicalStop - wkgMemPtr->physicalStart) + 1 <
+                   logicalOffset)))))
+        {
+          trlgPtr = wkgMemPtr;
+          wkgMemPtr = wkgMemPtr->next_ptr;
+        }
+        if (wkgMemPtr != NULL)
+        {
+          if ((wkgMemPtr->physicalStop - wkgMemPtr->physicalStart) + 1 !=
+              logicalOffset)
+          {
+            iVar4 = logicalOffset + wkgMemPtr->physicalStart;
+            pMVar5 = MEMnode_add(wkgMemPtr->physicalStart, iVar4 + -1, 2,
+                                 processId, logicalLow, iVar3);
+            pMVar1 = pMVar5;
+            if (wkgMemPtr != head_ptr)
+            {
+              trlgPtr->next_ptr = pMVar5;
+              pMVar1 = head_ptr;
+            }
+            head_ptr = pMVar1;
+            wkgMemPtr->physicalStart = iVar4;
+            pMVar5->next_ptr = wkgMemPtr;
+            copyString(displayStr, "After allocate success");
+            MEMdisplay(head_ptr, displayStr, displayFlag);
+            return true;
+          }
+
+          MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
+                          wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
+                          logicalLow, iVar3);
+          /* PICKUP WITH INTERPRETING VARIABLE NAMES */
+        }
+      }
     }
   }
+
   return displayFlag;
 }
 /*
