@@ -91,7 +91,7 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   // TODO: GET THIS WORKING CORRECTLY, OUTPUT TO FILE
   char outputString[MAX_STR_LEN];
   char timeString[MIN_STR_LEN];
-  char WRITE_FLAG[2];
+  char WRITE_FLAG[TWO];
   int temp_trigger; // = trigger;
   FILE *outFilePtr;
   // ConfigDataType *config_dataptr = NULL;
@@ -172,8 +172,8 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
     fprintf(outFilePtr, "=========================\n\n");
 
     fclose(outFilePtr);
-  }
   log_ptr = LOGnode_del(log_ptr);
+  }
   // free(config_dataptr);
 }
 
