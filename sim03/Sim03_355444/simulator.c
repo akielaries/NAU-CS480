@@ -12,23 +12,13 @@
  */
 #include "simulator.h"
 
-OpCodeType *getNextOpCode(PCBdata *PCB_ptr, int PCB_pid)
-{
-  PCBdata *local_ptr;
-
-  local_ptr = PCBnode_pid(PCB_ptr, PCB_pid);
-  if (local_ptr->OCcurr)
-  {
-    if (!local_ptr->OCcurr->intArg2)
-      local_ptr->OCcurr = local_ptr->OCcurr->next_ptr;
-  }
-  else
-  {
-    local_ptr->OCcurr = PCB_ptr->OClist;
-  }
-  return local_ptr->OCcurr;
-}
-
+/**
+ * Copies the contents of a source ConfigDataType struct to a destination
+ * ConfigDataType struct
+ * @param dest Pointer to the destination ConfigDataType struct
+ * @param src Pointer to the source ConfigDataType struct
+ * @return void
+ */
 void copyConfigData(ConfigDataType *dest, ConfigDataType *src)
 {
   dest->version = src->version;
@@ -43,7 +33,12 @@ void copyConfigData(ConfigDataType *dest, ConfigDataType *src)
   copyString(dest->logToFileName, src->logToFileName);
 }
 
-/* LOG node */
+/**
+ * Add a new LOGnode to a linked list of LOGnodes.
+ * @param local_ptr Pointer to the current node in the linked list.
+ * @param txt_input String containing the log data to add to the new node.
+ * @return LOGnode* Pointer to the updated linked list
+ */
 LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
 {
   LOGnode *new_ptr;
@@ -61,6 +56,11 @@ LOGnode *LOGnode_add(LOGnode *local_ptr, char *txt_input)
   }
 }
 
+/**
+ * Deletes the linked list of LOG nodes recursively.
+ * @param local_ptr The pointer to the first LOG node in the linked list.
+ * @return Returns a NULL pointer after deleting all nodes in the linked list.
+ */
 LOGnode *LOGnode_del(LOGnode *local_ptr)
 {
   if (!local_ptr)
@@ -76,6 +76,16 @@ LOGnode *LOGnode_del(LOGnode *local_ptr)
   return 0;
 }
 
+/**
+ * Dumps the log information to a file or monitor.
+ * @param trigger Integer value that represents the trigger point of the log
+ * operation.
+ * @param config_dataptr Pointer to a ConfigDataType structure that contains the
+ * configuration data for the simulation.
+ * @param txt_input Pointer to a character string that contains the text to be
+ * logged.
+ * @return void
+ */
 void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
 {
   // TODO: GET THIS WORKING CORRECTLY, OUTPUT TO FILE
@@ -167,7 +177,14 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   // free(config_dataptr);
 }
 
-/* PCB node */
+/*
+ * Adds a new PCB node to the linked list in ascending order of the start time
+ * of its OpCodeList.
+ * @param local_ptr A pointer to the head of the linked list to add the new node
+ * to.
+ * @param new_ptr A pointer to the new PCB node to add to the linked list.
+ * @return A pointer to the head of the updated linked list.
+ */
 PCBdata *PCBnode_add(PCBdata *local_ptr, PCBdata *new_ptr)
 {
   PCBdata *wkg_ptr;
@@ -192,6 +209,11 @@ PCBdata *PCBnode_add(PCBdata *local_ptr, PCBdata *new_ptr)
   return local_ptr;
 }
 
+/**
+ * Deletes all the nodes in the linked list pointed to by local_ptr.
+ * @param local_ptr A pointer to the head of the linked list to be deleted.
+ * @return PCBdata* A null pointer is returned.
+ */
 PCBdata *PCBnode_del(PCBdata *local_ptr)
 {
   if (local_ptr)
@@ -202,6 +224,13 @@ PCBdata *PCBnode_del(PCBdata *local_ptr)
   return 0;
 }
 
+/**
+ * Finds a PCB node with the given PID.
+ * @param local_ptr Pointer to the head node of the PCB linked list.
+ * @param PCB_PID The PID to search for in the PCB linked list.
+ * @return A pointer to the PCB node with the specified PID, or NULL if not
+ * found.
+ */
 PCBdata *PCBnode_pid(PCBdata *local_ptr, int PCB_PID)
 {
   while (local_ptr)
@@ -215,6 +244,13 @@ PCBdata *PCBnode_pid(PCBdata *local_ptr, int PCB_PID)
   return 0;
 }
 
+/**
+ * Creates a Process Control Block (PCB) for each application in the given
+ * metadata.
+ * @param config_dataptr A pointer to the configuration data.
+ * @param md_head_ptr A pointer to the metadata for the current run.
+ * @return A pointer to the head of the PCB list.
+ */
 PCBdata *PCBcreate(ConfigDataType *config_dataptr, OpCodeType *md_head_ptr)
 {
   PCBdata *new_ptr;
@@ -281,6 +317,13 @@ PCBdata *PCBcreate(ConfigDataType *config_dataptr, OpCodeType *md_head_ptr)
   free(new_ptr);
 }
 
+/**
+ * Parse the PCB linked list to find the next process ID to execute based on the
+ * scheduling algorithm
+ * @param config_dataptr A pointer to the configuration data struct
+ * @param local_ptr A pointer to the head of the PCB linked list
+ * @return int The PID of the next process to execute
+ */
 int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
 {
   int PCBid = 0;
@@ -395,6 +438,13 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
   return minId;
 }
 
+/**
+ * Updates the state of all PCBs in a linked list that are in the NEW_STATE to
+ * READY_STATE if their start time has passed.
+ * @param config_dataptr A pointer to the configuration data struct.
+ * @param local_ptr A pointer to the head of the linked list of PCBs.
+ * @return void.
+ */
 void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr)
 {
   char timeString[MAX_STR_LEN];
@@ -419,6 +469,11 @@ void PCBstate(ConfigDataType *config_dataptr, PCBdata *local_ptr)
   }
 }
 
+/**
+ * Displays the contents of a linked list of Process Control Blocks (PCBs).
+ * @param head_ptr A pointer to the head of the linked list of PCBs.
+ * @return void.
+ */
 void PCBdisplay(PCBdata *head_ptr)
 {
   PCBdata *wkg_ptr;
@@ -446,6 +501,12 @@ void PCBdisplay(PCBdata *head_ptr)
   }
 }
 
+/**
+ * Executes a process according to its cycle time and quantum time.
+ * @param CNF_ptr A pointer to the configuration data structure.
+ * @param OPC_ptr A pointer to the operation code data structure.
+ * @param PCB_ptr A pointer to the process control block data structure.
+ */
 void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
 {
   char reportString[MAX_STR_LEN];
@@ -492,18 +553,13 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
   OPC_ptr->intArg2 = cyclesToRun;
 }
 
-void *PROCthread_wrapper(void *arg)
-{
-  void **args = (void **)arg;
-  ConfigDataType *config_dataptr = (ConfigDataType *)args[0];
-  OpCodeType *OPC_ptr = (OpCodeType *)args[1];
-  PCBdata *PCB_ptr = (PCBdata *)args[2];
-
-  PROCthread(config_dataptr, OPC_ptr, PCB_ptr);
-
-  pthread_exit(NULL);
-}
-
+/**
+ * Runs I/O operation on a process based on its operation type.
+ * @param config_dataptr Pointer to configuration data
+ * @param OPC_ptr Pointer to the OpCodeType struct for the process
+ * @param PCB_ptr Pointer to the PCBdata struct for the process
+ * @return void
+ */
 void IOthread(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr,
               PCBdata *PCB_ptr)
 {
@@ -533,6 +589,13 @@ void IOthread(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr,
   }
 }
 
+/**
+ * A wrapper function that is passed to the pthread_create function to create an
+ * IO thread.
+ * @param arg A pointer to an array of three void pointers containing
+ * ConfigDataType, OpCodeType and PCBdata structs in that order.
+ * @return void* This function does not return anything.
+ */
 void *IOthread_wrapper(void *arg)
 {
   void **args = (void **)arg;
@@ -545,6 +608,12 @@ void *IOthread_wrapper(void *arg)
   pthread_exit(NULL);
 }
 
+/**
+ * Copies the content of one OpCodeType struct to another.
+ * @param destination A pointer to the destination OpCodeType struct.
+ * @param source A pointer to the source OpCodeType struct.
+ * @return void
+ */
 void OPCcopy(OpCodeType *destination, OpCodeType *source)
 {
   destination->pid = source->pid;
@@ -558,6 +627,13 @@ void OPCcopy(OpCodeType *destination, OpCodeType *source)
   return;
 }
 
+/**
+ * Adds a new node with interrupt OpCodeType to the end of the linked list.
+ * @param local_ptr Pointer to the head of the linked list of OpCodeType.
+ * @param new_ptr Pointer to the new OpCodeType node to be added.
+ * @return OpCodeType* Pointer to the head of the updated linked list of
+ * OpCodeType.
+ */
 OpCodeType *addInterrupt(OpCodeType *local_ptr, OpCodeType *new_ptr)
 {
   OpCodeType *addedNode;
@@ -576,6 +652,13 @@ OpCodeType *addInterrupt(OpCodeType *local_ptr, OpCodeType *new_ptr)
   }
 }
 
+/**
+ * Removes a node from a linked list of OpCodeType nodes.
+ * @param headPtr Pointer to the head node of the linked list of OpCodeType
+ * nodes.
+ * @param removedPtr Pointer to the node to be removed.
+ * @return OpCodeType* Pointer to the head node of the updated linked list.
+ */
 OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr)
 {
   OpCodeType *wkgPtr;
@@ -596,6 +679,14 @@ OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr)
   return headPtr;
 }
 
+/**
+ * Manages interrupts and performs necessary operations.
+ * @param CTRL_ptr Pointer to an Interrupts object.
+ * @param OPC_ptr Pointer to an OpCodeType object.
+ * @param PCB_ptr Pointer to a PCBdata object.
+ * @param config_dataptr Pointer to a ConfigDataType object.
+ * @return Boolean value indicating whether an interrupt was handled.
+ */
 _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
                     ConfigDataType *config_dataptr)
 {
@@ -694,7 +785,16 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
   return returnVal;
 }
 
-// mem node add
+/**
+ * Allocates memory for a new MEMnode and initializes its fields.
+ * @param physStart The starting physical address of the memory block.
+ * @param physEnd The ending physical address of the memory block.
+ * @param memState The state of the memory block: 0 for used, 1 for open.
+ * @param procNum The number of the process using the memory block.
+ * @param logStart The starting logical address of the memory block.
+ * @param logStop The ending logical address of the memory block.
+ * @return A pointer to the newly allocated MEMnode.
+ */
 MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
                      int logStart, int logStop)
 {
@@ -709,40 +809,62 @@ MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
   return result;
 }
 
-void MEMnode_recycle(MEMnode **tempNode, int memState, int procNum,
-                     int phyStart, int phyStop, int logStart, int logStop)
+/**
+ * @brief Recycles a memory node with the provided information.
+ * @param tempNode The memory node to recycle.
+ * @param memState The state of the memory block after recycling.
+ * @param procNum The process number associated with the memory block.
+ * @param phyStart The starting physical address of the memory block.
+ * @param phyStop The ending physical address of the memory block.
+ * @param logStart The starting logical address of the memory block.
+ * @param logStop The ending logical address of the memory block.
+ * @return void
+ */
+void MEMnode_recycle(MEMnode *tempNode, int memState, int procNum, int phyStart,
+                     int phyStop, int logStart, int logStop)
 {
-  (*tempNode)->memBlockState = memState;
-  (*tempNode)->processNumber = procNum;
-  (*tempNode)->physicalStart = phyStart;
-  (*tempNode)->physicalStop = phyStop;
-  (*tempNode)->logicalStart = logStart;
-  (*tempNode)->logicalStop = logStop;
+  tempNode->memBlockState = memState;
+  tempNode->processNumber = procNum;
+  tempNode->physicalStart = phyStart;
+  tempNode->physicalStop = phyStop;
+  tempNode->logicalStart = logStart;
+  tempNode->logicalStop = logStop;
 }
 
-void MEMrepair(MEMnode **MEM_ptr)
+/**
+ * @brief Repairs the memory blocks in the linked list by combining adjacent
+ * free memory blocks
+ * @param MEM_ptr Pointer to the head of the linked list
+ * @return void
+ */
+void MEMrepair(MEMnode *MEM_ptr)
 {
   MEMnode *removePtr; // [rsp+10h] [rbp-10h]
 
   while (MEM_ptr)
   {
-    if ((*MEM_ptr)->memBlockState == 1 && (*MEM_ptr)->next_ptr &&
-        (*MEM_ptr)->next_ptr->memBlockState == 1)
+    if (MEM_ptr->memBlockState == 1 && MEM_ptr->next_ptr &&
+        MEM_ptr->next_ptr->memBlockState == 1)
     {
-      MEMnode_recycle(MEM_ptr, 1, -1, (*MEM_ptr)->physicalStart,
-                      (*MEM_ptr)->next_ptr->physicalStop, 0, 0);
-      removePtr = (*MEM_ptr)->next_ptr;
-      (*MEM_ptr)->next_ptr = removePtr->next_ptr;
+      MEMnode_recycle(MEM_ptr, 1, -1, MEM_ptr->physicalStart,
+                      MEM_ptr->next_ptr->physicalStop, 0, 0);
+      removePtr = MEM_ptr->next_ptr;
+      MEM_ptr->next_ptr = removePtr->next_ptr;
       free(removePtr);
     }
     else
     {
-      (*MEM_ptr) = (*MEM_ptr)->next_ptr;
+      MEM_ptr = MEM_ptr->next_ptr;
     }
   }
 }
 
-// mem display
+/**
+ * @brief Displays information about a linked list of memory blocks
+ * @param MEM_ptr Pointer to the head node of the linked list of memory blocks
+ * @param output_str String to be displayed as a header before displaying memory
+ * information
+ */
 void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
 {
   // TODO: LOOK THRU ALL MIN/MAX STR LENS.. POSSIBLY ADJUST?
@@ -760,7 +882,7 @@ void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
     }
     for (; wkgMemPtr != NULL; wkgMemPtr = wkgMemPtr->next_ptr)
     {
-      if (wkgMemPtr->memBlockState == 1)
+      if (wkgMemPtr->memBlockState == MEM_OPEN)
       {
         copyString(output_string, "Open");
       }
@@ -784,6 +906,15 @@ void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag)
   }
 }
 
+/**
+ * Manages memory operations such as allocation, access and clearing
+ * @param config_dataptr A pointer to ConfigDataType struct containing the
+ * configuration data
+ * @param OPC_ptr A pointer to OpCodeType struct containing the operation code
+ * data
+ * @return _Bool Returns true if the memory operation was successful, otherwise
+ * false
+ */
 _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
 {
   char displayStr[MAX_STR_LEN];
@@ -809,205 +940,157 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
                            MEM_INIT, MEM_INIT);
     copyString(displayStr, "After memory initialization");
     MEMdisplay(head_ptr, displayStr, displayFlag);
-    // return true;
-    displayFlag = true;
+    return true;
+    // displayFlag = true;
+  }
+
+  if (compareString(OPC_ptr->strArg1, "clearAll") &&
+      compareString(OPC_ptr->strArg1, "clearOne"))
+  {
+    logicalLow = OPC_ptr->intArg2;
+    logicalOffset = OPC_ptr->intArg3;
+  }
+  else
+  {
+    logicalLow = 1;
+    logicalOffset = 1;
+  }
+  requestedMemory = logicalOffset;
+  logicalHigh = logicalOffset + logicalLow - 1;
+  processId = OPC_ptr->pid;
+
+  if ((!compareString(OPC_ptr->strArg1, "allocate") ||
+       !compareString(OPC_ptr->strArg1, "access")) &&
+      (logicalLow < 0 || logicalOffset <= 0 ||
+       config_dataptr->memAvailable <= logicalLow ||
+       config_dataptr->memAvailable <= logicalHigh))
+  {
+    copyString(displayStr, "After limits out of range");
+    MEMdisplay(head_ptr, displayStr, displayFlag);
+    return false;
+  }
+  if (compareString(OPC_ptr->strArg1, "allocate"))
+  {
+    if (!compareString(OPC_ptr->strArg1, "access"))
+    {
+      for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
+           wkgMemPtr = wkgMemPtr->next_ptr)
+      {
+        if (wkgMemPtr->processNumber == processId &&
+            wkgMemPtr->logicalStart <= logicalLow &&
+            wkgMemPtr->logicalStop >= logicalLow &&
+            wkgMemPtr->logicalStart <= logicalHigh &&
+            wkgMemPtr->logicalStop >= logicalHigh)
+        {
+          copyString(displayStr, "After access success");
+          MEMdisplay(head_ptr, displayStr, displayFlag);
+          return true;
+        }
+      }
+      copyString(displayStr, "After access failure");
+      MEMdisplay(head_ptr, displayStr, displayFlag);
+      return false;
+    }
+
+    if (compareString(OPC_ptr->strArg1, "clearOne"))
+    {
+      wkgMemPtr = head_ptr;
+      while (wkgMemPtr)
+      {
+        tempNodePtr = wkgMemPtr;
+        wkgMemPtr = wkgMemPtr->next_ptr;
+        free(tempNodePtr);
+      }
+      head_ptr = NULL;
+      copyString(displayStr, "After clear all process success");
+      MEMdisplay(head_ptr, displayStr, displayFlag);
+      return true;
+    }
+
+    else
+    {
+      for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
+           wkgMemPtr = wkgMemPtr->next_ptr)
+      {
+        if (wkgMemPtr->processNumber == processId)
+          MEMnode_recycle(wkgMemPtr, 1, -1, wkgMemPtr->physicalStart,
+                          wkgMemPtr->physicalStop, 0, 0);
+      }
+      MEMrepair(head_ptr);
+      sprintf(displayStr, "After clear process %d success", processId);
+      MEMdisplay(head_ptr, displayStr, displayFlag);
+      return true;
+    }
   }
 
   else
   {
-    printf("<---CHECK MEMORY--->");
-    if (compareString(OPC_ptr->strArg1, "clearAll") ||
-        compareString(OPC_ptr->strArg1, "clearOne"))
+    for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
+         wkgMemPtr = wkgMemPtr->next_ptr)
     {
-      logicalLow = 1;
-      logicalOffset = 1;
-    }
-
-    else
-    {
-      logicalLow = OPC_ptr->intArg2;
-      logicalOffset = OPC_ptr->intArg3;
-    }
-
-    requestedMemory = logicalOffset;
-    logicalHigh = logicalOffset + logicalLow - 1;
-    processId = OPC_ptr->pid;
-
-    if ((!compareString(OPC_ptr->strArg1, "allocate") ||
-         !compareString(OPC_ptr->strArg1, "access")) &&
-        (logicalLow < 0 || logicalOffset < 1 ||
-         config_dataptr->memAvailable <= logicalLow ||
-         config_dataptr->memAvailable <= logicalHigh))
-    {
-      copyString(displayStr, "After limits out of range");
-      MEMdisplay(head_ptr, displayStr, displayFlag);
-      displayFlag = false;
-    }
-
-    else
-    {
-      if (compareString(OPC_ptr->strArg1, "allocate"))
+      if (wkgMemPtr->processNumber == processId &&
+          ((wkgMemPtr->logicalStart <= logicalLow &&
+            wkgMemPtr->logicalStop >= logicalLow) ||
+           (wkgMemPtr->logicalStart <= logicalHigh &&
+            wkgMemPtr->logicalStop >= logicalHigh)))
       {
-        // if (!compareString(OPC_ptr->strArg1, "access"))
-        //{
-        for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
-             wkgMemPtr = wkgMemPtr->next_ptr)
-        {
-          if (wkgMemPtr->processNumber == processId &&
-              wkgMemPtr->logicalStart <= logicalLow &&
-              wkgMemPtr->logicalStop >= logicalLow &&
-              wkgMemPtr->logicalStart <= logicalHigh &&
-              wkgMemPtr->logicalStop >= logicalHigh)
-          {
-            // copyString(displayStr, "After access success");
-            copyString(displayStr, "After allocate overlap failure");
-            MEMdisplay(head_ptr, displayStr, displayFlag);
-            // displayFlag = true;
-            return false;
-          }
-        }
-        wkgMemPtr = head_ptr;
-        trlgPtr = head_ptr;
-
-        while ((wkgMemPtr != NULL &&
-                ((wkgMemPtr->memBlockState == MEM_USED ||
-                  ((wkgMemPtr->physicalStop - wkgMemPtr->physicalStart) + 1 <
-                   logicalOffset)))))
-        {
-          trlgPtr = wkgMemPtr;
-          wkgMemPtr = wkgMemPtr->next_ptr;
-        }
-        if (wkgMemPtr != NULL)
-        {
-          if ((wkgMemPtr->physicalStop - wkgMemPtr->physicalStart) + 1 !=
-              logicalOffset)
-          {
-            iVar4 = logicalOffset + wkgMemPtr->physicalStart;
-            pMVar5 = MEMnode_add(wkgMemPtr->physicalStart, iVar4 + -1, 2,
-                                 processId, logicalLow, iVar3);
-            pMVar1 = pMVar5;
-            if (wkgMemPtr != head_ptr)
-            {
-              trlgPtr->next_ptr = pMVar5;
-              pMVar1 = head_ptr;
-            }
-            head_ptr = pMVar1;
-            wkgMemPtr->physicalStart = iVar4;
-            pMVar5->next_ptr = wkgMemPtr;
-            copyString(displayStr, "After allocate success");
-            MEMdisplay(head_ptr, displayStr, displayFlag);
-            return true;
-          }
-
-          MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
-                          wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
-                          logicalLow, iVar3);
-          /* PICKUP WITH INTERPRETING VARIABLE NAMES */
-        }
+        copyString(displayStr, "After allocate overlap failure");
+        MEMdisplay(head_ptr, displayStr, displayFlag);
+        return false;
       }
     }
+
+    wkgMemPtr = head_ptr;
+    trlgPtr = head_ptr;
+
+    while (wkgMemPtr &&
+           (wkgMemPtr->memBlockState == MEM_USED ||
+            wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
+                requestedMemory))
+    {
+      trlgPtr = wkgMemPtr;
+      wkgMemPtr = wkgMemPtr->next_ptr;
+    }
+
+    if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
+        requestedMemory)
+    {
+      MEMnode_recycle(wkgMemPtr, MEM_USED, processId, wkgMemPtr->physicalStart,
+                      wkgMemPtr->physicalStop, logicalLow, logicalHigh);
+      copyString(displayStr, "After allocate failure");
+      MEMdisplay(head_ptr, displayStr, displayFlag);
+      return false;
+    }
+    lowMemLoc = wkgMemPtr->physicalStart;
+    highMemLoc = lowMemLoc + requestedMemory - 1;
+    tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
+                              logicalLow, logicalHigh);
+
+    if (wkgMemPtr == head_ptr)
+    {
+      head_ptr = tempNodePtr;
+    }
+
+    else
+    {
+      trlgPtr->next_ptr = tempNodePtr;
+    }
+    wkgMemPtr->physicalStart = highMemLoc + 1;
+    tempNodePtr->next_ptr = wkgMemPtr;
+    copyString(displayStr, "After allocate success");
+    MEMdisplay(head_ptr, displayStr, displayFlag);
+
+    return true;
   }
-
-  return displayFlag;
-}
-/*
-copyString(displayStr, "After access failure");
-MEMdisplay(head_ptr, displayStr, displayFlag);
-displayFlag = false;
-return false;
-}
-if (compareString(OPC_ptr->strArg1, "clearOne"))
-{
-wkgMemPtr = head_ptr;
-while (wkgMemPtr)
-{
-  head_ptr = wkgMemPtr;
-  wkgMemPtr = wkgMemPtr->next_ptr;
-  free(head_ptr);
-}
-head_ptr = NULL;
-copyString(displayStr, "After clear all process success");
-MEMdisplay(head_ptr, displayStr, displayFlag);
-return true;
-}
-else
-{
-for (wkgMemPtr = head_ptr; wkgMemPtr; wkgMemPtr = wkgMemPtr->next_ptr)
-{
-  if (wkgMemPtr->processNumber == processId)
-    MEMnode_recycle(wkgMemPtr, 1, -1, wkgMemPtr->physicalStart,
-                    wkgMemPtr->physicalStop, 0, 0);
-}
-MEMrepair(head_ptr);
-sprintf(displayStr, "After clear process %d success", processId);
-MEMdisplay(head_ptr, displayStr, displayFlag);
-return true;
-}
-}
-else
-{
-for (wkgMemPtr = head_ptr; wkgMemPtr != NULL;
-   wkgMemPtr = wkgMemPtr->next_ptr)
-{
-if (wkgMemPtr->processNumber == processId &&
-    ((wkgMemPtr->logicalStart <= logicalLow &&
-      wkgMemPtr->logicalStop >= logicalLow) ||
-     (wkgMemPtr->logicalStart <= logicalHigh &&
-      wkgMemPtr->logicalStop >= logicalHigh)))
-{
-  copyString(displayStr, "After allocate overlap failure");
-  MEMdisplay(head_ptr, displayStr, displayFlag);
-  return false;
-}
-}
-wkgMemPtr = head_ptr;
-trlgPtr = head_ptr;
-while (wkgMemPtr &&
-     (wkgMemPtr->memBlockState == 2 ||
-      wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
-          requestedMemory))
-{
-trlgPtr = wkgMemPtr;
-wkgMemPtr = wkgMemPtr->next_ptr;
-}
-}
-if (wkgMemPtr != NULL)
-{
-if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
-  requestedMemory)
-{
-MEMnode_recycle(wkgMemPtr, MEM_USED, processId,
-                wkgMemPtr->physicalStart, wkgMemPtr->physicalStop,
-                logicalLow, logicalHigh);
-
-copyString(displayStr, "After allocate failure");
-MEMdisplay(head_ptr, displayStr, displayFlag);
-return false;
-}
 }
 
-lowMemLoc = wkgMemPtr->physicalStart;
-highMemLoc = lowMemLoc + requestedMemory - 1;
-tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
-                      logicalLow, logicalHigh);
-if (wkgMemPtr == head_ptr)
-{
-head_ptr = tempNodePtr;
-}
-else
-{
-trlgPtr->next_ptr = tempNodePtr;
-}
-wkgMemPtr->physicalStart = highMemLoc + 1;
-tempNodePtr->next_ptr = wkgMemPtr;
-copyString(displayStr, "After allocate success");
-MEMdisplay(head_ptr, displayStr, displayFlag);
-}
-
-// printf("MEMORY??");
-return displayFlag;
-}*/
-
+/**
+ * CPUidle - function to simulate idle state of CPU when all processes are
+ * blocked
+ * @param config_dataptr pointer to configuration data structure
+ * @param PCB_ptr pointer to process control block data structure
+ * @return void
+ */
 void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr)
 {
   char reportString[MAX_STR_LEN];
@@ -1027,6 +1110,11 @@ void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr)
   LOGdump(ADD_LOG, config_dataptr, reportString);
 }
 
+/**
+ * Runs the simulation using the given configuration and meta data.
+ * @param config_dataptr Pointer to the configuration data.
+ * @param meta_data_ptr Pointer to the meta data.
+ */
 void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 {
   char reportString[MAX_STR_LEN];
@@ -1035,14 +1123,13 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   PCBdata *PCB_wkg;
   PCBdata *ID_ptr;
   OpCodeType *OPC_ptr = NULL;
-  // MEMnode *MEM_head = NULL;
 
   int currentPID = NULL_PID;
   bool isPreemptive;
   int lastPid = NULL_PID;
   _Bool runFlag = true;
   // IO thread arguments
-  void *IO_args[1];
+  void *IO_args[IO_ARGS];
   // IO thread
   pthread_t IO;
   // IO pthread functions return code for create and join
@@ -1078,13 +1165,13 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
     else if (currentPID == WAIT)
     {
+      // CPUidle based on preemptive scheduling
       CPUidle(config_dataptr, PCB_ptr);
     }
 
     else
     {
       // get the next opcode
-      // OPC_ptr = getNextOpCode(PCB_ptr, currentPID);
       PCBstate(config_dataptr, PCB_ptr);
 
       ID_ptr = PCBnode_pid(PCB_ptr, currentPID);
@@ -1155,9 +1242,9 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
               LOGdump(ADD_LOG, config_dataptr, reportString);
               OPC_ptr->intArg2 *= config_dataptr->ioCycleRate;
 
-              IO_args[0] = (void *)config_dataptr;
-              IO_args[1] = (void *)OPC_ptr;
-              IO_args[2] = (void *)PCB_ptr;
+              IO_args[IO_ARG_ONE] = (void *)config_dataptr;
+              IO_args[IO_ARG_TWO] = (void *)OPC_ptr;
+              IO_args[IO_ARG_THREE] = (void *)PCB_ptr;
 
               io_init = pthread_create(&IO, NULL, IOthread_wrapper, IO_args);
 
@@ -1258,7 +1345,8 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
         OPC_ptr->intArg2 = 0;
       }
     }
-    // interruptMNGR(RESOLVE_INTERRUPTS, OPC_ptr, PCB_ptr, config_dataptr);
+    // interruptMNGR will get called again here for handling blocks for
+    // preemptive scheduling
     lastPid = currentPID;
 
   }

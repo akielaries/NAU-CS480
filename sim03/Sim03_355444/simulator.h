@@ -10,6 +10,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// miscellaneous definitions to avoid hardcoding
+// numericals
+typedef enum MiscDef
+{
+  // represents total number of arguments to pass into IO function
+  IO_ARGS = 2,
+  // represents individual arguments for IO function
+  IO_ARG_ONE = 0,
+  IO_ARG_TWO = 1,
+  IO_ARG_THREE = 2
+
+} MiscDef;
+
 // process state struct
 typedef enum ProcessState
 {
@@ -122,11 +135,6 @@ void *IOthread_wrapper(void *arg);
 /* function that creates a seperate thread for processes */
 void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr);
 
-/* PROCthread wrapper function */
-void *PROCthread_wrapper(void *arg);
-
-void *TIMERthread(void *arg, int type);
-
 /* add node to InterruptMNGR */
 OpCodeType *addInterrupt(OpCodeType *local_ptr, OpCodeType *new_ptr);
 
@@ -148,11 +156,11 @@ MEMnode *MEMnode_add(int physStart, int physEnd, int memState, int procNum,
                      int logStart, int logStop);
 
 /* function to recycle memory nodes */
-void MEMnode_recycle(MEMnode **tempNode, int memState, int procNum,
-                     int phyStart, int phyStop, int logStart, int logStop);
+void MEMnode_recycle(MEMnode *tempNode, int memState, int procNum, int phyStart,
+                     int phyStop, int logStart, int logStop);
 
 /* memory fix function to reuse memory over skipped blocks */
-void MEMrepair(MEMnode **MEM_ptr);
+void MEMrepair(MEMnode *MEM_ptr);
 
 /* displays memory related logging data */
 void MEMdisplay(MEMnode *MEM_ptr, char *output_str, _Bool output_flag);
