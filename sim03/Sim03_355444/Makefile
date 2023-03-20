@@ -1,5 +1,5 @@
 CC 		= gcc
-DEBUG	= -g -pg
+DEBUG	= -g
 CFLAGS	= -Wall -std=c99 -pedantic -c $(DEBUG)
 LFLAGS	= -std=c99 -Wall -pedantic $(DEBUG)
 

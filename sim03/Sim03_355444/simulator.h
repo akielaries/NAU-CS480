@@ -12,7 +12,7 @@
 
 // miscellaneous definitions to avoid hardcoding
 // numericals
-typedef enum MiscDef
+typedef enum IOargs
 {
   // represents total number of arguments to pass into IO function
   IO_ARGS = 2,

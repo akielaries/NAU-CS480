@@ -7,6 +7,17 @@
 #include "constants.h"
 #include <stdio.h>
 
+// enum representing numbers to avoid using numeric literals
+// that dont correspond to existing enums
+typedef enum Numbers
+{
+  ZERO = 0,
+  ONE = 1,
+  TWO = 2,
+  THREE = 3
+} Numbers;
+
+// boolean enum for timer code from leverington
 typedef enum
 {
   True,
