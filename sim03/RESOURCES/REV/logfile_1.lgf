@@ -3,9 +3,9 @@
 Simulator Log File Header
 
 File Name                       : rand_test.mdf
-CPU Scheduling                  : FCFS-N
+CPU Scheduling                  : SJF-N
 Quantum Cycles                  : 55
-Memory Available (KB)           : 12000
+Memory Available (KB)           : 25000
 Processor Cycle Rate (ms/cycle) : 10
 I/O Cycle Rate (ms/cycle)       : 20
 
@@ -13,109 +13,109 @@ I/O Cycle Rate (ms/cycle)       : 20
 Begin Simulation
 
   0.000000, OS: Simulator start
-  0.000038, OS: Process 0 set to READY state from NEW state
-  0.000046, OS: Process 1 set to READY state from NEW state
-  0.000054, OS: Process 2 set to READY state from NEW state
-  0.000061, OS: Process 3 set to READY state from NEW state
-  0.000068, OS: Process 4 set to READY state from NEW state
-  0.000096, OS: Process 0 selected with 1830 ms remaining
-  0.000103, OS: Process 0 set from READY to RUNNING
+  0.000016, OS: Process 0 set to READY state from NEW state
+  0.000040, OS: Process 1 set to READY state from NEW state
+  0.000047, OS: Process 2 set to READY state from NEW state
+  0.000052, OS: Process 3 set to READY state from NEW state
+  0.000073, OS: Process 4 set to READY state from NEW state
+  0.000113, OS: Process 0 selected with 1830 ms remaining
+  0.000119, OS: Process 0 set from READY to RUNNING
 
-  0.000112, Process: 0, hard drive input operation start
-  0.360129, Process: 0, hard drive input operation end
-  0.360143, Process: 0, cpu process operation start
-  0.450160, Process: 0, cpu process operation end
-  0.450177, Process: 0, cpu process operation start
-  0.540188, Process: 0, cpu process operation end
-  0.540200, Process: 0, cpu process operation start
-  0.630210, Process: 0, cpu process operation end
-  0.630223, Process: 0, monitor output operation start
-  1.830237, Process: 0, monitor output operation end
+  0.000126, Process: 0, hard drive input operation start
+  0.360140, Process: 0, hard drive input operation end
+  0.360154, Process: 0, cpu process operation start
+  0.450175, Process: 0, cpu process operation end
+  0.450188, Process: 0, cpu process operation start
+  0.540197, Process: 0, cpu process operation end
+  0.540210, Process: 0, cpu process operation start
+  0.630221, Process: 0, cpu process operation end
+  0.630234, Process: 0, monitor output operation start
+  1.830245, Process: 0, monitor output operation end
 
-  1.830249, OS: Process 0 ended
-  1.830282, OS: Process 0 set to EXIT
-  1.830286, OS: Process 1 selected with 2160 ms remaining
-  1.830290, OS: Process 1 set from READY to RUNNING
+  1.830258, OS: Process 0 ended
+  1.830292, OS: Process 0 set to EXIT
+  1.830296, OS: Process 1 selected with 2160 ms remaining
+  1.830301, OS: Process 1 set from READY to RUNNING
 
-  1.830310, Process: 1, sound signal input operation start
-  2.630327, Process: 1, sound signal input operation end
-  2.630341, Process: 1, hard drive input operation start
-  3.230352, Process: 1, hard drive input operation end
-  3.230366, Process: 1, sound signal input operation start
-  3.730377, Process: 1, sound signal input operation end
-  3.730390, Process: 1, cpu process operation start
-  3.790401, Process: 1, cpu process operation end
-  3.790413, Process: 1, usb output operation start
-  3.990424, Process: 1, usb output operation end
-  3.990440, Process: 1, mem allocate request (1000, 2000)
-  3.990491, Process: 1, successful mem allocate request
-  3.990501, Process: 1, mem access request (1000, 3000)
-  3.990531, Process: 1, failed mem access request
+  1.830309, Process: 1, sound signal input operation start
+  2.630350, Process: 1, sound signal input operation end
+  2.630364, Process: 1, hard drive input operation start
+  3.230375, Process: 1, hard drive input operation end
+  3.230387, Process: 1, sound signal input operation start
+  3.730398, Process: 1, sound signal input operation end
+  3.730412, Process: 1, cpu process operation start
+  3.790423, Process: 1, cpu process operation end
+  3.790441, Process: 1, usb output operation start
+  3.990453, Process: 1, usb output operation end
+  3.990470, Process: 1, mem allocate request (1000, 2000)
+  3.990511, Process: 1, successful mem allocate request
+  3.990519, Process: 1, mem access request (1000, 3000)
+  3.990547, Process: 1, failed mem access request
 
-  3.990538, OS: Segmentation fault, Process 1 ended
-  3.990564, OS: Process 1 set to EXIT
-  3.990571, OS: Process 2 selected with 3350 ms remaining
-  3.990578, OS: Process 2 set from READY to RUNNING
+  3.990553, OS: Segmentation fault, Process 1 ended
+  3.990580, OS: Process 1 set to EXIT
+  3.990588, OS: Process 2 selected with 3350 ms remaining
+  3.990596, OS: Process 2 set from READY to RUNNING
 
-  3.990585, Process: 2, video signal input operation start
-  5.390615, Process: 2, video signal input operation end
-  5.390647, Process: 2, cpu process operation start
-  5.490696, Process: 2, cpu process operation end
-  5.490714, Process: 2, monitor output operation start
-  6.890729, Process: 2, monitor output operation end
-  6.890744, Process: 2, mem allocate request (2000, 1000)
-  6.890778, Process: 2, successful mem allocate request
-  6.890800, Process: 2, mem access request (2000, 500)
-  6.890829, Process: 2, successful mem access request
-  6.890837, Process: 2, hard drive input operation start
-  7.250851, Process: 2, hard drive input operation end
-  7.250864, Process: 2, cpu process operation start
-  7.340879, Process: 2, cpu process operation end
+  3.990602, Process: 2, video signal input operation start
+  5.390635, Process: 2, video signal input operation end
+  5.390650, Process: 2, cpu process operation start
+  5.490661, Process: 2, cpu process operation end
+  5.490675, Process: 2, monitor output operation start
+  6.890687, Process: 2, monitor output operation end
+  6.890703, Process: 2, mem allocate request (2000, 1000)
+  6.890738, Process: 2, successful mem allocate request
+  6.890742, Process: 2, mem access request (2000, 500)
+  6.890782, Process: 2, successful mem access request
+  6.890789, Process: 2, hard drive input operation start
+  7.250802, Process: 2, hard drive input operation end
+  7.250817, Process: 2, cpu process operation start
+  7.340831, Process: 2, cpu process operation end
 
-  7.340897, OS: Process 2 ended
-  7.340950, OS: Process 2 set to EXIT
-  7.340955, OS: Process 3 selected with 4770 ms remaining
-  7.340960, OS: Process 3 set from READY to RUNNING
+  7.340845, OS: Process 2 ended
+  7.340914, OS: Process 2 set to EXIT
+  7.340920, OS: Process 4 selected with 3640 ms remaining
+  7.340926, OS: Process 4 set from READY to RUNNING
 
-  7.340978, Process: 3, sound signal input operation start
-  8.040993, Process: 3, sound signal input operation end
-  8.041009, Process: 3, monitor output operation start
- 10.041023, Process: 3, monitor output operation end
- 10.041041, Process: 3, mem allocate request (1000, 1000)
- 10.041086, Process: 3, successful mem allocate request
- 10.041095, Process: 3, mem allocate request (3000, 1000)
- 10.041129, Process: 3, successful mem allocate request
- 10.041140, Process: 3, keyboard input operation start
- 11.041170, Process: 3, keyboard input operation end
- 11.041196, Process: 3, cpu process operation start
- 11.131216, Process: 3, cpu process operation end
- 11.131230, Process: 3, video signal output operation start
- 12.111245, Process: 3, video signal output operation end
+  7.340932, Process: 4, keyboard input operation start
+  9.140947, Process: 4, keyboard input operation end
+  9.140964, Process: 4, sound signal output operation start
+  9.940977, Process: 4, sound signal output operation end
+  9.940994, Process: 4, serial output operation start
+ 10.581008, Process: 4, serial output operation end
+ 10.581024, Process: 4, mem allocate request (2000, 1000)
+ 10.581063, Process: 4, successful mem allocate request
+ 10.581068, Process: 4, mem allocate request (1500, 2500)
+ 10.581094, Process: 4, successful mem allocate request
+ 10.581103, Process: 4, cpu process operation start
+ 10.681119, Process: 4, cpu process operation end
+ 10.681135, Process: 4, hard drive input operation start
+ 10.981150, Process: 4, hard drive input operation end
 
- 12.111260, OS: Process 3 ended
- 12.111294, OS: Process 3 set to EXIT
- 12.111313, OS: Process 4 selected with 3640 ms remaining
- 12.111321, OS: Process 4 set from READY to RUNNING
+ 10.981168, OS: Process 4 ended
+ 10.981215, OS: Process 4 set to EXIT
+ 10.981224, OS: Process 3 selected with 4770 ms remaining
+ 10.981233, OS: Process 3 set from READY to RUNNING
 
- 12.111329, Process: 4, keyboard input operation start
- 13.911347, Process: 4, keyboard input operation end
- 13.911363, Process: 4, sound signal output operation start
- 14.711375, Process: 4, sound signal output operation end
- 14.711400, Process: 4, serial output operation start
- 15.351411, Process: 4, serial output operation end
- 15.351427, Process: 4, mem allocate request (2000, 1000)
- 15.351469, Process: 4, successful mem allocate request
- 15.351479, Process: 4, mem allocate request (1500, 2500)
- 15.351522, Process: 4, successful mem allocate request
- 15.351528, Process: 4, cpu process operation start
- 15.451539, Process: 4, cpu process operation end
- 15.451554, Process: 4, hard drive input operation start
- 15.751566, Process: 4, hard drive input operation end
+ 10.981243, Process: 3, sound signal input operation start
+ 11.681263, Process: 3, sound signal input operation end
+ 11.681278, Process: 3, monitor output operation start
+ 13.681291, Process: 3, monitor output operation end
+ 13.681308, Process: 3, mem allocate request (1000, 1000)
+ 13.681343, Process: 3, successful mem allocate request
+ 13.681348, Process: 3, mem allocate request (3000, 1000)
+ 13.681376, Process: 3, successful mem allocate request
+ 13.681383, Process: 3, keyboard input operation start
+ 14.681396, Process: 3, keyboard input operation end
+ 14.681411, Process: 3, cpu process operation start
+ 14.771424, Process: 3, cpu process operation end
+ 14.771440, Process: 3, video signal output operation start
+ 15.751453, Process: 3, video signal output operation end
 
- 15.751580, OS: Process 4 ended
- 15.751627, OS: Process 4 set to EXIT
- 15.751635, OS: System stop
- 15.751654, OS: Simulation end
+ 15.751471, OS: Process 3 ended
+ 15.751531, OS: Process 3 set to EXIT
+ 15.751539, OS: System stop
+ 15.751561, OS: Simulation end
 
 End Simulation - Complete
 =========================

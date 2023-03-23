@@ -2,14 +2,6 @@
  * Driver code for running the simulator
  */
 
-/**
- *TODO: FIXME: ETC.
- * - fix datatype names, go over declarations within loops, if/elses
- * - fix dump log to file?
- * - go thru comments, delete/add
- *
- *
- */
 #include "simulator.h"
 
 /**
@@ -88,29 +80,24 @@ LOGnode *LOGnode_del(LOGnode *local_ptr)
  */
 void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
 {
-  // TODO: GET THIS WORKING CORRECTLY, OUTPUT TO FILE
   char outputString[MAX_STR_LEN];
   char timeString[MIN_STR_LEN];
   char WRITE_FLAG[TWO];
-  int temp_trigger; // = trigger;
+  int temp_trigger;
   FILE *outFilePtr;
-  // ConfigDataType *config_dataptr = NULL;
-  LOGnode *log_ptr = NULL;
+  static LOGnode *log_ptr = NULL;
   LOGnode *wkg_log_ptr = NULL;
 
   copyString(WRITE_FLAG, "w");
   // check if start of line = OS:
-  getSubString(outputString, txt_input, 0, 2);
+  getSubString(outputString, txt_input, ZERO, TWO);
   copyString(outputString, "\n ");
 
   if (trigger == INIT_LOG)
   {
     log_ptr = NULL;
-    // config_dataptr = (ConfigDataType *)malloc(sizeof(ConfigDataType));
-    // copyConfigData(config_dataptr, config_dataptr);
     accessTimer(LAP_TIMER, timeString);
-    temp_trigger = 1;
-    // trigger = 1;
+    temp_trigger = ONE;
 
     if (config_dataptr->logToCode == LOGTO_FILE_CODE)
     {
@@ -142,39 +129,43 @@ void LOGdump(int trigger, ConfigDataType *config_dataptr, char *txt_input)
   }
   else
   {
-    wkg_log_ptr = log_ptr;
-    outFilePtr = fopen(config_dataptr->logToFileName, WRITE_FLAG);
-    fprintf(outFilePtr,
-            "\n==================================================\n");
-    fprintf(outFilePtr, "Simulator Log File Header\n\n");
-    fprintf(outFilePtr, "File Name                       : %s\n",
-            config_dataptr->metaDataFileName);
-    configCodeToString(config_dataptr->cpuSchedCode, outputString);
-    fprintf(outFilePtr, "CPU Scheduling                  : %s\n", outputString);
-    fprintf(outFilePtr, "Quantum Cycles                  : %d\n",
-            config_dataptr->quantumCycles);
-    fprintf(outFilePtr, "Memory Available (KB)           : %d\n",
-            config_dataptr->memAvailable);
-    fprintf(outFilePtr, "Processor Cycle Rate (ms/cycle) : %d\n",
-            config_dataptr->procCycleRate);
-    fprintf(outFilePtr, "I/O Cycle Rate (ms/cycle)       : %d\n\n",
-            config_dataptr->ioCycleRate);
-    fprintf(outFilePtr, "================\n");
-    fprintf(outFilePtr, "Begin Simulation\n\n");
-
-    while (wkg_log_ptr)
+    if (config_dataptr->logToCode == LOGTO_FILE_CODE ||
+        config_dataptr->logToCode == LOGTO_BOTH_CODE)
     {
-      fprintf(outFilePtr, "%s\n", wkg_log_ptr->LOG_out);
-      wkg_log_ptr = wkg_log_ptr->next_ptr;
+      wkg_log_ptr = log_ptr;
+      outFilePtr = fopen(config_dataptr->logToFileName, WRITE_FLAG);
+      fprintf(outFilePtr,
+              "\n==================================================\n");
+      fprintf(outFilePtr, "Simulator Log File Header\n\n");
+      fprintf(outFilePtr, "File Name                       : %s\n",
+              config_dataptr->metaDataFileName);
+      configCodeToString(config_dataptr->cpuSchedCode, outputString);
+      fprintf(outFilePtr, "CPU Scheduling                  : %s\n",
+              outputString);
+      fprintf(outFilePtr, "Quantum Cycles                  : %d\n",
+              config_dataptr->quantumCycles);
+      fprintf(outFilePtr, "Memory Available (KB)           : %d\n",
+              config_dataptr->memAvailable);
+      fprintf(outFilePtr, "Processor Cycle Rate (ms/cycle) : %d\n",
+              config_dataptr->procCycleRate);
+      fprintf(outFilePtr, "I/O Cycle Rate (ms/cycle)       : %d\n\n",
+              config_dataptr->ioCycleRate);
+      fprintf(outFilePtr, "================\n");
+      fprintf(outFilePtr, "Begin Simulation\n\n");
+
+      while (wkg_log_ptr)
+      {
+        fprintf(outFilePtr, "%s", wkg_log_ptr->LOG_out);
+        wkg_log_ptr = wkg_log_ptr->next_ptr;
+      }
+
+      fprintf(outFilePtr, "\nEnd Simulation - Complete\n");
+      fprintf(outFilePtr, "=========================\n\n");
+
+      fclose(outFilePtr);
+      log_ptr = LOGnode_del(log_ptr);
     }
-
-    fprintf(outFilePtr, "\nEnd Simulation - Complete\n");
-    fprintf(outFilePtr, "=========================\n\n");
-
-    fclose(outFilePtr);
-  log_ptr = LOGnode_del(log_ptr);
   }
-  // free(config_dataptr);
 }
 
 /*
@@ -371,7 +362,7 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
 
     PCBid = local_ptr->pid;
 
-    while (loopCount < 2)
+    while (loopCount < TWO)
     {
       local_ptr = PCBnode_pid(local_ptr, PCBid);
 
@@ -427,9 +418,9 @@ int PCBparse(ConfigDataType *config_dataptr, PCBdata *local_ptr)
     }
   }
 
-  if (minId < 0)
+  if (minId < ZERO)
   {
-    if (newBlockedCount < 1)
+    if (newBlockedCount < ONE)
     {
       minId = EXIT;
     }
@@ -539,7 +530,7 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
     }
   }
 
-  if (cyclesToRun > 0 && isPreemptive && !interrupt)
+  if (cyclesToRun > ZERO && isPreemptive && !interrupt)
   {
     PCB_wkg_ptr->quant_time = true;
     sprintf(reportString,
@@ -698,7 +689,7 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
   char reportString[MAX_STR_LEN];
   double currentTime = 0.0;
   PCBdata *local_ptr = NULL;
-  bool returnVal = false;
+  _Bool returnVal = false;
   OpCodeType *delOPC = NULL;
   OpCodeType *wkgOPC_ptr = NULL;
 
@@ -747,10 +738,12 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
 
     case RESOLVE_INTERRUPTS:
       wkgOPC_ptr = OPC_ptr;
+
       while (wkgOPC_ptr)
       {
         local_ptr = PCBnode_pid(PCB_ptr, wkgOPC_ptr->pid);
-        currentTime = accessTimer(1, reportString);
+        currentTime = accessTimer(LAP_TIMER, reportString);
+
         if (currentTime > wkgOPC_ptr->opEndTime)
         {
           if (local_ptr->state != EXIT_STATE)
@@ -766,11 +759,13 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
           }
           delOPC = wkgOPC_ptr;
         }
+
         if (delOPC)
         {
           wkgOPC_ptr = removeOpCodeNode(wkgOPC_ptr, delOPC);
           delOPC = NULL;
         }
+
         else
         {
           wkgOPC_ptr = wkgOPC_ptr->next_ptr;
@@ -930,7 +925,7 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
   int logicalHigh;
   int requestedMemory;
   _Bool displayFlag = config_dataptr->memDisplay;
-  int highestMemLoc = config_dataptr->memAvailable - 1;
+  int highestMemLoc = config_dataptr->memAvailable - ONE;
   int lowestMemLoc = ZERO;
   MEMnode *wkgMemPtr;
   MEMnode *trlgPtr;
@@ -954,16 +949,16 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
   }
   else
   {
-    logicalLow = 1;
-    logicalOffset = 1;
+    logicalLow = ONE;
+    logicalOffset = ONE;
   }
   requestedMemory = logicalOffset;
-  logicalHigh = logicalOffset + logicalLow - 1;
+  logicalHigh = logicalOffset + logicalLow - ONE;
   processId = OPC_ptr->pid;
 
   if ((!compareString(OPC_ptr->strArg1, "allocate") ||
        !compareString(OPC_ptr->strArg1, "access")) &&
-      (logicalLow < 0 || logicalOffset <= 0 ||
+      (logicalLow < ZERO || logicalOffset <= ZERO ||
        config_dataptr->memAvailable <= logicalLow ||
        config_dataptr->memAvailable <= logicalHigh))
   {
@@ -1048,14 +1043,14 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
 
     while (wkgMemPtr &&
            (wkgMemPtr->memBlockState == MEM_USED ||
-            wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 <
+            wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + ONE <
                 requestedMemory))
     {
       trlgPtr = wkgMemPtr;
       wkgMemPtr = wkgMemPtr->next_ptr;
     }
 
-    if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + 1 ==
+    if (wkgMemPtr->physicalStop - wkgMemPtr->physicalStart + ONE ==
         requestedMemory)
     {
       MEMnode_recycle(wkgMemPtr, MEM_USED, processId, wkgMemPtr->physicalStart,
@@ -1065,7 +1060,7 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
       return false;
     }
     lowMemLoc = wkgMemPtr->physicalStart;
-    highMemLoc = lowMemLoc + requestedMemory - 1;
+    highMemLoc = lowMemLoc + requestedMemory - ONE;
     tempNodePtr = MEMnode_add(lowMemLoc, highMemLoc, MEM_USED, processId,
                               logicalLow, logicalHigh);
 
@@ -1128,7 +1123,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   OpCodeType *OPC_ptr = NULL;
 
   int currentPID = NULL_PID;
-  bool isPreemptive;
+  _Bool isPreemptive;
   int lastPid = NULL_PID;
   _Bool runFlag = true;
   // IO thread arguments
@@ -1216,6 +1211,8 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
         LOGdump(ADD_LOG, config_dataptr, reportString);
       }
 
+      // these tested statements take into account possible commands and
+      // arguments and call necessary function based on such conditions
       if (compareString(OPC_ptr->command, "app") ||
           compareString(OPC_ptr->strArg1, "start"))
       {
@@ -1251,13 +1248,13 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
               io_init = pthread_create(&IO, NULL, IOthread_wrapper, IO_args);
 
-              if (io_init != 0)
+              if (io_init != ZERO)
               {
                 fprintf(stderr, "Error: Failed to create IO thread\n");
               }
               io_init = pthread_join(IO, NULL);
 
-              if (io_init != 0)
+              if (io_init != ZERO)
               {
                 fprintf(stderr, "Error: Failed to join IO thread\n");
               }
@@ -1286,7 +1283,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
             }
             else
             {
-              sprintf(reportString, "Process: %d, failed mem %s request",
+              sprintf(reportString, "Process: %d, failed mem %s request\n",
                       OPC_ptr->pid, OPC_ptr->strArg1);
 
               LOGdump(ADD_LOG, config_dataptr, reportString);
@@ -1362,7 +1359,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
   MMU(config_dataptr, OPC_ptr);
 
-  LOGdump(ADD_LOG, config_dataptr, "OS: Simulation end");
+  LOGdump(ADD_LOG, config_dataptr, "OS: Simulation end\n");
 
   LOGdump(DUMP_LOG, config_dataptr, reportString);
 
