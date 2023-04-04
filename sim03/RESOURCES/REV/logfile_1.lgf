@@ -13,260 +13,260 @@ I/O Cycle Rate (ms/cycle)       : 20
 Begin Simulation
 
   0.000000, OS: Simulator start
-  0.000010, OS: Process 0 set to READY state from NEW state
-  0.000018, OS: Process 1 set to READY state from NEW state
-  0.000039, OS: Process 2 set to READY state from NEW state
-  0.000061, OS: Process 3 set to READY state from NEW state
-  0.000070, OS: Process 4 set to READY state from NEW state
-  0.000095, OS: Process 0 selected with 1830 ms remaining
-  0.000103, OS: Process 0 set from READY to RUNNING
+  0.000013, OS: Process 0 set to READY state from NEW state
+  0.000021, OS: Process 1 set to READY state from NEW state
+  0.000029, OS: Process 2 set to READY state from NEW state
+  0.000039, OS: Process 3 set to READY state from NEW state
+  0.000046, OS: Process 4 set to READY state from NEW state
+  0.000069, OS: Process 0 selected with 1830 ms remaining
+  0.000075, OS: Process 0 set from READY to RUNNING
 
-  0.000112, Process: 0, hard drive input operation start
+  0.000082, Process: 0, hard drive input operation start
 
-  0.000121, OS: Process 0 blocked for input operation
-  0.000129, OS: Process 0 set from RUNNING to BLOCKED
-  0.000136, OS: Process 1 selected with 2160 ms remaining
-  0.000141, OS: Process 1 set from READY to RUNNING
+  0.000090, OS: Process 0 blocked for input operation
+  0.000099, OS: Process 0 set from RUNNING to BLOCKED
+  0.000106, OS: Process 1 selected with 2160 ms remaining
+  0.000111, OS: Process 1 set from READY to RUNNING
 
-  0.000147, Process: 1, sound signal input operation start
+  0.000117, Process: 1, sound signal input operation start
 
-  0.000156, OS: Process 1 blocked for input operation
-  0.000165, OS: Process 1 set from RUNNING to BLOCKED
-  0.000176, OS: Process 2 selected with 3350 ms remaining
-  0.000182, OS: Process 2 set from READY to RUNNING
+  0.000126, OS: Process 1 blocked for input operation
+  0.000136, OS: Process 1 set from RUNNING to BLOCKED
+  0.000148, OS: Process 2 selected with 3350 ms remaining
+  0.000153, OS: Process 2 set from READY to RUNNING
 
-  0.000191, Process: 2, video signal input operation start
+  0.000163, Process: 2, video signal input operation start
 
-  0.000201, OS: Process 2 blocked for input operation
-  0.000211, OS: Process 2 set from RUNNING to BLOCKED
-  0.000224, OS: Process 3 selected with 4770 ms remaining
-  0.000229, OS: Process 3 set from READY to RUNNING
+  0.000173, OS: Process 2 blocked for input operation
+  0.000183, OS: Process 2 set from RUNNING to BLOCKED
+  0.000195, OS: Process 3 selected with 4770 ms remaining
+  0.000200, OS: Process 3 set from READY to RUNNING
 
-  0.000240, Process: 3, sound signal input operation start
+  0.000211, Process: 3, sound signal input operation start
 
-  0.000249, OS: Process 3 blocked for input operation
-  0.000259, OS: Process 3 set from RUNNING to BLOCKED
-  0.000272, OS: Process 4 selected with 3640 ms remaining
-  0.000278, OS: Process 4 set from READY to RUNNING
+  0.000221, OS: Process 3 blocked for input operation
+  0.000231, OS: Process 3 set from RUNNING to BLOCKED
+  0.000244, OS: Process 4 selected with 3640 ms remaining
+  0.000250, OS: Process 4 set from READY to RUNNING
 
-  0.000290, Process: 4, keyboard input operation start
+  0.000262, Process: 4, keyboard input operation start
 
-  0.000299, OS: Process 4 blocked for input operation
-  0.000310, OS: Process 4 set from RUNNING to BLOCKED
-  0.000323, OS: CPU idle, all active processes blocked
-  0.360524, OS: CPU interrupt, end idle
-  0.360540, OS: Interrupted by process 0, hard drive input operation
-  0.360544, OS: Process 0 set from BLOCKED to READY
-  0.360550, OS: Process 0 selected with 1470 ms remaining
-  0.360572, OS: Process 0 set from READY to RUNNING
+  0.000272, OS: Process 4 blocked for input operation
+  0.000283, OS: Process 4 set from RUNNING to BLOCKED
+  0.000296, OS: CPU idle, all active processes blocked
+  0.360498, OS: CPU interrupt, end idle
+  0.360513, OS: Interrupted by process 0, hard drive input operation
+  0.360518, OS: Process 0 set from BLOCKED to READY
+  0.360541, OS: Process 0 selected with 1470 ms remaining
+  0.360545, OS: Process 0 set from READY to RUNNING
 
-  0.360576, Process: 0, cpu process operation start
-  0.450674, Process: 0, cpu process operation end
-  0.450694, Process: 0, cpu process operation start
-  0.540767, Process: 0, cpu process operation end
-  0.540786, Process: 0, cpu process operation start
-  0.630851, Process: 0, cpu process operation end
-  0.630870, Process: 0, monitor output operation start
+  0.360549, Process: 0, cpu process operation start
+  0.450618, Process: 0, cpu process operation end
+  0.450637, Process: 0, cpu process operation start
+  0.540727, Process: 0, cpu process operation end
+  0.540746, Process: 0, cpu process operation start
+  0.630817, Process: 0, cpu process operation end
+  0.630836, Process: 0, monitor output operation start
 
-  0.630878, OS: Process 0 blocked for output operation
-  0.630909, OS: Process 0 set from RUNNING to BLOCKED
-  0.630922, OS: CPU idle, all active processes blocked
-  0.701000, OS: CPU interrupt, end idle
-  0.701018, OS: Interrupted by process 3, sound signal input operation
-  0.701027, OS: Process 3 set from BLOCKED to READY
-  0.701058, OS: Process 3 selected with 4070 ms remaining
-  0.701071, OS: Process 3 set from READY to RUNNING
+  0.630843, OS: Process 0 blocked for output operation
+  0.630872, OS: Process 0 set from RUNNING to BLOCKED
+  0.630886, OS: CPU idle, all active processes blocked
+  0.700957, OS: CPU interrupt, end idle
+  0.700974, OS: Interrupted by process 3, sound signal input operation
+  0.700981, OS: Process 3 set from BLOCKED to READY
+  0.701012, OS: Process 3 selected with 4070 ms remaining
+  0.701028, OS: Process 3 set from READY to RUNNING
 
-  0.701080, Process: 3, monitor output operation start
+  0.701050, Process: 3, monitor output operation start
 
-  0.701092, OS: Process 3 blocked for output operation
-  0.701104, OS: Process 3 set from RUNNING to BLOCKED
-  0.701119, OS: CPU idle, all active processes blocked
-  0.801183, OS: CPU interrupt, end idle
-  0.801201, OS: Interrupted by process 1, sound signal input operation
-  0.801208, OS: Process 1 set from BLOCKED to READY
-  0.801222, OS: Process 1 selected with 1360 ms remaining
-  0.801247, OS: Process 1 set from READY to RUNNING
+  0.701062, OS: Process 3 blocked for output operation
+  0.701072, OS: Process 3 set from RUNNING to BLOCKED
+  0.701086, OS: CPU idle, all active processes blocked
+  0.801171, OS: CPU interrupt, end idle
+  0.801186, OS: Interrupted by process 1, sound signal input operation
+  0.801190, OS: Process 1 set from BLOCKED to READY
+  0.801196, OS: Process 1 selected with 1360 ms remaining
+  0.801218, OS: Process 1 set from READY to RUNNING
 
-  0.801261, Process: 1, hard drive input operation start
+  0.801223, Process: 1, hard drive input operation start
 
-  0.801275, OS: Process 1 blocked for input operation
-  0.801287, OS: Process 1 set from RUNNING to BLOCKED
-  0.801302, OS: CPU idle, all active processes blocked
-  1.401633, OS: CPU interrupt, end idle
-  1.401650, OS: Interrupted by process 2, video signal input operation
-  1.401658, OS: Process 2 set from BLOCKED to READY
-  1.401672, OS: Interrupted by process 1, hard drive input operation
-  1.401696, OS: Process 1 set from BLOCKED to READY
-  1.401709, OS: Process 1 selected with 760 ms remaining
-  1.401715, OS: Process 1 set from READY to RUNNING
+  0.801235, OS: Process 1 blocked for input operation
+  0.801247, OS: Process 1 set from RUNNING to BLOCKED
+  0.801277, OS: CPU idle, all active processes blocked
+  1.401584, OS: CPU interrupt, end idle
+  1.401599, OS: Interrupted by process 2, video signal input operation
+  1.401603, OS: Process 2 set from BLOCKED to READY
+  1.401627, OS: Interrupted by process 1, hard drive input operation
+  1.401631, OS: Process 1 set from BLOCKED to READY
+  1.401637, OS: Process 1 selected with 760 ms remaining
+  1.401641, OS: Process 1 set from READY to RUNNING
 
-  1.401724, Process: 1, sound signal input operation start
+  1.401646, Process: 1, sound signal input operation start
 
-  1.401736, OS: Process 1 blocked for input operation
-  1.401748, OS: Process 1 set from RUNNING to BLOCKED
-  1.401762, OS: Process 2 selected with 1950 ms remaining
-  1.401768, OS: Process 2 set from READY to RUNNING
+  1.401667, OS: Process 1 blocked for input operation
+  1.401674, OS: Process 1 set from RUNNING to BLOCKED
+  1.401684, OS: Process 2 selected with 1950 ms remaining
+  1.401689, OS: Process 2 set from READY to RUNNING
 
-  1.401775, Process: 2, cpu process operation start
-  1.501830, Process: 2, cpu process operation end
-  1.501850, Process: 2, monitor output operation start
+  1.401693, Process: 2, cpu process operation start
+  1.501754, Process: 2, cpu process operation end
+  1.501774, Process: 2, monitor output operation start
 
-  1.501859, OS: Process 2 blocked for output operation
-  1.501889, OS: Process 2 set from RUNNING to BLOCKED
-  1.501904, OS: CPU idle, all active processes blocked
-  1.802051, OS: CPU interrupt, end idle
-  1.802069, OS: Interrupted by process 4, keyboard input operation
-  1.802077, OS: Process 4 set from BLOCKED to READY
-  1.802115, OS: Process 4 selected with 1840 ms remaining
-  1.802122, OS: Process 4 set from READY to RUNNING
+  1.501782, OS: Process 2 blocked for output operation
+  1.501814, OS: Process 2 set from RUNNING to BLOCKED
+  1.501827, OS: CPU idle, all active processes blocked
+  1.801973, OS: CPU interrupt, end idle
+  1.801988, OS: Interrupted by process 4, keyboard input operation
+  1.801992, OS: Process 4 set from BLOCKED to READY
+  1.802029, OS: Process 4 selected with 1840 ms remaining
+  1.802034, OS: Process 4 set from READY to RUNNING
 
-  1.802130, Process: 4, sound signal output operation start
+  1.802042, Process: 4, sound signal output operation start
 
-  1.802170, OS: Process 4 blocked for output operation
-  1.802182, OS: Process 4 set from RUNNING to BLOCKED
-  1.802197, OS: CPU idle, all active processes blocked
-  1.832231, OS: CPU interrupt, end idle
-  1.832253, OS: Interrupted by process 0, monitor output operation
-  1.832263, OS: Process 0 set from BLOCKED to READY
-  1.832297, OS: Process 0 selected with 0 ms remaining
-  1.832304, OS: Process 0 set from READY to RUNNING
-  1.832315, OS: Process 0 ended
-  1.832345, OS: Process 0 set to EXIT
-  1.832374, OS: CPU idle, all active processes blocked
-  1.902421, OS: CPU interrupt, end idle
-  1.902440, OS: Interrupted by process 1, sound signal input operation
-  1.902449, OS: Process 1 set from BLOCKED to READY
-  1.902480, OS: Process 1 selected with 260 ms remaining
-  1.902500, OS: Process 1 set from READY to RUNNING
+  1.802055, OS: Process 4 blocked for output operation
+  1.802082, OS: Process 4 set from RUNNING to BLOCKED
+  1.802109, OS: CPU idle, all active processes blocked
+  1.832147, OS: CPU interrupt, end idle
+  1.832166, OS: Interrupted by process 0, monitor output operation
+  1.832170, OS: Process 0 set from BLOCKED to READY
+  1.832177, OS: Process 0 selected with 0 ms remaining
+  1.832202, OS: Process 0 set from READY to RUNNING
+  1.832206, OS: Process 0 ended
+  1.832226, OS: Process 0 set to EXIT
+  1.832242, OS: CPU idle, all active processes blocked
+  1.902295, OS: CPU interrupt, end idle
+  1.902312, OS: Interrupted by process 1, sound signal input operation
+  1.902321, OS: Process 1 set from BLOCKED to READY
+  1.902350, OS: Process 1 selected with 260 ms remaining
+  1.902370, OS: Process 1 set from READY to RUNNING
 
-  1.902510, Process: 1, cpu process operation start
-  1.962564, Process: 1, cpu process operation end
-  1.962581, Process: 1, usb output operation start
+  1.902379, Process: 1, cpu process operation start
+  1.962426, Process: 1, cpu process operation end
+  1.962444, Process: 1, usb output operation start
 
-  1.962586, OS: Process 1 blocked for output operation
-  1.962592, OS: Process 1 set from RUNNING to BLOCKED
-  1.962599, OS: CPU idle, all active processes blocked
-  2.162726, OS: CPU interrupt, end idle
-  2.162743, OS: Interrupted by process 1, usb output operation
-  2.162748, OS: Process 1 set from BLOCKED to READY
-  2.162754, OS: Process 1 selected with 0 ms remaining
-  2.162776, OS: Process 1 set from READY to RUNNING
+  1.962452, OS: Process 1 blocked for output operation
+  1.962482, OS: Process 1 set from RUNNING to BLOCKED
+  1.962495, OS: CPU idle, all active processes blocked
+  2.162584, OS: CPU interrupt, end idle
+  2.162603, OS: Interrupted by process 1, usb output operation
+  2.162636, OS: Process 1 set from BLOCKED to READY
+  2.162662, OS: Process 1 selected with 0 ms remaining
+  2.162668, OS: Process 1 set from READY to RUNNING
 
-  2.162781, Process: 1, mem allocate request (1000, 2000)
-  2.162805, Process: 1, successful mem allocate request
-  2.162813, Process: 1, mem access request (1000, 3000)
-  2.162831, Process: 1, failed mem access request
+  2.162678, Process: 1, mem allocate request (1000, 2000)
+  2.162716, Process: 1, successful mem allocate request
+  2.162728, Process: 1, mem access request (1000, 3000)
+  2.162754, Process: 1, failed mem access request
 
-  2.162839, OS: Segmentation fault, Process 1 ended
-  2.162868, OS: Process 1 set to EXIT
-  2.162901, OS: CPU idle, all active processes blocked
-  2.603099, OS: CPU interrupt, end idle
-  2.603125, OS: Interrupted by process 4, sound signal output operation
-  2.603129, OS: Process 4 set from BLOCKED to READY
-  2.603135, OS: Process 4 selected with 1040 ms remaining
-  2.603158, OS: Process 4 set from READY to RUNNING
+  2.162762, OS: Segmentation fault, Process 1 ended
+  2.162784, OS: Process 1 set to EXIT
+  2.162798, OS: CPU idle, all active processes blocked
+  2.603021, OS: CPU interrupt, end idle
+  2.603038, OS: Interrupted by process 4, sound signal output operation
+  2.603042, OS: Process 4 set from BLOCKED to READY
+  2.603067, OS: Process 4 selected with 1040 ms remaining
+  2.603071, OS: Process 4 set from READY to RUNNING
 
-  2.603163, Process: 4, serial output operation start
+  2.603089, Process: 4, serial output operation start
 
-  2.603175, OS: Process 4 blocked for output operation
-  2.603189, OS: Process 4 set from RUNNING to BLOCKED
-  2.603215, OS: CPU idle, all active processes blocked
-  2.703298, OS: CPU interrupt, end idle
-  2.703315, OS: Interrupted by process 3, monitor output operation
-  2.703320, OS: Process 3 set from BLOCKED to READY
-  2.703326, OS: Process 3 selected with 2070 ms remaining
-  2.703349, OS: Process 3 set from READY to RUNNING
+  2.603100, OS: Process 4 blocked for output operation
+  2.603111, OS: Process 4 set from RUNNING to BLOCKED
+  2.603124, OS: CPU idle, all active processes blocked
+  2.703183, OS: CPU interrupt, end idle
+  2.703198, OS: Interrupted by process 3, monitor output operation
+  2.703203, OS: Process 3 set from BLOCKED to READY
+  2.703209, OS: Process 3 selected with 2070 ms remaining
+  2.703230, OS: Process 3 set from READY to RUNNING
 
-  2.703354, Process: 3, mem allocate request (1000, 1000)
-  2.703404, Process: 3, successful mem allocate request
-  2.703415, Process: 3, mem allocate request (3000, 1000)
-  2.703445, Process: 3, successful mem allocate request
-  2.703458, Process: 3, keyboard input operation start
+  2.703235, Process: 3, mem allocate request (1000, 1000)
+  2.703278, Process: 3, successful mem allocate request
+  2.703290, Process: 3, mem allocate request (3000, 1000)
+  2.703320, Process: 3, successful mem allocate request
+  2.703329, Process: 3, keyboard input operation start
 
-  2.703464, OS: Process 3 blocked for input operation
-  2.703470, OS: Process 3 set from RUNNING to BLOCKED
-  2.703477, OS: CPU idle, all active processes blocked
-  2.903558, OS: CPU interrupt, end idle
-  2.903583, OS: Interrupted by process 2, monitor output operation
-  2.903588, OS: Process 2 set from BLOCKED to READY
-  2.903594, OS: Process 2 selected with 450 ms remaining
-  2.903617, OS: Process 2 set from READY to RUNNING
+  2.703334, OS: Process 3 blocked for input operation
+  2.703342, OS: Process 3 set from RUNNING to BLOCKED
+  2.703355, OS: CPU idle, all active processes blocked
+  2.903467, OS: CPU interrupt, end idle
+  2.903494, OS: Interrupted by process 2, monitor output operation
+  2.903504, OS: Process 2 set from BLOCKED to READY
+  2.903533, OS: Process 2 selected with 450 ms remaining
+  2.903540, OS: Process 2 set from READY to RUNNING
 
-  2.903622, Process: 2, mem allocate request (2000, 1000)
-  2.903672, Process: 2, successful mem allocate request
-  2.903681, Process: 2, mem access request (2000, 500)
-  2.903710, Process: 2, successful mem access request
-  2.903716, Process: 2, hard drive input operation start
+  2.903549, Process: 2, mem allocate request (2000, 1000)
+  2.903604, Process: 2, successful mem allocate request
+  2.903616, Process: 2, mem access request (2000, 500)
+  2.903649, Process: 2, successful mem access request
+  2.903660, Process: 2, hard drive input operation start
 
-  2.903721, OS: Process 2 blocked for input operation
-  2.903728, OS: Process 2 set from RUNNING to BLOCKED
-  2.903734, OS: CPU idle, all active processes blocked
-  3.243918, OS: CPU interrupt, end idle
-  3.243935, OS: Interrupted by process 4, serial output operation
-  3.243941, OS: Process 4 set from BLOCKED to READY
-  3.243964, OS: Process 4 selected with 400 ms remaining
-  3.243969, OS: Process 4 set from READY to RUNNING
+  2.903669, OS: Process 2 blocked for input operation
+  2.903681, OS: Process 2 set from RUNNING to BLOCKED
+  2.903695, OS: CPU idle, all active processes blocked
+  3.243885, OS: CPU interrupt, end idle
+  3.243899, OS: Interrupted by process 4, serial output operation
+  3.243904, OS: Process 4 set from BLOCKED to READY
+  3.243928, OS: Process 4 selected with 400 ms remaining
+  3.243932, OS: Process 4 set from READY to RUNNING
 
-  3.243988, Process: 4, mem allocate request (2000, 1000)
-  3.244035, Process: 4, successful mem allocate request
-  3.244046, Process: 4, mem allocate request (1500, 2500)
-  3.244092, Process: 4, successful mem allocate request
-  3.244105, Process: 4, cpu process operation start
-  3.264127, Process: 4, cpu process operation end
+  3.243951, Process: 4, mem allocate request (2000, 1000)
+  3.243993, Process: 4, successful mem allocate request
+  3.244004, Process: 4, mem allocate request (1500, 2500)
+  3.244049, Process: 4, successful mem allocate request
+  3.244060, Process: 4, cpu process operation start
+  3.264087, Process: 4, cpu process operation end
 
-  3.264145, OS: Interrupted by process 2, hard drive input operation
-  3.264153, OS: Process 2 set from BLOCKED to READY
-  3.264179, OS: Process 2 selected with 90 ms remaining
-  3.264184, OS: Process 2 set from READY to RUNNING
+  3.264118, OS: Interrupted by process 2, hard drive input operation
+  3.264132, OS: Process 2 set from BLOCKED to READY
+  3.264143, OS: Process 2 selected with 90 ms remaining
+  3.264155, OS: Process 2 set from READY to RUNNING
 
-  3.264191, Process: 2, cpu process operation start
-  3.354245, Process: 2, cpu process operation end
+  3.264165, Process: 2, cpu process operation start
+  3.354209, Process: 2, cpu process operation end
 
-  3.354262, OS: Process 2 ended
-  3.354314, OS: Process 2 set to EXIT
-  3.354325, OS: Process 4 selected with 380 ms remaining
-  3.354349, OS: Process 4 set from READY to RUNNING
+  3.354236, OS: Process 2 ended
+  3.354310, OS: Process 2 set to EXIT
+  3.354322, OS: Process 4 selected with 380 ms remaining
+  3.354329, OS: Process 4 set from READY to RUNNING
 
-  3.354373, Process: 4, cpu process operation start
-  3.434410, Process: 4, cpu process operation end
-  3.434427, Process: 4, hard drive input operation start
+  3.354336, Process: 4, cpu process operation start
+  3.434381, Process: 4, cpu process operation end
+  3.434399, Process: 4, hard drive input operation start
 
-  3.434432, OS: Process 4 blocked for input operation
-  3.434439, OS: Process 4 set from RUNNING to BLOCKED
-  3.434464, OS: CPU idle, all active processes blocked
-  3.704549, OS: CPU interrupt, end idle
-  3.704568, OS: Interrupted by process 3, keyboard input operation
-  3.704574, OS: Process 3 set from BLOCKED to READY
-  3.704580, OS: Process 3 selected with 1070 ms remaining
-  3.704603, OS: Process 3 set from READY to RUNNING
+  3.434410, OS: Process 4 blocked for input operation
+  3.434440, OS: Process 4 set from RUNNING to BLOCKED
+  3.434453, OS: CPU idle, all active processes blocked
+  3.704556, OS: CPU interrupt, end idle
+  3.704573, OS: Interrupted by process 3, keyboard input operation
+  3.704578, OS: Process 3 set from BLOCKED to READY
+  3.704601, OS: Process 3 selected with 1070 ms remaining
+  3.704606, OS: Process 3 set from READY to RUNNING
 
-  3.704609, Process: 3, cpu process operation start
-  3.734639, Process: 3, cpu process operation end
+  3.704629, Process: 3, cpu process operation start
+  3.734677, Process: 3, cpu process operation end
 
-  3.734660, OS: Interrupted by process 4, hard drive input operation
-  3.734677, OS: Process 4 set from BLOCKED to READY
+  3.734714, OS: Interrupted by process 4, hard drive input operation
+  3.734755, OS: Process 4 set from BLOCKED to READY
 
-  3.734703, Process: 3, cpu process operation start
-  3.794728, Process: 3, cpu process operation end
-  3.794745, Process: 3, video signal output operation start
+  3.734767, Process: 3, cpu process operation start
+  3.794804, Process: 3, cpu process operation end
+  3.794828, Process: 3, video signal output operation start
 
-  3.794751, OS: Process 3 blocked for output operation
-  3.794775, OS: Process 3 set from RUNNING to BLOCKED
-  3.794782, OS: Process 4 selected with 0 ms remaining
-  3.794811, OS: Process 4 set from READY to RUNNING
-  3.794833, OS: Process 4 ended
-  3.794896, OS: Process 4 set to EXIT
-  3.794906, OS: CPU idle, all active processes blocked
-  4.775119, OS: CPU interrupt, end idle
-  4.775138, OS: Interrupted by process 3, video signal output operation
-  4.775144, OS: Process 3 set from BLOCKED to READY
-  4.775149, OS: Process 3 selected with 0 ms remaining
-  4.775173, OS: Process 3 set from READY to RUNNING
-  4.775178, OS: Process 3 ended
-  4.775204, OS: Process 3 set to EXIT
-  4.775214, OS: System stop
-  4.775265, OS: Simulation end
+  3.794834, OS: Process 3 blocked for output operation
+  3.794870, OS: Process 3 set from RUNNING to BLOCKED
+  3.794879, OS: Process 4 selected with 0 ms remaining
+  3.794885, OS: Process 4 set from READY to RUNNING
+  3.794891, OS: Process 4 ended
+  3.794929, OS: Process 4 set to EXIT
+  3.794936, OS: CPU idle, all active processes blocked
+  4.775162, OS: CPU interrupt, end idle
+  4.775184, OS: Interrupted by process 3, video signal output operation
+  4.775196, OS: Process 3 set from BLOCKED to READY
+  4.775206, OS: Process 3 selected with 0 ms remaining
+  4.775214, OS: Process 3 set from READY to RUNNING
+  4.775223, OS: Process 3 ended
+  4.775248, OS: Process 3 set to EXIT
+  4.775256, OS: System stop
+  4.775278, OS: Simulation end
 
 End Simulation - Complete
 =========================
