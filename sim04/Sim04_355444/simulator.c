@@ -1123,7 +1123,8 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   OpCodeType *OPC_ptr = NULL;
 
   int currentPID = NULL_PID;
-  _Bool isPreemptive;
+  // TODO: FIX THIS 
+  int isPreemptive;
   int lastPid = NULL_PID;
   _Bool runFlag = true;
   // IO thread arguments
@@ -1140,7 +1141,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   LOGdump(INIT_LOG, config_dataptr, "OS: Simulator start");
   PCB_ptr = PCBcreate(config_dataptr, meta_data_ptr);
 
-  isPreemptive = meta_data_ptr->next_ptr->intArg3 == PREEMPTIVE_CODE;
+  isPreemptive = meta_data_ptr->next_ptr->intArg3 == NON_PREEMPTIVE_CODE;
   // process interrupt requests
   interruptMNGR(INIT_MNGR, OPC_ptr, PCB_ptr, config_dataptr);
   // change state of PCB
@@ -1347,9 +1348,15 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
     }
     // interruptMNGR will get called again here for handling blocks for
     // preemptive scheduling
-    interruptMNGR(RESOLVE_INTERRUPTS, OPC_ptr, PCB_ptr, config_dataptr);
-    lastPid = currentPID;
 
+    // TODO: CHECK HOW PREEMPTIVE SCHEDULING IS READ IN FROM THE CONFIG.CNF 
+    // FILE
+    // if scheduling algorithm is preemptive 
+    if (isPreemptive == PREEMPTIVE_CODE)
+    {
+    //interruptMNGR(RESOLVE_INTERRUPTS, OPC_ptr, PCB_ptr, config_dataptr);
+    }
+    lastPid = currentPID;
   }
 
   while (runFlag); // dirty trick for a do while loop
