@@ -1426,10 +1426,10 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
     // TODO: CHECK HOW PREEMPTIVE SCHEDULING IS READ IN FROM THE CONFIG.CNF
     // FILE
     // if scheduling algorithm is preemptive
-    if (isPreemptive == PREEMPTIVE_CODE)
-    {
+    //if (isPreemptive == PREEMPTIVE_CODE)
+    //{
       interruptMNGR(RESOLVE_INTERRUPTS, OPC_ptr, PCB_ptr, config_dataptr);
-    }
+    //}
     lastPid = currentPID;
   }
 
