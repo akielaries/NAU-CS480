@@ -1,7 +1,7 @@
 Start Simulator Configuration File:
 Version/Phase                     : 1.07
 File Path                         : rand_test.mdf 
-CPU Scheduling Code               : FCFS-P
+CPU Scheduling Code               : FCFS-N
 Quantum Time (cycles)             : 55
 Memory Available (KB)             : 25000
 Memory Display (On/Off)           : On

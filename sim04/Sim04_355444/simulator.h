@@ -21,7 +21,7 @@ typedef enum IOargs
   IO_ARG_TWO = 1,
   IO_ARG_THREE = 2
 
-} MiscDef;
+} IOargs;
 
 // process state struct
 typedef enum ProcessState
