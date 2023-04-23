@@ -364,8 +364,7 @@ struct __va_list_tag
 typedef __va_list_tag gcc_va_list[1];
 
 /* 43 */
-union __attribute__((aligned(8))) __m64
-{
+union __attribute__((aligned(8))) __m64 {
   unsigned __int64 m64_u64;
   float m64_f32[2];
   __int8 m64_i8[8];
@@ -378,8 +377,7 @@ union __attribute__((aligned(8))) __m64
 };
 
 /* 44 */
-union __attribute__((aligned(16))) __m128
-{
+union __attribute__((aligned(16))) __m128 {
   float m128_f32[4];
   unsigned __int64 m128_u64[2];
   __int8 m128_i8[16];
@@ -398,8 +396,7 @@ struct __m128d
 };
 
 /* 46 */
-union __attribute__((aligned(16))) __m128i
-{
+union __attribute__((aligned(16))) __m128i {
   __int8 m128i_i8[16];
   __int16 m128i_i16[8];
   __int32 m128i_i32[4];
@@ -411,20 +408,17 @@ union __attribute__((aligned(16))) __m128i
 };
 
 /* 47 */
-union __attribute__((aligned(32))) __m256
-{
+union __attribute__((aligned(32))) __m256 {
   float m256_f32[8];
 };
 
 /* 48 */
-union __attribute__((aligned(32))) __m256d
-{
+union __attribute__((aligned(32))) __m256d {
   double m256d_f64[4];
 };
 
 /* 49 */
-union __attribute__((aligned(32))) __m256i
-{
+union __attribute__((aligned(32))) __m256i {
   __int8 m256i_i8[32];
   __int16 m256i_i16[16];
   __int32 m256i_i32[8];
@@ -436,20 +430,17 @@ union __attribute__((aligned(32))) __m256i
 };
 
 /* 50 */
-union __attribute__((aligned(64))) __m512
-{
+union __attribute__((aligned(64))) __m512 {
   float m512_f32[16];
 };
 
 /* 51 */
-union __attribute__((aligned(64))) __m512d
-{
+union __attribute__((aligned(64))) __m512d {
   double m512d_f64[8];
 };
 
 /* 52 */
-union __attribute__((aligned(64))) __m512i
-{
+union __attribute__((aligned(64))) __m512i {
   __int8 m512i_i8[64];
   __int16 m512i_i16[32];
   __int32 m512i_i32[16];
@@ -459,4 +450,3 @@ union __attribute__((aligned(64))) __m512i
   unsigned __int32 m512i_u32[16];
   unsigned __int64 m512i_u64[8];
 };
-

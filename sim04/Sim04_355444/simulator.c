@@ -25,9 +25,6 @@ void copyConfigData(ConfigDataType *dest, ConfigDataType *src)
   copyString(dest->logToFileName, src->logToFileName);
 }
 
-/**
- *
- */
 OpCodeType *getNextOpCode(PCBdata *PCB_ptr, int PCB_pid)
 {
   PCBdata *pcbPtr;
@@ -527,8 +524,7 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
   char reportString[MAX_STR_LEN];
   PCBdata *PCB_wkg_ptr;
   int oneCycle, cyclesToRun, quantumCount;
-  int isPreemptive;
-  _Bool cont;
+  _Bool isPreemptive, cont;
   _Bool interrupt = false;
 
   oneCycle = CNF_ptr->procCycleRate;
@@ -545,15 +541,13 @@ void PROCthread(ConfigDataType *CNF_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr)
     --cyclesToRun;
     --quantumCount;
     interrupt = interruptMNGR(INTERRUPT_CHECK, OPC_ptr, PCB_ptr, CNF_ptr);
-
-    if ((!cyclesToRun || isPreemptive == PREEMPTIVE_CODE) &&
-        (!quantumCount || interrupt))
+    if ((!cyclesToRun || isPreemptive) && (!quantumCount || interrupt))
     {
       cont = false;
     }
   }
 
-  if (cyclesToRun > ZERO && isPreemptive == PREEMPTIVE_CODE && !interrupt)
+  if (cyclesToRun > ZERO && isPreemptive && !interrupt)
   {
     PCB_wkg_ptr->quant_time = true;
     sprintf(reportString,
@@ -685,24 +679,6 @@ OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr)
   wkgPtr = headPtr;
   if (removedPtr == headPtr)
   {
-    return headPtr->next_ptr;
-  }
-
-  while (wkgPtr->next_ptr != removedPtr)
-  {
-    wkgPtr = wkgPtr->next_ptr;
-  }
-
-  wkgPtr->next_ptr = wkgPtr->next_ptr->next_ptr;
-  free(removedPtr);
-  return headPtr;
-
-  /*
-  OpCodeType *wkgPtr;
-
-  wkgPtr = headPtr;
-  if (removedPtr == headPtr)
-  {
     headPtr = headPtr->next_ptr;
   }
   else
@@ -713,7 +689,7 @@ OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr)
     wkgPtr->next_ptr = wkgPtr->next_ptr->next_ptr;
     free(removedPtr);
   }
-  return headPtr;*/
+  return headPtr;
 }
 
 /**
@@ -727,123 +703,26 @@ OpCodeType *removeOpCodeNode(OpCodeType *headPtr, OpCodeType *removedPtr)
 _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
                     ConfigDataType *config_dataptr)
 {
-  char reportString[MAX_STR_LEN];     // [rsp+20h] [rbp-B0h] BYREF
-  double currentTime;         // [rsp+A8h] [rbp-28h]
-  PCBdata *localPcbPtr; // [rsp+B0h] [rbp-20h]
-  bool returnVal;             // [rsp+BFh] [rbp-11h]
-  OpCodeType *rmvdOpCode;   // [rsp+C0h] [rbp-10h]
-  OpCodeType *wkgOpListPtr; // [rsp+C8h] [rbp-8h]
-  static OpCodeType *op_temp_ptr;
-
-  rmvdOpCode = NULL;
-  returnVal = false;
-  if (CTRL_ptr)
-  {
-    switch (CTRL_ptr)
-    {
-    case INTERRUPT_CHECK:
-      wkgOpListPtr = op_temp_ptr;
-      while (wkgOpListPtr)
-      {
-        localPcbPtr = PCBnode_pid(PCB_ptr, wkgOpListPtr->pid);
-        currentTime = accessTimer(LAP_TIMER, reportString);
-        if (currentTime > wkgOpListPtr->opEndTime)
-        {
-          if (localPcbPtr->state != EXIT_STATE)
-            return true;
-          rmvdOpCode = wkgOpListPtr;
-        }
-        if (rmvdOpCode)
-        {
-          op_temp_ptr =
-              removeOpCodeNode(op_temp_ptr, rmvdOpCode);
-          wkgOpListPtr = op_temp_ptr;
-          rmvdOpCode = NULL;
-        }
-        else
-        {
-          wkgOpListPtr = wkgOpListPtr->next_ptr;
-        }
-      }
-      break;
-
-    case SET_IO_START:
-      currentTime = accessTimer(LAP_TIMER, reportString);
-      OPC_ptr->opEndTime = (double)OPC_ptr->intArg2 / 1000.0 + currentTime;
-      op_temp_ptr =
-          addInterrupt(op_temp_ptr, OPC_ptr);
-      break;
-
-    case RESOLVE_INTERRUPTS:
-      wkgOpListPtr = op_temp_ptr;
-      while (wkgOpListPtr)
-      {
-        localPcbPtr = PCBnode_pid(PCB_ptr, wkgOpListPtr->pid);
-        currentTime = accessTimer(LAP_TIMER, reportString);
-        if (currentTime > wkgOpListPtr->opEndTime)
-        {
-          if (localPcbPtr->state != EXIT_STATE)
-          {
-            sprintf(reportString,
-                    "OS: Interrupted by process %d, %s %sput operation",
-                    (unsigned int)wkgOpListPtr->pid, wkgOpListPtr->strArg1,
-                    wkgOpListPtr->inOutArg);
-            LOGdump(ADD_LOG, config_dataptr, reportString);
-            localPcbPtr->state = READY_STATE;
-            sprintf(reportString, "OS: Process %d set from BLOCKED to READY",
-                    (unsigned int)wkgOpListPtr->pid);
-            LOGdump(ADD_LOG, config_dataptr, reportString);
-          }
-          rmvdOpCode = wkgOpListPtr;
-        }
-        if (rmvdOpCode)
-        {
-          op_temp_ptr =
-              removeOpCodeNode(op_temp_ptr, rmvdOpCode);
-          wkgOpListPtr = op_temp_ptr;
-          rmvdOpCode = NULL;
-        }
-        else
-        {
-          wkgOpListPtr = wkgOpListPtr->next_ptr;
-        }
-      }
-      returnVal = true;
-      break;
-
-    case INIT_MNGR:
-      op_temp_ptr = NULL;
-      return true;
-    }
-  }
-  return returnVal;
-}
-
-/*
   char reportString[MAX_STR_LEN];
-  double currentTime;
-  PCBdata *local_ptr = NULL;
+  double currentTime = 0.0;
+  PCBdata *local_ptr;
   _Bool returnVal = false;
   OpCodeType *delOPC = NULL;
   OpCodeType *wkgOPC_ptr = NULL;
-  static OpCodeType *temp_opc_ptr;
+  static OpCodeType *op_temp_ptr;
 
-  // initialize interrupt manager
   if (CTRL_ptr == INIT_MNGR)
   {
-    temp_opc_ptr = NULL;
+    op_temp_ptr = NULL;
     returnVal = true;
   }
-
-  // check for interrupts
   else if (CTRL_ptr == INTERRUPT_CHECK)
   {
-    wkgOPC_ptr = temp_opc_ptr;
-    while (wkgOPC_ptr != NULL)
+    wkgOPC_ptr = OPC_ptr;
+    while (wkgOPC_ptr)
     {
       local_ptr = PCBnode_pid(PCB_ptr, wkgOPC_ptr->pid);
       currentTime = accessTimer(LAP_TIMER, reportString);
-
       if (currentTime > wkgOPC_ptr->opEndTime)
       {
         if (local_ptr->state != EXIT_STATE)
@@ -852,33 +731,26 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
         }
         delOPC = wkgOPC_ptr;
       }
-
       if (delOPC)
+      {
+        wkgOPC_ptr = removeOpCodeNode(wkgOPC_ptr, delOPC);
+        delOPC = NULL;
+      }
+      else
       {
         wkgOPC_ptr = wkgOPC_ptr->next_ptr;
       }
-
-      else
-      {
-        temp_opc_ptr = removeOpCodeNode(temp_opc_ptr, delOPC);
-        delOPC = NULL;
-        wkgOPC_ptr = temp_opc_ptr;
-      }
     }
   }
-
-  // set IO operations to start
   else if (CTRL_ptr == SET_IO_START)
   {
     currentTime = accessTimer(LAP_TIMER, reportString);
     OPC_ptr->opEndTime = OPC_ptr->intArg2 / 1000.0 + currentTime;
-    temp_opc_ptr = addInterrupt(temp_opc_ptr, OPC_ptr);
+    wkgOPC_ptr = addInterrupt(wkgOPC_ptr, OPC_ptr);
   }
-
-  // resolve interrupts
-  else if (CTRL_ptr == RESOLVE_INTERRUPTS)
+  else if (RESOLVE_INTERRUPTS)
   {
-    wkgOPC_ptr = temp_opc_ptr;
+    wkgOPC_ptr = OPC_ptr;
 
     while (wkgOPC_ptr)
     {
@@ -901,21 +773,109 @@ _Bool interruptMNGR(Interrupts CTRL_ptr, OpCodeType *OPC_ptr, PCBdata *PCB_ptr,
         delOPC = wkgOPC_ptr;
       }
 
-      if (delOPC == NULL)
+      if (delOPC)
       {
-        wkgOPC_ptr = wkgOPC_ptr->next_ptr;
+        wkgOPC_ptr = removeOpCodeNode(wkgOPC_ptr, delOPC);
+        delOPC = NULL;
       }
 
       else
       {
-        temp_opc_ptr = removeOpCodeNode(temp_opc_ptr, delOPC);
-        delOPC = NULL;
-        wkgOPC_ptr = temp_opc_ptr;
+        wkgOPC_ptr = wkgOPC_ptr->next_ptr;
       }
     }
     returnVal = true;
   }
+
+  return returnVal;
+  /*
+  if (CTRL_ptr)
+  {
+    switch (CTRL_ptr)
+        {
+        case INIT_MNGR:
+          wkgOPC_ptr = NULL;
+          returnVal = true;
+
+        case INTERRUPT_CHECK:
+          wkgOPC_ptr = OPC_ptr;
+          while (wkgOPC_ptr)
+          {
+            local_ptr = PCBnode_pid(PCB_ptr, wkgOPC_ptr->pid);
+            currentTime = accessTimer(LAP_TIMER, reportString);
+            if (currentTime > wkgOPC_ptr->opEndTime)
+            {
+              if (local_ptr->state != EXIT_STATE)
+              {
+                returnVal = true;
+              }
+              delOPC = wkgOPC_ptr;
+            }
+            if (delOPC)
+            {
+              wkgOPC_ptr = removeOpCodeNode(wkgOPC_ptr, delOPC);
+              delOPC = NULL;
+            }
+            else
+            {
+              wkgOPC_ptr = wkgOPC_ptr->next_ptr;
+            }
+          }
+          break;
+
+        case SET_IO_START:
+          currentTime = accessTimer(LAP_TIMER, reportString);
+          OPC_ptr->opEndTime = OPC_ptr->intArg2 / 1000.0 + currentTime;
+          wkgOPC_ptr = addInterrupt(wkgOPC_ptr, OPC_ptr);
+          break;
+
+        case RESOLVE_INTERRUPTS:
+          wkgOPC_ptr = OPC_ptr;
+
+          while (wkgOPC_ptr)
+          {
+            local_ptr = PCBnode_pid(PCB_ptr, wkgOPC_ptr->pid);
+            currentTime = accessTimer(LAP_TIMER, reportString);
+
+            if (currentTime > wkgOPC_ptr->opEndTime)
+            {
+              if (local_ptr->state != EXIT_STATE)
+              {
+                sprintf(reportString,
+                        "OS: Interrupted by process %d, %s %sput operation",
+                        wkgOPC_ptr->pid, wkgOPC_ptr->strArg1,
+  wkgOPC_ptr->inOutArg); LOGdump(ADD_LOG, config_dataptr, reportString);
+                local_ptr->state = READY_STATE;
+                sprintf(reportString, "OS: Process %d set from BLOCKED to
+  READY", wkgOPC_ptr->pid); LOGdump(ADD_LOG, config_dataptr, reportString);
+              }
+              delOPC = wkgOPC_ptr;
+            }
+
+            if (delOPC)
+            {
+              wkgOPC_ptr = removeOpCodeNode(wkgOPC_ptr, delOPC);
+              delOPC = NULL;
+            }
+
+            else
+            {
+              wkgOPC_ptr = wkgOPC_ptr->next_ptr;
+            }
+          }
+          returnVal = true;
+          break;
+        }
+  }
+
+  else
+  {
+    wkgOPC_ptr = NULL;
+    return true;
+  }
+
   return returnVal;*/
+}
 
 /**
  * Allocates memory for a new MEMnode and initializes its fields.
@@ -1224,8 +1184,7 @@ _Bool MMU(ConfigDataType *config_dataptr, OpCodeType *OPC_ptr)
 void CPUidle(ConfigDataType *config_dataptr, PCBdata *PCB_ptr)
 {
   char reportString[MAX_STR_LEN];
-  OpCodeType *temp_ptr;
-  temp_ptr = NULL;
+  static OpCodeType *temp_ptr = NULL;
   int oneCycle = config_dataptr->procCycleRate;
   _Bool interruptFound;
   interruptFound = false;
@@ -1277,7 +1236,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
   LOGdump(INIT_LOG, config_dataptr, "OS: Simulator start");
   PCB_ptr = PCBcreate(config_dataptr, meta_data_ptr);
 
-  isPreemptive = meta_data_ptr->next_ptr->intArg3 == PREEMPTIVE_CODE;
+  isPreemptive = meta_data_ptr->next_ptr->intArg3; // == PREEMPTIVE_CODE;
   // process interrupt requests
   interruptMNGR(INIT_MNGR, OPC_ptr, PCB_ptr, config_dataptr);
   // change state of PCB
@@ -1311,7 +1270,7 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
       OPC_ptr = getNextOpCode(PCB_ptr, currentPID);
       if ((compareString(OPC_ptr->command, "app") ||
            compareString(OPC_ptr->strArg1, "start")) &&
-          isPreemptive == PREEMPTIVE_CODE && currentPID != lastPid)
+          isPreemptive && currentPID != lastPid)
       {
         PCB_wkg = PCBnode_pid(PCB_ptr, currentPID);
 
@@ -1351,18 +1310,17 @@ void runSim(ConfigDataType *config_dataptr, OpCodeType *meta_data_ptr)
 
             else
             {
-              printf("\n");
               sprintf(reportString, "Process: %d, %s %sput operation start\n",
                       OPC_ptr->pid, OPC_ptr->strArg1, OPC_ptr->inOutArg);
 
               LOGdump(ADD_LOG, config_dataptr, reportString);
               OPC_ptr->intArg2 *= config_dataptr->ioCycleRate;
 
-              /*
               IO_args[IO_ARG_ONE] = (void *)config_dataptr;
               IO_args[IO_ARG_TWO] = (void *)OPC_ptr;
               IO_args[IO_ARG_THREE] = (void *)PCB_ptr;
 
+              /*
               io_init = pthread_create(&IO, NULL, IOthread_wrapper, IO_args);
 
               if (io_init != ZERO)
