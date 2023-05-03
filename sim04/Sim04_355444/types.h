@@ -1,5 +1,5 @@
 /**
- * Custom data types needed for sim01
+ * Custom data types needed for sim
  */
 #ifndef TYPES_H
 #define TYPES_H
