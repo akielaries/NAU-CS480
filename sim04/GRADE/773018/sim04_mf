@@ -1,9 +1,0 @@
-CC = gcc
-DEBUG = -g
-LFLAGS = -Wall -lpthread -std=c99 -pedantic $(DEBUG)
-
-sim01 : sim04.c configUtil.c metaUtil.c simUtil.c simulator.c simtimer.c
-	$(CC) $(LFLAGS) sim04.c configUtil.c metaUtil.c simUtil.c simulator.c simtimer.c -o sim04
-
-clean:
-	\rm *.o sim04

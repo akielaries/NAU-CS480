@@ -1,1 +1,2 @@
-CS 480 Operating Systems @ NAU taught by Leverington. This repo shows the arbitrary and irrelevant simulator projects done for this class. 1-3 are working as they should, 4 has some issues.
+CS 480 Operating Systems @ NAU taught by Leverington. The repo contains some arbitrary sim projects
+simulating some CPU scheduling algorithms, etc. Sim 1-3 work, 4 has issues.
